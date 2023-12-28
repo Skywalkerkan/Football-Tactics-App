@@ -8,7 +8,7 @@
 import UIKit
 import CoreData
 
-class ViewController: UIViewController {
+class MainViewController: UIViewController {
 
     
     private lazy var closeCharacterButton: UIButton = {
@@ -20,6 +20,23 @@ class ViewController: UIViewController {
         button.addTarget(self, action: #selector(closeClicked), for: .touchUpInside)
         return button
     }()
+    
+    private lazy var detailButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Details", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .black
+       // button.backgroundColor = .green
+        button.addTarget(self, action: #selector(detailClicked), for: .touchUpInside)
+        return button
+    }()
+    
+    @objc private func detailClicked(){
+        
+        let detailVC = CharacterDetailViewController()
+        navigationController?.pushViewController(detailVC, animated: true)
+        
+    }
     
     private let characterImage: UIImageView = {
         
@@ -176,6 +193,10 @@ class ViewController: UIViewController {
 
     var chosenLine = "4 4 2"
 
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.isHidden = true
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -196,6 +217,7 @@ class ViewController: UIViewController {
         
         print(aspectRatio)
         
+        navigationController?.navigationBar.isHidden = true
         
         
     }
@@ -356,6 +378,13 @@ class ViewController: UIViewController {
         closeCharacterButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
         closeCharacterButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
 
+        // character details
+        customAlertView.addSubview(detailButton)
+        
+        detailButton.leadingAnchor.constraint(equalTo: customAlertView.leadingAnchor, constant: 15).isActive = true
+        detailButton.topAnchor.constraint(equalTo: customAlertView.topAnchor, constant: 15).isActive = true
+        detailButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        
         // Character Button Image
         
         customAlertView.addSubview(characterImage)

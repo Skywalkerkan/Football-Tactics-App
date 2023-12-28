@@ -9,23 +9,31 @@
 /* Begin PBXBuildFile section */
 		DE39AEBA2B3B5FF6002DCD77 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE39AEB92B3B5FF6002DCD77 /* AppDelegate.swift */; };
 		DE39AEBC2B3B5FF6002DCD77 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE39AEBB2B3B5FF6002DCD77 /* SceneDelegate.swift */; };
-		DE39AEBE2B3B5FF6002DCD77 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE39AEBD2B3B5FF6002DCD77 /* ViewController.swift */; };
+		DE39AEBE2B3B5FF6002DCD77 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE39AEBD2B3B5FF6002DCD77 /* MainViewController.swift */; };
 		DE39AEC12B3B5FF6002DCD77 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE39AEBF2B3B5FF6002DCD77 /* Main.storyboard */; };
 		DE39AEC42B3B5FF6002DCD77 /* Football_Tactics_App.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DE39AEC22B3B5FF6002DCD77 /* Football_Tactics_App.xcdatamodeld */; };
 		DE39AEC62B3B5FF9002DCD77 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE39AEC52B3B5FF9002DCD77 /* Assets.xcassets */; };
 		DE39AEC92B3B5FF9002DCD77 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE39AEC72B3B5FF9002DCD77 /* LaunchScreen.storyboard */; };
+		DEA09B8B2B3D6E040070A374 /* SliderExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA09B8A2B3D6E040070A374 /* SliderExtension.swift */; };
+		DEA09B922B3DA1A20070A374 /* Person+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA09B902B3DA1A20070A374 /* Person+CoreDataClass.swift */; };
+		DEA09B932B3DA1A20070A374 /* Person+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA09B912B3DA1A20070A374 /* Person+CoreDataProperties.swift */; };
+		DEA676232B3C5B100060FC83 /* CharacterDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA676222B3C5B100060FC83 /* CharacterDetailViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		DE39AEB62B3B5FF6002DCD77 /* Football Tactics App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Football Tactics App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE39AEB92B3B5FF6002DCD77 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DE39AEBB2B3B5FF6002DCD77 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		DE39AEBD2B3B5FF6002DCD77 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		DE39AEBD2B3B5FF6002DCD77 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		DE39AEC02B3B5FF6002DCD77 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		DE39AEC32B3B5FF6002DCD77 /* Football_Tactics_App.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Football_Tactics_App.xcdatamodel; sourceTree = "<group>"; };
 		DE39AEC52B3B5FF9002DCD77 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DE39AEC82B3B5FF9002DCD77 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DE39AECA2B3B5FF9002DCD77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DEA09B8A2B3D6E040070A374 /* SliderExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderExtension.swift; sourceTree = "<group>"; };
+		DEA09B902B3DA1A20070A374 /* Person+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Person+CoreDataClass.swift"; sourceTree = "<group>"; };
+		DEA09B912B3DA1A20070A374 /* Person+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Person+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		DEA676222B3C5B100060FC83 /* CharacterDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterDetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +50,8 @@
 		DE39AEAD2B3B5FF6002DCD77 = {
 			isa = PBXGroup;
 			children = (
+				DEA09B902B3DA1A20070A374 /* Person+CoreDataClass.swift */,
+				DEA09B912B3DA1A20070A374 /* Person+CoreDataProperties.swift */,
 				DE39AEB82B3B5FF6002DCD77 /* Football Tactics App */,
 				DE39AEB72B3B5FF6002DCD77 /* Products */,
 			);
@@ -58,16 +68,34 @@
 		DE39AEB82B3B5FF6002DCD77 /* Football Tactics App */ = {
 			isa = PBXGroup;
 			children = (
+				DEA676252B3C5B200060FC83 /* View */,
+				DEA676242B3C5B1C0060FC83 /* Model */,
 				DE39AEB92B3B5FF6002DCD77 /* AppDelegate.swift */,
 				DE39AEBB2B3B5FF6002DCD77 /* SceneDelegate.swift */,
-				DE39AEBD2B3B5FF6002DCD77 /* ViewController.swift */,
 				DE39AEBF2B3B5FF6002DCD77 /* Main.storyboard */,
 				DE39AEC52B3B5FF9002DCD77 /* Assets.xcassets */,
 				DE39AEC72B3B5FF9002DCD77 /* LaunchScreen.storyboard */,
 				DE39AECA2B3B5FF9002DCD77 /* Info.plist */,
 				DE39AEC22B3B5FF6002DCD77 /* Football_Tactics_App.xcdatamodeld */,
+				DEA09B8A2B3D6E040070A374 /* SliderExtension.swift */,
 			);
 			path = "Football Tactics App";
+			sourceTree = "<group>";
+		};
+		DEA676242B3C5B1C0060FC83 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		DEA676252B3C5B200060FC83 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DE39AEBD2B3B5FF6002DCD77 /* MainViewController.swift */,
+				DEA676222B3C5B100060FC83 /* CharacterDetailViewController.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -141,7 +169,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DE39AEBE2B3B5FF6002DCD77 /* ViewController.swift in Sources */,
+				DEA09B8B2B3D6E040070A374 /* SliderExtension.swift in Sources */,
+				DEA09B922B3DA1A20070A374 /* Person+CoreDataClass.swift in Sources */,
+				DEA676232B3C5B100060FC83 /* CharacterDetailViewController.swift in Sources */,
+				DE39AEBE2B3B5FF6002DCD77 /* MainViewController.swift in Sources */,
+				DEA09B932B3DA1A20070A374 /* Person+CoreDataProperties.swift in Sources */,
 				DE39AEBA2B3B5FF6002DCD77 /* AppDelegate.swift in Sources */,
 				DE39AEC42B3B5FF6002DCD77 /* Football_Tactics_App.xcdatamodeld in Sources */,
 				DE39AEBC2B3B5FF6002DCD77 /* SceneDelegate.swift in Sources */,
