@@ -21,6 +21,9 @@ class MainViewController: UIViewController {
         return button
     }()
     
+    
+    var characterID = ""
+    
     private lazy var detailButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Details", for: .normal)
@@ -186,7 +189,7 @@ class MainViewController: UIViewController {
         return imageView
     }()
     
-    let numberOfImageViews = 10 // İhtiyacınıza göre sayıyı değiştirin
+    let numberOfImageViews = 11 // İhtiyacınıza göre sayıyı değiştirin
       var imageViews = [UIImageView]()
     
     var imageIDs = [String]() // Farklı ID'leri tutan dizi
@@ -232,45 +235,59 @@ class MainViewController: UIViewController {
         var y: CGFloat = 0
         
         for index in 0..<numberOfImageViews {
-                 let imageView = UIImageView()
-                imageView.layer.cornerRadius = 25
+            let imageView = UIImageView()
+            imageView.layer.cornerRadius = 25
             
             
-                 let randomColor = UIColor(
-                     red: CGFloat.random(in: 0...1),
-                     green: CGFloat.random(in: 0...1),
-                     blue: CGFloat.random(in: 0...1),
-                     alpha: 1.0
-                 )
+            let randomColor = UIColor(
+                red: CGFloat.random(in: 0...1),
+                green: CGFloat.random(in: 0...1),
+                blue: CGFloat.random(in: 0...1),
+                alpha: 1.0
+        )
                  
-                 imageView.backgroundColor = randomColor
-                 imageView.frame.size = CGSize(width: 50, height: 50)
+            imageView.backgroundColor = .white
+            imageView.frame.size = CGSize(width: 50, height: 50)
                  
-                // let randomX = CGFloat.random(in: 0...(view.frame.width - imageView.frame.width))
-               //  let randomY = CGFloat.random(in: 0...(view.frame.height - imageView.frame.height))
+            // let randomX = CGFloat.random(in: 0...(view.frame.width - imageView.frame.width))
+            //  let randomY = CGFloat.random(in: 0...(view.frame.height - imageView.frame.height))
             
             
                 // 4 4 2 düzeni
                 
-                var xPoints = frameWidth/4 - frameWidth/7 + x
+                var xPoints = frameWidth/4 - frameWidth/7 + x + 5
                 var yPoints = frameHeight - frameHeight/3 - y
                 
             
             
                 if chosenLine == "4 4 2"{
-                    if index == 4 {
+                    
+                    if index == 0{
+                        xPoints = frameWidth/2 - 25
+                        yPoints = frameHeight - 100
+                    }
+                    else if index == 1{
                         x = 0
-                        y = frameHeight/10
-                        xPoints = frameWidth/4 - frameWidth/7 + x
-                      
+                         xPoints = frameWidth/4 - frameWidth/7 + x + 5
+                         yPoints = frameHeight - frameHeight/3 - y
+                    }
+                    
+                    else if index == 5 {
+                        
+                        imageView.backgroundColor = .red
+                        x = 0
+                        y = frameHeight/4.7
+                        xPoints = frameWidth/4 - frameWidth/7 + x + 5
+                        yPoints = frameHeight - frameHeight/3 - y
                       //  yPoints = frameHeight - 200
-                    }else if index == 8{
+                    }else if index == 9{
                         x = 0
-                        y = 400
-                        xPoints = frameWidth/2 + x + 20
-                        yPoints = frameHeight - 250 - y
+                        y = frameHeight / 2.5
+                        xPoints = frameWidth/2 + x + 25
+                        yPoints = frameHeight - frameHeight/3 - y
                     }
                     }
+            
             
               
                 
@@ -284,8 +301,8 @@ class MainViewController: UIViewController {
 
             
             
-                x += 81
-                // y += 100
+                x += frameWidth/4.7
+                //y += 100
             
                  // Gesture Recognizer ekle
                  let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
@@ -313,6 +330,7 @@ class MainViewController: UIViewController {
         let index = tappedImageView.tag
         let imageID = imageIDs[index]
         
+        print(index)
         
         UIView.animate(withDuration: 0.25, animations: {
               self.customAlertView.isHidden = false
