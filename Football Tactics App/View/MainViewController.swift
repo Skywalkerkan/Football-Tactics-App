@@ -10,6 +10,24 @@ import CoreData
 
 class MainViewController: UIViewController {
 
+
+    
+    
+    var playerViews: [UIView] = []
+
+    var uuidLists: [UUID] = []
+    
+    var uniqueUUIDs: [UUID] = []
+
+    var uuidString: String = ""{
+        didSet{
+            print("uuid \(uuidString)")
+        }
+    }
+    var characterID = ""
+    
+    
+    
     
     private lazy var closeCharacterButton: UIButton = {
         let button = UIButton(type: .system)
@@ -20,9 +38,6 @@ class MainViewController: UIViewController {
         button.addTarget(self, action: #selector(closeClicked), for: .touchUpInside)
         return button
     }()
-    
-    
-    var characterID = ""
     
     private lazy var detailButton: UIButton = {
         let button = UIButton(type: .system)
@@ -41,8 +56,8 @@ class MainViewController: UIViewController {
         
     }
     
+    //Burası karakter kart ekranı 57 - 197
     private let characterImage: UIImageView = {
-        
         let image = UIImage(systemName: "person.circle")?.withTintColor(.black, renderingMode: .alwaysOriginal)
         let imageView = UIImageView(image: image)
         imageView.layer.cornerRadius = 30
@@ -181,6 +196,8 @@ class MainViewController: UIViewController {
         return alertView
     }()
     
+    //Buraya kadar
+    
     private let backgroundImageView: UIImageView = {
         let image = UIImage(named: "football_pitch")
         let imageView = UIImageView(image: image)
@@ -189,44 +206,792 @@ class MainViewController: UIViewController {
         return imageView
     }()
     
+    private let tacticsView: UIView = {
+        let tacticView = UIView()
+        tacticView.translatesAutoresizingMaskIntoConstraints = false
+        //view.layer.cornerRadius = 30
+        //tacticView.backgroundColor = UIColor(red: <#T##CGFloat#>, green: <#T##CGFloat#>, blue: <#T##CGFloat#>, alpha: <#T##CGFloat#>)
+        tacticView.layer.cornerRadius = 40
+        tacticView.clipsToBounds = true
+        return tacticView
+    }()
+    
+    
+    
     let numberOfImageViews = 11 // İhtiyacınıza göre sayıyı değiştirin
-      var imageViews = [UIImageView]()
+    var imageViews = [UIImageView]()
     
     var imageIDs = [String]() // Farklı ID'leri tutan dizi
 
     var chosenLine = "4 4 2"
 
     override func viewWillAppear(_ animated: Bool) {
-        navigationController?.navigationBar.isHidden = true
+        
+        super.viewWillAppear(animated)
+        
+      /*  let indexPath = IndexPath(item: 1, section: 0)
+        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        
+        layout.currentPage = indexPath.item
+        layout.previousOffset = layout.updateOffset(collectionView)
+        
+        if let cell = collectionView.cellForItem(at: indexPath){
+            transformCell(cell)
+        }*/
+        
+        
+        for playerView in playerViews {
+            playerView.removeFromSuperview()
+        }
+
+        // Dizi içindeki tüm view'leri temizle
+        playerViews.removeAll()
+        createPlayers()
+        
+      //  loadPlayerPositions()
+    
+        predicateById(uuidString: uuidString)
+        
+        
+        
+
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        let indexPath = IndexPath(item: 1, section: 0)
+        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        
+        layout.currentPage = indexPath.item
+        layout.previousOffset = layout.updateOffset(collectionView)
+        
+        if let cell = collectionView.cellForItem(at: indexPath){
+            transformCell(cell)
+        }
+    }
+    
+    
+    func tableViewRegister(){
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.delegate = self
+        tableView.dataSource = self
+        
+        view.addSubview(tableView)
+        
+        //tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 350).isActive = true
+        tableView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+    }
+    
+    let screenWidth =  UIScreen.main.bounds.size.width
+    let screenHeigth =  UIScreen.main.bounds.size.height
+    
+    var itemWidth: CGFloat{
+        return screenWidth * 0.33
+    }
+    
+    var itemHeigth: CGFloat{
+        return itemWidth*1.15
+    }
+    
+    func collectionViewSetUp(){
+        collectionView.dragInteractionEnabled = false
+        collectionView.backgroundColor = .clear
+        collectionView.decelerationRate = .normal
+        collectionView.contentInsetAdjustmentBehavior = .never
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 50, bottom: 0, right: 50)
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        tacticsView.addSubview(collectionView)
+        
+        collectionView.collectionViewLayout = layout
+        layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = 30.0
+        layout.minimumInteritemSpacing = 30.0
+        layout.itemSize.width = itemWidth
+        collectionView.clipsToBounds = true
+        collectionView.leadingAnchor.constraint(equalTo: tacticsView.leadingAnchor, constant: 0).isActive = true
+        collectionView.trailingAnchor.constraint(equalTo: tacticsView.trailingAnchor, constant: 0).isActive = true
+       // collectionView.centerYAnchor.constraint(equalTo: tacticsView.centerYAnchor).isActive = true
+        collectionView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4 - 20).isActive = true
+        collectionView.topAnchor.constraint(equalTo: tacticsView.topAnchor).isActive = true
+        collectionView.backgroundColor = .clear
+        
+        
+    }
+
+    
+    
+    
+    
+    
+    let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = .clear
+        tableView.isHidden = true
+        return tableView
+    }()
+    
+    
+    let layout = CustomLayout()
+
+    
+    let collectionView: UICollectionView = {
+        let view = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .red
+      //  view.isHidden = true
+        return view
+    }()
+    
+    
+   /* let characterLabel: UILabel = {
+      let label = UILabel()
+        label.text = "aa"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()*/
+    
+    let newTacticView: UIView = {
+       let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 20
+        view.layer.borderWidth = 1
+        view.layer.borderColor = UIColor.black.cgColor
+        view.isHidden = true
+        return view
+    }()
+    
+    lazy var addTacticButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(addButtonClick), for: .touchUpInside)
+        button.setTitle("Ekle", for: .normal)
+        return button
+    }()
+    
+    @objc func addButtonClick(){
+        
+        //İlk önce tüm oyuncuları kaldır
+        for playerView in playerViews {
+            playerView.removeFromSuperview()
+        }
+
+        // Dizi içindeki tüm view'leri temizle
+        playerViews.removeAll()
+        createPlayers()
+        savePlayerPositions()
+      //  loadPlayerPositions()
+        predicateById(uuidString: uuidString)
+        
+        uniqueuuids()
+
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+        
+        
+    }
+    
+    //Tactic Eklemeye yeri
+    @objc func addNewTactic(){
+        newTacticView.isHidden = false
+    }
+    
+    
+    @objc func settingsButtonClicked(){
+        
+    }
+    
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.addSubview(backgroundImageView)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewTactic))
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .done, target: self, action: #selector(settingsButtonClicked))
+
+    //    view.addSubview(backgroundImageView)
 
    
-        dizilisOlustur()
+     //   collectionViewSetUp()
+        //Tactic Oluşturma Penceresi
+        view.addSubview(newTacticView)
+        newTacticView.addSubview(addTacticButton)
+        newTacticView.heightAnchor.constraint(equalToConstant: 250).isActive = true
+        newTacticView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 200).isActive = true
+        newTacticView.widthAnchor.constraint(equalToConstant: 250).isActive = true
+      //  navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewTactic))
+        
+        //Unique uuidleri bulma
+        uniqueuuids()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+        
+        
+        tableViewRegister()
 
         
-        addSubviews()
+        //Oyuncularn oluşumu buraya sayı verebiliriz!!!
+        createPlayers()
+        
+        
+        //Uygulamanın ilk kez açıldığının kontrolü
+        let isFirstLaunch = UserDefaults.standard.bool(forKey: "firstLaunch")
+               // Eğer uygulama ilk kez açılıyorsa
+        if !isFirstLaunch {
+            // İlk kez açılıyormuş gibi işlemler
+            //İlk kez girilmişse uygulamada oluşturulan viewlerin konumlarının kaydedilmesi
+            savePlayerPositions()
+            uniqueuuids()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+            UserDefaults.standard.set(true, forKey: "firstLaunch")
+        }
+        
+        
+      //  loadPlayerPositions()
+        
+        
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context = appDelegate.persistentContainer.viewContext
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "PlayerPosition")
+        request.returnsObjectsAsFaults = false
+        
+        do {
+            let results = try context.fetch(request)
+            guard let result = results.first as? NSManagedObject else{return}
+            guard let uuid = result.value(forKey: "id") as? UUID else {return}
+        
+            self.uuidString = uuid.uuidString
+            
+        } catch  {
+            print(error.localizedDescription)
+        }
+        
+        
+       // addSubviews()
         
        
-        let screenWidth = UIScreen.main.bounds.width
+      /*  let screenWidth = UIScreen.main.bounds.width
         let screenHeight = UIScreen.main.bounds.height
 
         let aspectRatio = screenWidth / screenHeight
         
-        print(aspectRatio)
+        print(aspectRatio)*/
         
-        navigationController?.navigationBar.isHidden = true
+        
+        view.addSubview(tacticsView)
+       // tacticsView.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
+        tacticsView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4).isActive = true
+        tacticsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
+        tacticsView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        tacticsView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+
+        
+        collectionViewSetUp()
+       
+        
+        
         
         
     }
     
     
-    func dizilisOlustur(){
+    
+    //Kaç tane oyuncunun oluşturulduğu
+    func createPlayers() {
+            var numberY = 100
+            var numberX = 0
+            var katsayi = 1
+
+            for i in 0..<10 {
+               
+              
+                
+                if i != 0 && i % 4 == 0{
+                    numberY = 150
+                  //  print("number \(numberY)")
+                    numberX = 0
+                    katsayi += 1
+                    numberY = katsayi * numberY
+                }
+                
+                let playerView = UIView(frame: CGRect(x: Int(CGFloat(numberX)) * 60, y: numberY, width: 75, height: 75))
+                //playerView.backgroundColor = UIColor.blue
+
+                let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+                playerView.addGestureRecognizer(panGesture)
+
+                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+                playerView.addGestureRecognizer(tapGesture)
+                
+                let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(longHandleTap(_:)))
+                longTapGesture.minimumPressDuration = 0.75
+                playerView.addGestureRecognizer(longTapGesture)
+                
+                playerViews.append(playerView)
+                view.addSubview(playerView)
+               // playerView.addSubview(characterLabel)
+                numberX += 1
+                
+            }
+        }
+    
+    
+    var isAnimating = false
+    @objc func longHandleTap(_ gestureRecognizer: UILongPressGestureRecognizer){
+        
+        guard let longTappedView = gestureRecognizer.view else{return}
+        
+        guard let index = self.playerViews.firstIndex(of: longTappedView) else{
+            return
+        }
+        
+        let playerViewcik = playerViews[index]
+        
+        if gestureRecognizer.state == .began && !isAnimating {
+            // Uzun basma başladığında yapılacak işlemler
+            isAnimating = true
+            print("Uzun basma başladı!")
+        
+        
+            
+            
+            UIView.animate(withDuration: 0.5, animations: {
+                // Küçültme animasyonunu
+                playerViewcik.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+            }) { _ in
+                // Animasyon tamamlandığında yapılacak işlemler
+                //self.isAnimating = false
+            }
+            
+        }
+        else if gestureRecognizer.state == .ended {
+            if let index = playerViews.firstIndex(of: longTappedView){
+                print("LongPressedIndex \(index)")
+                
+                UIView.animate(withDuration: 0.5, animations: {
+                    // Küçültme animasyonunu
+                    playerViewcik.transform = CGAffineTransform(scaleX: 1, y: 1)
+                }) { _ in
+                    // Animasyon tamamlandığında yapılacak işlemler
+                    self.isAnimating = false
+                  //  playerViewcik.transform = CGAffineTransform(scaleX: 1, y: 1)
+                }
+                
+              
+            }
+            print("Uzun basma sona erdi!")
+        }
+        
+        
+        
+    }
+    
+    
+    
+    
+    // Bir kere basma halinde
+    @objc func handleTap(_ gestureRecognizer: UIPanGestureRecognizer) {
+
+        guard let tappedView = gestureRecognizer.view else { return }
+
+           // Tıklanan oyuncu görünümünün index'ini bulma
+           if let index = playerViews.firstIndex(of: tappedView) {
+               print("Tapped player index: \(index)")
+               
+               
+               let CharacterDetailVC = CharacterDetailViewController()
+               CharacterDetailVC.characterIndex = index
+               CharacterDetailVC.tacticUUIDString = uuidString
+               navigationController?.pushViewController(CharacterDetailVC, animated: true)
+               
+              // predicateById(uuidString: uuidString)
+              // predicateAndUploadByIdIndex(uuidString: uuidString, index: index)
+               
+           }
+        
+            
+        
+        
+       }
+    
+    
+    
+    //Basılı tutma halinde sürükleme işlemleri
+    @objc func handlePan(_ gestureRecognizer: UIPanGestureRecognizer) {
+           guard let playerView = gestureRecognizer.view else { return }
+
+           let translation = gestureRecognizer.translation(in: view)
+           playerView.center = CGPoint(x: playerView.center.x + translation.x, y: playerView.center.y + translation.y)
+           gestureRecognizer.setTranslation(CGPoint.zero, in: view)
+        
+        
+        
+      
+        if gestureRecognizer.state == .ended{
+            
+            if let index = playerViews.firstIndex(of: playerView) {
+                print("Tapped player index: \(index) Panned : \(uuidString)")
+                
+                print(uuidString, index)
+               // predicateById(uuidString: uuidString)
+               // predicateAndUploadByIdIndex(uuidString: uuidString, index: index)
+                predicateAndUploadByIdIndex(uuidString: uuidString, index: index)
+
+            }
+
+               // Burada oyuncu konumunu hafızaya kaydedebilirsiniz.
+                //savePlayerPositions()
+        }
+        
+        
+            
+        
+        
+
+        // Örneğin: UserDefaults, veritabanı veya başka bir depolama mekanizması kullanabilirsiniz.
+       }
+    
+    
+    
+    //Uygulama ilk kez çalıştığında ya da bir sayfa eklendiğinde bu çalıştırılacak ve güncel verileri id üzerinden kaydedecek
+    func savePlayerPositions() {
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+            let managedContext = appDelegate.persistentContainer.viewContext
+            
+            let id = UUID()
+            //let idString = self.uuidString
+            // Clear existing data
+        //    deleteAllPlayerPositions()
+
+        guard let imageData = UIImage(named: "forma")?.pngData() else{return}
+        let characterName = "Adı"
+        
+        
+        //İndexleriyle ve idleriyle x ve y konumlarıyla beraber kaydetme
+            for (index, playerView) in playerViews.enumerated() {
+                let entity = NSEntityDescription.entity(forEntityName: "PlayerPosition", in: managedContext)!
+                let playerPosition = NSManagedObject(entity: entity, insertInto: managedContext)
+
+                let position = playerView.center
+                
+                playerPosition.setValue(id, forKey: "id")
+                playerPosition.setValue(index, forKey: "index")
+                playerPosition.setValue(position.x, forKey: "x")
+                playerPosition.setValue(position.y, forKey: "y")
+                playerPosition.setValue(characterName, forKey: "name")
+                playerPosition.setValue(imageData, forKey: "image")
+                
+                //Oyuncu Özellikleri
+                playerPosition.setValue(50, forKey: "defending")
+                playerPosition.setValue(50, forKey: "dribbling")
+                playerPosition.setValue(50, forKey: "physical")
+                playerPosition.setValue(50, forKey: "pace")
+                playerPosition.setValue(50, forKey: "shooting")
+                playerPosition.setValue(50, forKey: "passing")
+
+
+            }
+
+            do {
+                try managedContext.save()
+            } catch let error as NSError {
+                print("Could not save. \(error), \(error.userInfo)")
+            }
+        }
+    
+
+        func loadPlayerPositions() {
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+            let managedContext = appDelegate.persistentContainer.viewContext
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "PlayerPosition")
+
+            do {
+                let results = try managedContext.fetch(fetchRequest)
+              //  print(results)
+                for case let result as NSManagedObject in results {
+                    if let index = result.value(forKey: "index") as? Int,
+                       let x = result.value(forKey: "x") as? CGFloat,
+                       let y = result.value(forKey: "y") as? CGFloat,
+                       let id = result.value(forKey: "id") as? UUID,
+                       let uuidString = id.uuidString as? String,
+                       let characterName = result.value(forKey: "name") as? String,
+                       let imageData = result.value(forKey: "image") as? Data,
+                       
+                        
+                       
+                        
+                       index < playerViews.count {
+                        
+                        print(characterName, index)
+                        
+                        
+                        let characterLabel: UILabel = {
+                           let label = UILabel()
+                            label.textAlignment = .center
+                            label.translatesAutoresizingMaskIntoConstraints = false
+                            return label
+                        }()
+                        
+                        let characterImage: UIImageView = {
+                           let imageView = UIImageView(image: UIImage(named: "forma"))
+                            imageView.translatesAutoresizingMaskIntoConstraints = false
+                            imageView.contentMode = .scaleAspectFill
+                            imageView.clipsToBounds = true
+                          //  imageView.layer.cornerRadius = 50
+                            return imageView
+                        }()
+                        
+                        
+                      //  let characterLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
+                        characterLabel.text = "Adı"
+                        let playerView = playerViews[index]
+                       // playerView.backgroundColor = .red
+                        playerView.addSubview(characterImage)
+                        playerView.addSubview(characterLabel)
+
+                        playerView.center = CGPoint(x: x, y: y)
+                        
+                        //Label Layout
+                        characterImage.topAnchor.constraint(equalTo: playerView.topAnchor).isActive = true
+                        characterImage.leadingAnchor.constraint(equalTo: playerView.leadingAnchor).isActive = true
+                        characterImage.trailingAnchor.constraint(equalTo: playerView.trailingAnchor).isActive = true
+                        characterImage.heightAnchor.constraint(equalToConstant: 75).isActive = true
+                        //characterImage.widthAnchor.constraint(equalToConstant: 50).isActive = true
+
+                        
+                        characterLabel.topAnchor.constraint(equalTo: characterImage.bottomAnchor).isActive = true
+                        characterLabel.leadingAnchor.constraint(equalTo: playerView.leadingAnchor).isActive = true
+                        characterLabel.trailingAnchor.constraint(equalTo: playerView.trailingAnchor).isActive = true
+                        
+                        
+                        characterLabel.text = characterName
+                        characterImage.image = UIImage(data: imageData)
+                        
+                        self.uuidString = uuidString
+                        
+                    }
+                    
+                }
+            } catch let error as NSError {
+                print("Could not fetch. \(error), \(error.userInfo)")
+            }
+        }
+
+        func deleteAllPlayerPositions() {
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+            let managedContext = appDelegate.persistentContainer.viewContext
+
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "PlayerPosition")
+
+            do {
+                let results = try managedContext.fetch(fetchRequest)
+                for case let result as NSManagedObject in results {
+                    managedContext.delete(result)
+                }
+            } catch let error as NSError {
+                print("Could not delete. \(error), \(error.userInfo)")
+            }
+        }
+    
+    
+    
+    func predicateAndUploadByIdIndex(uuidString: String, index: Int){
+        
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else{return}
+        let managedContext = appDelegate.persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<PlayerPosition> = PlayerPosition.fetchRequest()
+
+        guard let uuid = UUID(uuidString: uuidString) else{
+            return
+        }
+        
+        let predicate = NSPredicate(format: "id == %@ AND index == %d", uuid as CVarArg, index)
+        fetchRequest.predicate = predicate
+        
+        
+        
+        do {
+            if let existingPlayerPosition = try managedContext.fetch(fetchRequest).first {
+                // Güncelleme işlemini gerçekleştir
+             //   print(existingPlayerPosition)
+                let position = playerViews[index].center
+                existingPlayerPosition.setValue(position.x, forKey: "x")
+                existingPlayerPosition.setValue(position.y, forKey: "y")
+            } else {
+                // Belirtilen ID ve index'e sahip öğe bulunamazsa buraya düşer
+                print("PlayerPosition not found for the given ID and index.")
+            }
+        } catch {
+            print("Fetch error: \(error)")
+        }
+        
+        
+        
+        do {
+            try managedContext.save()
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+
+    }
+    
+    
+    func predicateById(uuidString: String){
+        //print("gelen id \(uuidString)")
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let managedContext = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "PlayerPosition")
+        
+        guard let uuid = UUID(uuidString: uuidString) else{
+            return
+        }
+        
+        let predicate = NSPredicate(format: "id == %@", "\(uuid)")
+
+        fetchRequest.predicate = predicate
+        
+        
+        do {
+            let results = try managedContext.fetch(fetchRequest)
+            for case let result as NSManagedObject in results {
+                if let index = result.value(forKey: "index") as? Int,
+                   let x = result.value(forKey: "x") as? CGFloat,
+                   let y = result.value(forKey: "y") as? CGFloat,
+                   let id = result.value(forKey: "id") as? UUID,
+                   let uuidString = id.uuidString as? String,
+                   let imageData = result.value(forKey: "image") as? Data,
+                   let characterName = result.value(forKey: "name") as? String,
+                   
+                   
+                    
+                    index < playerViews.count {
+                    
+                   // let characterLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
+                    
+                    
+                    let characterLabel: UILabel = {
+                       let label = UILabel()
+                        label.textAlignment = .center
+                        label.translatesAutoresizingMaskIntoConstraints = false
+                        return label
+                    }()
+                    
+                    let characterImage: UIImageView = {
+                       let imageView = UIImageView(image: UIImage(named: "forma"))
+                        imageView.translatesAutoresizingMaskIntoConstraints = false
+                        imageView.contentMode = .scaleAspectFill
+                        imageView.clipsToBounds = true
+                       // imageView.layer.cornerRadius = 50
+                        return imageView
+                    }()
+                    
+                   // characterLabel.text = "Oyuncu Adı"
+                    characterLabel.text = characterName
+                    characterImage.image = UIImage(data: imageData)
+                    let playerView = playerViews[index]
+                    playerView.addSubview(characterImage)
+                    playerView.addSubview(characterLabel)
+
+                    playerView.center = CGPoint(x: x, y: y)
+                    
+                    //Label Layout
+                    characterImage.topAnchor.constraint(equalTo: playerView.topAnchor).isActive = true
+                    characterImage.leadingAnchor.constraint(equalTo: playerView.leadingAnchor).isActive = true
+                    characterImage.trailingAnchor.constraint(equalTo: playerView.trailingAnchor).isActive = true
+                    characterImage.heightAnchor.constraint(equalToConstant: 75).isActive = true
+                    characterImage.widthAnchor.constraint(equalToConstant: 75).isActive = true
+
+                    
+                    characterLabel.topAnchor.constraint(equalTo: characterImage.bottomAnchor).isActive = true
+                    characterLabel.leadingAnchor.constraint(equalTo: playerView.leadingAnchor).isActive = true
+                    characterLabel.trailingAnchor.constraint(equalTo: playerView.trailingAnchor).isActive = true
+                    
+
+                    
+
+                    
+                    //print("\(index): \(x), \(y), \(uuidString)")
+                    
+                    self.uuidString = uuidString
+                    
+                }
+                
+            }
+        }catch{
+            
+        }
+
+    }
+    
+    
+    ///Unique UUIDLERİ BUL GETİR tableViewde göster
+    func uniqueuuids() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        let managedContext = appDelegate.persistentContainer.viewContext
+
+        // NSFetchRequest oluştur
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "PlayerPosition")
+
+        do {
+            // Fetch işlemi gerçekleştir
+            let results = try managedContext.fetch(fetchRequest)
+
+            // Farklı UUID'leri bulmak için bir dizi oluştur
+            var uniqueUUIDsSet = Set<UUID>()
+
+            for result in results {
+                if let playerPosition = result as? PlayerPosition, let uuid = playerPosition.id {
+                    uniqueUUIDsSet.insert(uuid)
+                }
+            }
+
+            uniqueUUIDs = Array(uniqueUUIDsSet)
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+            // Farklı UUID'leri yazdır
+            print("Farklı UUID Sayısı: \(uniqueUUIDs.count)")
+            for uniqueUUID in uniqueUUIDs {
+            //    print("UUID: \(uniqueUUID)")
+            }
+
+        } catch {
+            print("Hata: \(error.localizedDescription)")
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+   /* func dizilisOlustur(){
         
         
         let frameHeight = view.frame.height
@@ -317,9 +1082,9 @@ class MainViewController: UIViewController {
                  view.addSubview(imageView)
                  imageViews.append(imageView)
              }
-    }
+    }*/
     
-    func generateUniqueID() -> String {
+    /*func generateUniqueID() -> String {
           return UUID().uuidString
       }
       
@@ -361,7 +1126,7 @@ class MainViewController: UIViewController {
         
         gesture.setTranslation(.zero, in: view)
     }
-    
+    */
     
     
     
@@ -448,7 +1213,7 @@ class MainViewController: UIViewController {
         leftStackView.trailingAnchor.constraint(equalTo: cizgiDikey.leadingAnchor, constant: -10).isActive = true
 
         
-        
+         
         customAlertView.addSubview(rightStackView)
         
         rightStackView.addArrangedSubview(dripplingLabel)
@@ -467,3 +1232,130 @@ class MainViewController: UIViewController {
 
 }
 
+
+
+
+extension MainViewController: UITableViewDelegate, UITableViewDataSource{
+    
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return uniqueUUIDs.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        cell.isUserInteractionEnabled = true
+
+        cell.backgroundColor = .red
+        cell.textLabel?.text = uniqueUUIDs[indexPath.row].uuidString
+        return cell
+        
+    }
+    
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let uuidString = uniqueUUIDs[indexPath.row].uuidString
+      //  print(uuidString)
+        for playerView in playerViews {
+            playerView.removeFromSuperview()
+        }
+
+        // Dizi içindeki tüm view'leri temizle
+        playerViews.removeAll()
+        createPlayers()
+        
+        predicateById(uuidString: uuidString)
+
+        
+    }
+    
+    
+    
+}
+
+
+extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
+    
+    
+    
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 10
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+        cell.contentView.layer.cornerRadius = 20
+        cell.contentView.backgroundColor = .gray
+        cell.contentView.clipsToBounds = true
+        cell.clipsToBounds = true
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: itemWidth, height: itemHeigth)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.item == layout.currentPage{
+            
+        }else{
+            collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+            layout.currentPage = indexPath.item
+            layout.previousOffset = layout.updateOffset(collectionView)
+            setupCell()
+        }
+    }
+    
+    
+    
+}
+
+
+
+extension MainViewController{
+    
+    
+   /* func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        <#code#>
+    }*/
+    
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if decelerate{
+            setupCell()
+        }
+    }
+    
+    func setupCell(){
+        let indexPath = IndexPath(item: layout.currentPage, section: 0)
+        if let cell = collectionView.cellForItem(at: indexPath){
+            transformCell(cell)
+        }
+        
+    }
+    
+    
+    func transformCell(_ cell: UICollectionViewCell, isEffect: Bool = true){
+        if !isEffect{
+            cell.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+            return
+        }
+        UIView.animate(withDuration: 0.2) {
+            cell.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+        }
+        
+        for otherCell in collectionView.visibleCells{
+            
+            if let indexPath = collectionView.indexPath(for: otherCell){
+                if indexPath.item != layout.currentPage{
+                    UIView.animate(withDuration: 0.2) {
+                        otherCell.transform = .identity
+                    }
+                }
+            }
+        }
+        
+    }
+    
+}

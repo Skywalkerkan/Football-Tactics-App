@@ -11,16 +11,20 @@ import CoreData
 class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
     
     
-    
+    var tacticUUIDString: String? = nil
+    var characterIndex: Int? = nil
+
     
         
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Person")
     
+    
+    
   //  let character: [Person]? = nil
     
     
-    private func addCharacter(){
+    /*private func addCharacter(){
         
         guard let nameText = characterNameTextField.text, !nameText.isEmpty else{
             alertController()
@@ -53,7 +57,7 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         
         
 
-    }
+    }*/
     
     
     
@@ -68,28 +72,8 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         
     }
     
-    private func fetchCharacter(){
-        
-        do{
-            
-            let results = try context.fetch(Person.fetchRequest())
-            
-            if results.count > 0{
-                
-                for result in results as [NSManagedObject]{
-    
-                    print(result)
-                    
-                }
-                
-            }
-            
-        }catch{
-            print("HATALANDIK")
-            
-        }
-        
-    }
+   
+ 
     
     private lazy var saveButton: UIButton = {
         let button = UIButton(type: .system)
@@ -104,8 +88,188 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
     }()
     
     @objc private func saveButtonClicked(){
-        addCharacter()
+    //    addCharacter()
     }
+    
+    
+    
+    
+    
+    //Oyuncu Kart Önizlemesi
+    private let customCardView: UIView = {
+        let alertView = UIView()
+        alertView.layer.cornerRadius = 30
+        alertView.layer.borderWidth = 1
+        alertView.layer.borderColor = UIColor.green.cgColor
+        alertView.backgroundColor = .lightGray
+        alertView.isHidden = true
+        alertView.translatesAutoresizingMaskIntoConstraints = false
+        return alertView
+    }()
+    
+    private lazy var closeCharacterButtonCard: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "xmark"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .black
+       // button.backgroundColor = .green
+        button.addTarget(self, action: #selector(closeClicked), for: .touchUpInside)
+        return button
+    }()
+    
+    private lazy var detailButtonCard: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Details", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .black
+       // button.backgroundColor = .green
+        button.addTarget(self, action: #selector(detailClicked), for: .touchUpInside)
+        return button
+    }()
+    
+    @objc private func detailClicked(){
+        
+        let detailVC = CharacterDetailViewController()
+        navigationController?.pushViewController(detailVC, animated: true)
+        
+    }
+    
+    //Burası karakter kart ekranı 57 - 197
+    private let characterImageCard: UIImageView = {
+        let image = UIImage(systemName: "person.circle")?.withTintColor(.black, renderingMode: .alwaysOriginal)
+        let imageView = UIImageView(image: image)
+        imageView.layer.cornerRadius = 30
+        imageView.layer.borderWidth = 2
+        imageView.layer.borderColor = UIColor.black.cgColor
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.isUserInteractionEnabled = true
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+    
+    
+    private let characterNameCard: UILabel = {
+        let label = UILabel()
+        label.text = "Erkan Coşar"
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 25, weight: .bold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let cizgiYatayCard: UIView = {
+        let view = UIView()
+        view.layer.borderWidth = 2
+        view.alpha = 0.3
+        view.layer.borderColor = UIColor.black.cgColor
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    //Cizgini Sol Tarafı
+    
+    private let hizlanmaLabelCard: UILabel = {
+        let label = UILabel()
+        label.text = "95 Hız"
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let sutLabelCard: UILabel = {
+        let label = UILabel()
+        label.text = "89 Şut"
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let pasLabelCard: UILabel = {
+        let label = UILabel()
+        label.text = "92 Pas"
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    
+    
+    private let cizgiDikeyCard: UIView = {
+        let view = UIView()
+        view.layer.borderWidth = 2
+        view.layer.borderColor = UIColor.black.cgColor
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.alpha = 0.3
+        return view
+    }()
+    
+    //Cizgini Sağ Tarafı
+
+
+    
+    private let dripplingLabelCard: UILabel = {
+        let label = UILabel()
+        label.text = "89 Drip"
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let defLabelCard: UILabel = {
+        let label = UILabel()
+        label.text = "65 Def"
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let phyLabelCard: UILabel = {
+        let label = UILabel()
+        label.text = "75 Phy"
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 20, weight: .semibold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let leftStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.distribution = .fillEqually
+        //stackView.backgroundColor = .red
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
+    private let rightStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.distribution = .fillEqually
+      //  stackView.backgroundColor = .red
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
+    
+    
+    @objc private func closeClicked(){
+        
+       // self.customAlertView.transform = .identity
+
+        customCardView.isHidden = true
+    }
+    
+    
+    
+    
+    
+    //Buraya kadar kart tasarımı
+    
     
 
     
@@ -389,6 +553,41 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
          view.endEditing(true)
      }
     
+    lazy var characterCardButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Preview Card", for: .normal)
+        button.addTarget(self, action: #selector(previewCharacter), for: .touchUpInside)
+        return button
+    }()
+
+    @objc private func previewCharacter() {
+        
+        
+        if characterNameTextField.text?.isEmpty ?? true {
+            let alert = Alerts.shared.alertFunction(title: "Eksik Girdi", message: "Karakter ismi boş olamaz")
+            present(alert, animated: true, completion: nil)
+        } else{
+            customCardView.isHidden = false
+            characterNameCard.text = characterNameTextField.text
+            hizlanmaLabelCard.text = "\(Int(customSliderHizlanma.value)) " + "Pac"
+            sutLabelCard.text = "\(Int(customSliderSut.value)) " + "Sht"
+            pasLabelCard.text = "\(Int(customSliderPas.value)) " + "Pas"
+            dripplingLabelCard.text = "\(Int(customSliderDrib.value)) " + "Drp"
+            defLabelCard.text = "\(Int(customSliderDef.value)) " + "Def"
+            phyLabelCard.text = "\(Int(customSliderPhy.value)) " + "Phy"
+        }
+            
+        
+        
+        
+   
+
+        
+        
+        
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -400,7 +599,7 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         view.backgroundColor = .white
         characterImageView.layer.cornerRadius = view.frame.width/6
         addSubviews()
-        
+        addCardSubviews()
         gestureRecognizer()
         
         
@@ -430,10 +629,11 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
     private func addSubviews(){
         
         
-        view.addSubview(saveButton)
+        view.addSubview(characterCardButton)
         
-        saveButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
-        saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15).isActive = true
+        
+        characterCardButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
+        characterCardButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -15).isActive = true
         
         
         view.addSubview(characterImageView)
@@ -587,6 +787,113 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         
         
     }
+    
+    
+    
+    
+    private func addCardSubviews(){
+        
+        
+        let frameHeight = view.frame.height
+        let frameWidth = view.frame.width
+        
+        view.addSubview(customCardView)
+        
+        
+        
+       /* backgroundImageView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        backgroundImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        backgroundImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        backgroundImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true*/
+
+        
+        customCardView.heightAnchor.constraint(equalToConstant: 360).isActive = true
+        
+        customCardView.widthAnchor.constraint(equalToConstant: 300).isActive = true
+
+        customCardView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        customCardView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -view.frame.height/10).isActive = true
+
+        
+        // closeCharacterButton
+        customCardView.addSubview(closeCharacterButtonCard)
+        
+        closeCharacterButtonCard.trailingAnchor.constraint(equalTo: customCardView.trailingAnchor, constant: -5).isActive = true
+        closeCharacterButtonCard.topAnchor.constraint(equalTo: customCardView.topAnchor, constant: 5).isActive = true
+        closeCharacterButtonCard.widthAnchor.constraint(equalToConstant: 35).isActive = true
+        closeCharacterButtonCard.heightAnchor.constraint(equalToConstant: 35).isActive = true
+
+        // character details
+        customCardView.addSubview(detailButtonCard)
+        
+        detailButtonCard.leadingAnchor.constraint(equalTo: customCardView.leadingAnchor, constant: 15).isActive = true
+        detailButtonCard.topAnchor.constraint(equalTo: customCardView.topAnchor, constant: 15).isActive = true
+        detailButtonCard.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        
+        // Character Button Image
+        
+        customCardView.addSubview(characterImageCard)
+        
+        characterImageCard.topAnchor.constraint(equalTo: customCardView.topAnchor, constant: 15).isActive = true
+        characterImageCard.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        characterImageCard.widthAnchor.constraint(equalToConstant: view.frame.width/3.4).isActive = true
+        characterImageCard.heightAnchor.constraint(equalToConstant: view.frame.width/3.2).isActive = true
+
+        
+        customCardView.addSubview(characterNameCard)
+        
+        characterNameCard.topAnchor.constraint(equalTo: characterImageCard.bottomAnchor, constant: 10).isActive = true
+        characterNameCard.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        characterNameCard.leadingAnchor.constraint(equalTo: customCardView.leadingAnchor, constant: 10).isActive = true
+        characterNameCard.trailingAnchor.constraint(equalTo: customCardView.trailingAnchor, constant: -10).isActive = true
+        
+        customCardView.addSubview(cizgiYatayCard)
+        
+        cizgiYatayCard.topAnchor.constraint(equalTo: characterNameCard.bottomAnchor, constant: 5).isActive = true
+        cizgiYatayCard.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        cizgiYatayCard.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        cizgiYatayCard.widthAnchor.constraint(equalToConstant: view.frame.width / 2).isActive = true
+
+        
+        customCardView.addSubview(cizgiDikeyCard)
+        
+        cizgiDikeyCard.topAnchor.constraint(equalTo: cizgiYatayCard.bottomAnchor, constant: 10).isActive = true
+        cizgiDikeyCard.bottomAnchor.constraint(equalTo: customCardView.bottomAnchor, constant: -25).isActive = true
+        cizgiDikeyCard.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        cizgiDikeyCard.widthAnchor.constraint(equalToConstant: 1).isActive = true
+        
+        customCardView.addSubview(leftStackView)
+        
+        leftStackView.addArrangedSubview(hizlanmaLabelCard)
+        leftStackView.addArrangedSubview(sutLabelCard)
+        leftStackView.addArrangedSubview(pasLabelCard)
+
+        
+        leftStackView.topAnchor.constraint(equalTo: cizgiYatayCard.bottomAnchor, constant: 0).isActive = true
+        leftStackView.bottomAnchor.constraint(equalTo: cizgiDikeyCard.bottomAnchor, constant: 0).isActive = true
+        leftStackView.leadingAnchor.constraint(equalTo: customCardView.leadingAnchor, constant: 10).isActive = true
+        leftStackView.trailingAnchor.constraint(equalTo: cizgiDikeyCard.leadingAnchor, constant: -10).isActive = true
+
+        
+         
+        customCardView.addSubview(rightStackView)
+        
+        rightStackView.addArrangedSubview(dripplingLabelCard)
+        rightStackView.addArrangedSubview(defLabelCard)
+        rightStackView.addArrangedSubview(phyLabelCard)
+        
+        rightStackView.topAnchor.constraint(equalTo: cizgiYatayCard.bottomAnchor, constant:  0).isActive = true
+        rightStackView.leadingAnchor.constraint(equalTo: cizgiDikeyCard.trailingAnchor, constant: 10).isActive = true
+        rightStackView.trailingAnchor.constraint(equalTo: customCardView.trailingAnchor, constant: -10).isActive = true
+        rightStackView.bottomAnchor.constraint(equalTo: leftStackView.bottomAnchor).isActive = true
+     
+
+        
+    }
+    
+    
+    
+    
    
 
 }
@@ -601,6 +908,7 @@ extension CharacterDetailViewController: UIImagePickerControllerDelegate, UINavi
         if let pickedImage = info[.editedImage] as? UIImage{
             print("pciker imagegirildi")
             characterImageView.image = pickedImage
+            characterImageCard.image = pickedImage
         
         }
         picker.dismiss(animated: true)

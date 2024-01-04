@@ -14,10 +14,11 @@
 		DE39AEC42B3B5FF6002DCD77 /* Football_Tactics_App.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DE39AEC22B3B5FF6002DCD77 /* Football_Tactics_App.xcdatamodeld */; };
 		DE39AEC62B3B5FF9002DCD77 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE39AEC52B3B5FF9002DCD77 /* Assets.xcassets */; };
 		DE39AEC92B3B5FF9002DCD77 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE39AEC72B3B5FF9002DCD77 /* LaunchScreen.storyboard */; };
+		DE997BD62B46CB56007C0654 /* Character.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE997BD52B46CB56007C0654 /* Character.swift */; };
+		DE997BD92B46CF92007C0654 /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE997BD82B46CF92007C0654 /* Alerts.swift */; };
 		DEA09B8B2B3D6E040070A374 /* SliderExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA09B8A2B3D6E040070A374 /* SliderExtension.swift */; };
-		DEA09B922B3DA1A20070A374 /* Person+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA09B902B3DA1A20070A374 /* Person+CoreDataClass.swift */; };
-		DEA09B932B3DA1A20070A374 /* Person+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA09B912B3DA1A20070A374 /* Person+CoreDataProperties.swift */; };
 		DEA676232B3C5B100060FC83 /* CharacterDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA676222B3C5B100060FC83 /* CharacterDetailViewController.swift */; };
+		DEAC5E142B4463B000EEA1CA /* CustomLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAC5E132B4463B000EEA1CA /* CustomLayout.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,10 +31,11 @@
 		DE39AEC52B3B5FF9002DCD77 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DE39AEC82B3B5FF9002DCD77 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DE39AECA2B3B5FF9002DCD77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DE997BD52B46CB56007C0654 /* Character.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Character.swift; sourceTree = "<group>"; };
+		DE997BD82B46CF92007C0654 /* Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
 		DEA09B8A2B3D6E040070A374 /* SliderExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderExtension.swift; sourceTree = "<group>"; };
-		DEA09B902B3DA1A20070A374 /* Person+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Person+CoreDataClass.swift"; sourceTree = "<group>"; };
-		DEA09B912B3DA1A20070A374 /* Person+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Person+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DEA676222B3C5B100060FC83 /* CharacterDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterDetailViewController.swift; sourceTree = "<group>"; };
+		DEAC5E132B4463B000EEA1CA /* CustomLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLayout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,8 +52,6 @@
 		DE39AEAD2B3B5FF6002DCD77 = {
 			isa = PBXGroup;
 			children = (
-				DEA09B902B3DA1A20070A374 /* Person+CoreDataClass.swift */,
-				DEA09B912B3DA1A20070A374 /* Person+CoreDataProperties.swift */,
 				DE39AEB82B3B5FF6002DCD77 /* Football Tactics App */,
 				DE39AEB72B3B5FF6002DCD77 /* Products */,
 			);
@@ -68,6 +68,7 @@
 		DE39AEB82B3B5FF6002DCD77 /* Football Tactics App */ = {
 			isa = PBXGroup;
 			children = (
+				DE997BD72B46CF83007C0654 /* Extensions */,
 				DEA676252B3C5B200060FC83 /* View */,
 				DEA676242B3C5B1C0060FC83 /* Model */,
 				DE39AEB92B3B5FF6002DCD77 /* AppDelegate.swift */,
@@ -78,13 +79,23 @@
 				DE39AECA2B3B5FF9002DCD77 /* Info.plist */,
 				DE39AEC22B3B5FF6002DCD77 /* Football_Tactics_App.xcdatamodeld */,
 				DEA09B8A2B3D6E040070A374 /* SliderExtension.swift */,
+				DEAC5E132B4463B000EEA1CA /* CustomLayout.swift */,
 			);
 			path = "Football Tactics App";
+			sourceTree = "<group>";
+		};
+		DE997BD72B46CF83007C0654 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				DE997BD82B46CF92007C0654 /* Alerts.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		DEA676242B3C5B1C0060FC83 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				DE997BD52B46CB56007C0654 /* Character.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -170,13 +181,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				DEA09B8B2B3D6E040070A374 /* SliderExtension.swift in Sources */,
-				DEA09B922B3DA1A20070A374 /* Person+CoreDataClass.swift in Sources */,
+				DEAC5E142B4463B000EEA1CA /* CustomLayout.swift in Sources */,
 				DEA676232B3C5B100060FC83 /* CharacterDetailViewController.swift in Sources */,
 				DE39AEBE2B3B5FF6002DCD77 /* MainViewController.swift in Sources */,
-				DEA09B932B3DA1A20070A374 /* Person+CoreDataProperties.swift in Sources */,
 				DE39AEBA2B3B5FF6002DCD77 /* AppDelegate.swift in Sources */,
 				DE39AEC42B3B5FF6002DCD77 /* Football_Tactics_App.xcdatamodeld in Sources */,
 				DE39AEBC2B3B5FF6002DCD77 /* SceneDelegate.swift in Sources */,
+				DE997BD92B46CF92007C0654 /* Alerts.swift in Sources */,
+				DE997BD62B46CB56007C0654 /* Character.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
