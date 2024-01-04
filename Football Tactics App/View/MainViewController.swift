@@ -28,6 +28,15 @@ class MainViewController: UIViewController {
     
     
     
+    let firstView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .gray
+        view.isHidden = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    
     
     private lazy var closeCharacterButton: UIButton = {
         let button = UIButton(type: .system)
@@ -304,7 +313,7 @@ class MainViewController: UIViewController {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 50, bottom: 0, right: 50)
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.register(PitchCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.dataSource = self
         collectionView.delegate = self
         tacticsView.addSubview(collectionView)
@@ -413,6 +422,17 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //firstView.isHidden = false
+        
+        view.addSubview(firstView)
+        firstView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        firstView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        firstView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        firstView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+
+        
+        
+        
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewTactic))
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .done, target: self, action: #selector(settingsButtonClicked))
@@ -1130,8 +1150,8 @@ class MainViewController: UIViewController {
     
     
     
+    
     private func addSubviews(){
-        
         
         let frameHeight = view.frame.height
         let frameWidth = view.frame.width
@@ -1274,6 +1294,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource{
 }
 
 
+
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     
     
@@ -1284,11 +1305,14 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? PitchCollectionViewCell else{
+            return UICollectionViewCell()
+        }
         cell.contentView.layer.cornerRadius = 20
         cell.contentView.backgroundColor = .gray
         cell.contentView.clipsToBounds = true
         cell.clipsToBounds = true
+        
         return cell
     }
     

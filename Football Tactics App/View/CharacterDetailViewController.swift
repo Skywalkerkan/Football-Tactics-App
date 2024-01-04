@@ -564,11 +564,10 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
     @objc private func previewCharacter() {
         
         
-        if characterNameTextField.text?.isEmpty ?? true {
+        if let characterName = characterNameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), characterName.isEmpty {
             let alert = Alerts.shared.alertFunction(title: "Eksik Girdi", message: "Karakter ismi boş olamaz")
             present(alert, animated: true, completion: nil)
         } else{
-            customCardView.isHidden = false
             characterNameCard.text = characterNameTextField.text
             hizlanmaLabelCard.text = "\(Int(customSliderHizlanma.value)) " + "Pac"
             sutLabelCard.text = "\(Int(customSliderSut.value)) " + "Sht"
@@ -576,6 +575,23 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
             dripplingLabelCard.text = "\(Int(customSliderDrib.value)) " + "Drp"
             defLabelCard.text = "\(Int(customSliderDef.value)) " + "Def"
             phyLabelCard.text = "\(Int(customSliderPhy.value)) " + "Phy"
+            
+            
+            UIView.animate(withDuration: 0.25, animations: {
+                  self.customCardView.isHidden = false
+                  self.customCardView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+              }) { _ in
+                  // Küçük ölçekleme animasyonu tamamlandığında
+              
+                  // Daha sonra büyük ölçekleme animasyonu ile orijinal boyuta dönmek
+                  UIView.animate(withDuration: 0.25, animations: {
+                      self.customCardView.transform = .identity
+                  }) { _ in
+                      // Animasyon tamamlandığında yapılacak işlemler (opsiyonel)
+                  }
+              }
+            
+            
         }
             
         
