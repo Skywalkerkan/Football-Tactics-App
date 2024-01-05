@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DE24CDE32B46D4D600AA5114 /* PitchCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE24CDE22B46D4D600AA5114 /* PitchCollectionViewCell.swift */; };
+		DE24CDE52B46F59800AA5114 /* CreatePitchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE24CDE42B46F59800AA5114 /* CreatePitchViewController.swift */; };
 		DE39AEBA2B3B5FF6002DCD77 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE39AEB92B3B5FF6002DCD77 /* AppDelegate.swift */; };
 		DE39AEBC2B3B5FF6002DCD77 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE39AEBB2B3B5FF6002DCD77 /* SceneDelegate.swift */; };
 		DE39AEBE2B3B5FF6002DCD77 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE39AEBD2B3B5FF6002DCD77 /* MainViewController.swift */; };
@@ -24,6 +25,7 @@
 
 /* Begin PBXFileReference section */
 		DE24CDE22B46D4D600AA5114 /* PitchCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PitchCollectionViewCell.swift; sourceTree = "<group>"; };
+		DE24CDE42B46F59800AA5114 /* CreatePitchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePitchViewController.swift; sourceTree = "<group>"; };
 		DE39AEB62B3B5FF6002DCD77 /* Football Tactics App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Football Tactics App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE39AEB92B3B5FF6002DCD77 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DE39AEBB2B3B5FF6002DCD77 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 				DE39AEBD2B3B5FF6002DCD77 /* MainViewController.swift */,
 				DEA676222B3C5B100060FC83 /* CharacterDetailViewController.swift */,
 				DE24CDE22B46D4D600AA5114 /* PitchCollectionViewCell.swift */,
+				DE24CDE42B46F59800AA5114 /* CreatePitchViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -186,6 +189,7 @@
 				DEA09B8B2B3D6E040070A374 /* SliderExtension.swift in Sources */,
 				DE24CDE32B46D4D600AA5114 /* PitchCollectionViewCell.swift in Sources */,
 				DEAC5E142B4463B000EEA1CA /* CustomLayout.swift in Sources */,
+				DE24CDE52B46F59800AA5114 /* CreatePitchViewController.swift in Sources */,
 				DEA676232B3C5B100060FC83 /* CharacterDetailViewController.swift in Sources */,
 				DE39AEBE2B3B5FF6002DCD77 /* MainViewController.swift in Sources */,
 				DE39AEBA2B3B5FF6002DCD77 /* AppDelegate.swift in Sources */,

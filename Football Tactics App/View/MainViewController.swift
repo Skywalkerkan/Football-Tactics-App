@@ -266,7 +266,7 @@ class MainViewController: UIViewController {
 
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+  /*  override func viewDidAppear(_ animated: Bool) {
         
         let indexPath = IndexPath(item: 1, section: 0)
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
@@ -277,7 +277,7 @@ class MainViewController: UIViewController {
         if let cell = collectionView.cellForItem(at: indexPath){
             transformCell(cell)
         }
-    }
+    }*/
     
     
     func tableViewRegister(){
@@ -422,13 +422,17 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //firstView.isHidden = false
+      /*  firstView.isHidden = false
         
         view.addSubview(firstView)
         firstView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         firstView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         firstView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        firstView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        firstView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true*/
+        
+        
+        view.backgroundColor = .white
+        
 
         
         
@@ -518,7 +522,7 @@ class MainViewController: UIViewController {
         tacticsView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
 
         
-        collectionViewSetUp()
+       // collectionViewSetUp()
        
         
         
