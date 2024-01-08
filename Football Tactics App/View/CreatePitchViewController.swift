@@ -7,15 +7,22 @@
 
 import UIKit
 
-class CreatePitchViewController: UIViewController {
 
+
+
+
+class CreatePitchViewController: UIViewController {
+    
     let screenWidth =  UIScreen.main.bounds.size.width
     let screenHeigth =  UIScreen.main.bounds.size.height
-    
     let isCellIdentify = false
     
-
-
+    var tacticSize: Int = 11
+    var tacticFormation: String = "4-4-2"
+    
+    
+    var playerSize: [Int] = [5,6,7,8,9,10,11]
+    var pitchTactic: [String] = ["4-4-2", "4-3-3", "4-3-2-1","3-4-3","5-3-2","5-4-1" ]
     
     var itemWidth: CGFloat{
         return screenWidth * 0.33
@@ -94,6 +101,8 @@ class CreatePitchViewController: UIViewController {
     
     @objc func saveButtonClicked(){
         let VC = MainViewController()
+        VC.chosenTacticSize = tacticSize
+        VC.ChosenTacticFormation = tacticFormation
         navigationController?.pushViewController(VC, animated: true)
     }
     
@@ -187,6 +196,7 @@ class CreatePitchViewController: UIViewController {
          UIColor(red: 181/255, green: 210/255, blue: 203/255, alpha: 1)
          UIColor(red: 168/255, green: 174/255, blue: 193/255, alpha: 1)
          */
+        
         
         
         view.backgroundColor = UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1)
@@ -435,17 +445,17 @@ extension CreatePitchViewController: UITableViewDelegate, UITableViewDataSource{
         switch tableView{
         case oyuncuSayisiTableView:
             let cell = tableView.dequeueReusableCell(withIdentifier: "oyuncuSayiCell", for: indexPath)
-             cell.textLabel?.text = "Erkan"
+             cell.textLabel?.text = "\(playerSize[indexPath.row])"
              cell.textLabel?.textAlignment = .center
              cell.backgroundColor = UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1)
              return cell
         
         case dizilisTableView:
             let cell = tableView.dequeueReusableCell(withIdentifier: "taktikDizilisCell", for: indexPath)
-             cell.textLabel?.text = "Nage"
-             cell.textLabel?.textAlignment = .center
-             cell.backgroundColor = UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1)
-             return cell
+            cell.textLabel?.text = (pitchTactic[indexPath.row])
+            cell.textLabel?.textAlignment = .center
+            cell.backgroundColor = UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1)
+            return cell
             
         default:
             return UITableViewCell()
@@ -454,7 +464,21 @@ extension CreatePitchViewController: UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        switch tableView{
+            
+        case oyuncuSayisiTableView:
+            return playerSize.count
+            
+        case dizilisTableView:
+            return pitchTactic.count
+
+            
+        default:
+            return 0
+            
+        }
+        
+        
         
         
     }
@@ -467,13 +491,13 @@ extension CreatePitchViewController: UITableViewDelegate, UITableViewDataSource{
             
             sayiButtonClicked()
             tableView.deselectRow(at: indexPath, animated: true)
+            self.tacticSize = playerSize[indexPath.row]
             
         case dizilisTableView:
             taktikDizilisClicked()
             tableView.deselectRow(at: indexPath, animated: true)
+            self.tacticFormation = pitchTactic[indexPath.row]
 
-      
-         
             
         default: 
             break

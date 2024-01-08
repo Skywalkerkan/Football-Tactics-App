@@ -10,7 +10,7 @@ import CoreData
 
 class MainViewController: UIViewController {
 
-
+    
     
     
     var playerViews: [UIView] = []
@@ -21,11 +21,14 @@ class MainViewController: UIViewController {
 
     var uuidString: String = ""{
         didSet{
-            print("uuid \(uuidString)")
+            //print("uuid \(uuidString)")
         }
     }
     var characterID = ""
     
+    
+    var chosenTacticSize: Int = 11
+    var ChosenTacticFormation: String = "4-4-2"
     
     
     let firstView: UIView = {
@@ -236,7 +239,7 @@ class MainViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         
-        super.viewWillAppear(animated)
+     //   super.viewWillAppear(animated)
         
       /*  let indexPath = IndexPath(item: 1, section: 0)
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
@@ -248,6 +251,7 @@ class MainViewController: UIViewController {
             transformCell(cell)
         }*/
         
+        print("aaa")
         
         for playerView in playerViews {
             playerView.removeFromSuperview()
@@ -263,7 +267,6 @@ class MainViewController: UIViewController {
         
         
         
-
     }
     
   /*  override func viewDidAppear(_ animated: Bool) {
@@ -431,6 +434,8 @@ class MainViewController: UIViewController {
         firstView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true*/
         
         
+        
+        
         view.backgroundColor = .white
         
 
@@ -441,7 +446,13 @@ class MainViewController: UIViewController {
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .done, target: self, action: #selector(settingsButtonClicked))
 
-    //    view.addSubview(backgroundImageView)
+       /* view.addSubview(backgroundImageView)
+        
+        backgroundImageView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        backgroundImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        backgroundImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        backgroundImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true*/
+
 
    
      //   collectionViewSetUp()
@@ -534,24 +545,51 @@ class MainViewController: UIViewController {
     
     //Kaç tane oyuncunun oluşturulduğu
     func createPlayers() {
-            var numberY = 100
+            var numberY = 60
             var numberX = 0
             var katsayi = 1
+            var eklenenX = 30
 
-            for i in 0..<10 {
+            for i in 0..<11 {
                
               
-                
-                if i != 0 && i % 4 == 0{
+               
+              /*  if i != 0 && i % 4 == 0{
                     numberY = 150
                   //  print("number \(numberY)")
                     numberX = 0
                     katsayi += 1
                     numberY = katsayi * numberY
+                }*/
+                
+                var playerView: UIView = UIView()
+                
+              //  playerView.backgroundColor = .red
+                playerView.translatesAutoresizingMaskIntoConstraints = false
+                if i == 0{
+                    playerView = UIView(frame: CGRect(x: Int((view.frame.size.width)/2 - 37.5), y: numberY, width: 75, height: 75))
+                }else if i > 0 && i < 5{
+                    numberY = Int(view.frame.size.height/5)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 75, height: 75))
+                    eklenenX += 80
+                }else if i >= 5 && i < 9{
+                    if i == 5{
+                        eklenenX = 30
+                    }
+                    numberY = Int(view.frame.size.height/2-37.5)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 75, height: 75))
+                    eklenenX += 80
+                }else{
+                    if i == 9{
+                        eklenenX = Int(view.frame.width/2 - 75)
+                    }
+                    numberY = Int(view.frame.size.height/1.5)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 75, height: 75))
+                    eklenenX += 80
                 }
                 
-                let playerView = UIView(frame: CGRect(x: Int(CGFloat(numberX)) * 60, y: numberY, width: 75, height: 75))
-                //playerView.backgroundColor = UIColor.blue
+                
+               // playerView.backgroundColor = UIColor.blue
 
                 let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
                 playerView.addGestureRecognizer(panGesture)
@@ -566,7 +604,7 @@ class MainViewController: UIViewController {
                 playerViews.append(playerView)
                 view.addSubview(playerView)
                // playerView.addSubview(characterLabel)
-                numberX += 1
+               // numberX += 1
                 
             }
         }
@@ -758,7 +796,7 @@ class MainViewController: UIViewController {
                         
                        index < playerViews.count {
                         
-                        print(characterName, index)
+                       // print(characterName, index)
                         
                         
                         let characterLabel: UILabel = {
@@ -781,7 +819,7 @@ class MainViewController: UIViewController {
                       //  let characterLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
                         characterLabel.text = "Adı"
                         let playerView = playerViews[index]
-                       // playerView.backgroundColor = .red
+                        playerView.backgroundColor = .red
                         playerView.addSubview(characterImage)
                         playerView.addSubview(characterLabel)
 
@@ -897,13 +935,15 @@ class MainViewController: UIViewController {
                    let uuidString = id.uuidString as? String,
                    let imageData = result.value(forKey: "image") as? Data,
                    let characterName = result.value(forKey: "name") as? String,
-                   
+                 //  let tacticName = result.value(forKey: "tacticname") as? String,
                    
                     
                     index < playerViews.count {
                     
                    // let characterLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
-                    
+                    print(characterName)
+
+               //     title = tacticName
                     
                     let characterLabel: UILabel = {
                        let label = UILabel()
@@ -917,8 +957,22 @@ class MainViewController: UIViewController {
                         imageView.translatesAutoresizingMaskIntoConstraints = false
                         imageView.contentMode = .scaleAspectFill
                         imageView.clipsToBounds = true
-                       // imageView.layer.cornerRadius = 50
+                        imageView.layer.cornerRadius = 20
                         return imageView
+                    }()
+                    
+                    let characterNumber: UILabel = {
+                        let label = UILabel()
+                        label.text = "33"
+                        label.textAlignment = .center
+                        label.translatesAutoresizingMaskIntoConstraints = false
+                        label.layer.cornerRadius = 15
+                        label.layer.borderWidth = 2
+                        label.font = UIFont.systemFont(ofSize: 13, weight: .black)
+                        label.backgroundColor = .lightGray
+                        label.clipsToBounds = true
+                        label.layer.borderColor = UIColor.black.cgColor
+                        return label
                     }()
                     
                    // characterLabel.text = "Oyuncu Adı"
@@ -927,6 +981,7 @@ class MainViewController: UIViewController {
                     let playerView = playerViews[index]
                     playerView.addSubview(characterImage)
                     playerView.addSubview(characterLabel)
+                    playerView.addSubview(characterNumber)
 
                     playerView.center = CGPoint(x: x, y: y)
                     
@@ -942,6 +997,10 @@ class MainViewController: UIViewController {
                     characterLabel.leadingAnchor.constraint(equalTo: playerView.leadingAnchor).isActive = true
                     characterLabel.trailingAnchor.constraint(equalTo: playerView.trailingAnchor).isActive = true
                     
+                    characterNumber.trailingAnchor.constraint(equalTo: playerView.trailingAnchor).isActive = true
+                    characterNumber.topAnchor.constraint(equalTo: playerView.topAnchor).isActive = true
+                    characterNumber.widthAnchor.constraint(equalToConstant: 26).isActive = true
+                    characterNumber.heightAnchor.constraint(equalToConstant: 26).isActive = true
 
                     
 

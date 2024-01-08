@@ -8,17 +8,17 @@
 import Foundation
 
 
-struct Character{
+struct Player{
     
     
     let name: String
     let image: Data
-    let hizlanma: Int
-    let sut: Int
-    let pas: Int
-    let dribbling: Int
-    let defending: Int
-    let physical: Int
+    let hizlanma: Int16
+    let sut: Int16
+    let pas: Int16
+    let dribbling: Int16
+    let defending: Int16
+    let physical: Int16
 
     
 }

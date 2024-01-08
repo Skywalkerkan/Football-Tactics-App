@@ -8,13 +8,15 @@
 import UIKit
 import CoreData
 
+
+
 class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
     
     
     var tacticUUIDString: String? = nil
     var characterIndex: Int? = nil
 
-    
+    var player: Player? = nil
         
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Person")
@@ -78,17 +80,26 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
     private lazy var saveButton: UIButton = {
         let button = UIButton(type: .system)
         
-        button.setTitle("Save", for: .normal)
+        button.setTitle("Save Character", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .cyan
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.gray.cgColor
+        button.layer.cornerRadius = 5
         button.addTarget(self, action: #selector(saveButtonClicked), for: .touchUpInside)
         return button
     }()
     
     @objc private func saveButtonClicked(){
     //    addCharacter()
+        
+        guard let characterIndex = characterIndex else{return}
+        guard let tacticUUIDString = tacticUUIDString else{return}
+        
+        
+        
+        saveCharacter(tacticUUID: tacticUUIDString, characterIndex: characterIndex)
     }
     
     
@@ -636,9 +647,184 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.navigationBar.isHidden = false
+        
+        
+        
+        fetchCharacter(tacticUUID: tacticUUIDString, characterIndex: characterIndex)
+        
+        
+       // print(player)
+        
+        customSliderSetup()
+       
 
     }
     
+    private func customSliderSetup(){
+        guard let player = player else{return}
+
+        customSliderHizlanma.value = Float(player.hizlanma)
+        customSliderSut.value = Float(player.sut)
+        customSliderPas.value = Float(player.pas)
+        customSliderDrib.value = Float(player.dribbling)
+        customSliderDef.value = Float(player.defending)
+        customSliderPhy.value = Float(player.physical)
+        
+
+        customSliderHizlanma.absoulouteX = Float(player.hizlanma)
+        customSliderSut.absoulouteX = Float(player.sut)
+        customSliderPas.absoulouteX = Float(player.pas)
+        customSliderDrib.absoulouteX = Float(player.dribbling)
+        customSliderDef.absoulouteX = Float(player.defending)
+        customSliderPhy.absoulouteX = Float(player.physical)
+        
+        
+        hizlanmaLabelSayi.text = "\(player.hizlanma)"
+        sutLabelSayi.text = "\(player.sut)"
+        pasLabelSayi.text = "\(player.pas)"
+        dripLabelSayi.text = "\(player.dribbling)"
+        defLabelSayi.text = "\(player.defending)"
+        phyLabelSayi.text = "\(player.physical)"
+    }
+    
+    
+    private func fetchCharacter(tacticUUID: String?, characterIndex: Int?){
+        
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else{return}
+        let context = appDelegate.persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "PlayerPosition")
+
+        guard let tacticUUIDString = tacticUUID else{return}
+        guard let tacticUUID = UUID(uuidString: tacticUUIDString) else{return}
+        guard let characterIndex = characterIndex else {return}
+        
+        let predicate = NSPredicate(format: "id == %@ AND index == %d", tacticUUID as CVarArg, characterIndex)
+        fetchRequest.predicate = predicate
+        
+        
+        do {
+            guard let result = try context.fetch(fetchRequest).first as? NSManagedObject else{return}
+            
+        
+            guard let imageData = result.value(forKey: "image") as? Data,
+                  let characterName = result.value(forKey: "name") as? String,
+                  let pace = result.value(forKey: "pace") as? Int16,
+                  let passing = result.value(forKey: "passing") as? Int16,
+                  let physical = result.value(forKey: "physical") as? Int16,
+                  let shooting = result.value(forKey: "shooting") as? Int16,
+                  let dribbling = result.value(forKey: "dribbling") as? Int16,
+                  let defending = result.value(forKey: "defending") as? Int16
+            else{
+                return
+            }
+
+            player = Player(name: characterName, image: imageData, hizlanma: pace, sut: shooting, pas: passing, dribbling: dribbling, defending: defending, physical: physical)
+            
+            guard let player = player else{return}
+            characterNameTextField.text = player.name
+            characterImageView.image = UIImage(data: player.image)
+            characterImageCard.image = UIImage(data: player.image)
+          //  print(player)
+
+          
+        } catch {
+            print("Fetch error: \(error)")
+        }
+        
+    }
+    
+    
+    private func saveCharacter(tacticUUID: String, characterIndex: Int){
+        
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else{return}
+        let context = appDelegate.persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "PlayerPosition")
+
+        
+        let predicate = NSPredicate(format: "id == %@ AND index == %d", tacticUUID as CVarArg, characterIndex)
+        fetchRequest.predicate = predicate
+        
+        
+       // guard let player = player else{return}
+        
+        do{
+            let entities = try context.fetch(fetchRequest)
+             
+            if let characterToUpdate = entities.first as? NSManagedObject{
+                
+                guard let nameText = characterNameTextField.text, !nameText.isEmpty else{
+                    alertController()
+                    return
+                }
+                
+                guard let imageData = characterImageView.image?.pngData() else {return}
+                
+                player = Player(name: nameText, image: imageData, hizlanma: Int16(customSliderHizlanma.value), sut: Int16(customSliderSut.value), pas: Int16(customSliderPas.value), dribbling: Int16(customSliderDrib.value), defending: Int16(customSliderDef.value), physical: Int16(customSliderPhy.value))
+                
+                guard let player = player else{return}
+                
+                
+                characterToUpdate.setValue(nameText, forKey: "name")
+                characterToUpdate.setValue(player.image, forKey: "image")
+                characterToUpdate.setValue(player.hizlanma, forKey: "pace")
+                characterToUpdate.setValue(player.sut, forKey: "shooting")
+                characterToUpdate.setValue(player.pas, forKey: "passing")
+                characterToUpdate.setValue(player.dribbling, forKey: "dribbling")
+                characterToUpdate.setValue(player.defending, forKey: "defending")
+                characterToUpdate.setValue(player.physical, forKey: "physical")
+                
+                
+               // fetchCharacter(tacticUUID: tacticUUID, characterIndex: characterIndex)
+                
+                
+                navigationController?.popViewController(animated: true)
+                
+                do {
+                    try context.save()
+                } catch {
+                    print("Error saving changes: \(error)")
+                }
+                
+                
+            }
+            
+            
+        }catch{
+            
+        }
+        
+        
+        
+      
+        
+        
+        
+        
+       /* character.pace = player.hizlanma
+        character.shooting = player.sut
+        character.passing = player.pas
+        character.dribbling = player.dribbling
+        character.defending = player.defending
+        character.physical = player.physical
+        character.image = player.image
+        character.name = player.name*/
+        
+       /* do{
+            
+            try self.context.save()
+            print("Başarıyla kaydedildi")
+            
+            fetchCharacter(tacticUUID: tacticUUIDString, characterIndex: characterIndex)
+            
+        }catch{
+            print("error")
+        }*/
+        
+        
+        
+    }
 
     
     
@@ -801,6 +987,11 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         customSliderPhy.heightAnchor.constraint(equalToConstant: 38).isActive = true
         
         
+        
+        view.addSubview(saveButton)
+        
+        saveButton.topAnchor.constraint(equalTo: customSliderPhy.bottomAnchor, constant: 15).isActive = true
+        saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
     }
     

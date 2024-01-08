@@ -12,11 +12,13 @@ import UIKit
 final class Slider: UISlider {
 
     private let baseLayer = CALayer() // Step 3
-    private let trackLayer = CAGradientLayer() // Step 7
+    let trackLayer = CAGradientLayer() // Step 7
+    var absoulouteX: Float = 0.0
 
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         setup()
+        print(absoulouteX)
     }
 
     private func setup() {
@@ -52,7 +54,10 @@ final class Slider: UISlider {
         trackLayer.colors = [firstColor, secondColor]
         trackLayer.startPoint = .init(x: 0, y: 0.5)
         trackLayer.endPoint = .init(x: 1, y: 0.5)
-        trackLayer.frame = .init(x: 0, y: frame.height / 4, width: frame.width/2, height: frame.height / 2)
+        
+        let witdhSlider = frame.width * CGFloat(absoulouteX) / 100
+
+        trackLayer.frame = .init(x: 0, y: frame.height / 4, width: witdhSlider, height: frame.height / 2)
         trackLayer.cornerRadius = trackLayer.frame.height / 2
         layer.insertSublayer(trackLayer, at: 1)
     }
@@ -67,6 +72,8 @@ final class Slider: UISlider {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         // Step 9
+        print("valuechanged")
+        print(sender.value)
         let thumbRectA = thumbRect(forBounds: bounds, trackRect: trackRect(forBounds: bounds), value: value)
         trackLayer.frame = .init(x: 0, y: frame.height / 4, width: thumbRectA.midX, height: frame.height / 2)
         // Step 10
