@@ -175,7 +175,8 @@ class CreatePitchViewController: UIViewController {
         newTactic.size = 11
         newTactic.id = uuid
         newTactic.name = tacticTextField.text
-        
+        newTactic.formation = "4-4-2"
+        print("id \(uuid)")
         do{
             
             try context.save()

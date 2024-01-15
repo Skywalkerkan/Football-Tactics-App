@@ -31,6 +31,8 @@ class MainViewController: UIViewController {
     var ChosenTacticFormation: String = "4-4-2"
     
     
+    var chosenTactic: Tactic?
+    
     let firstView: UIView = {
         let view = UIView()
         view.backgroundColor = .gray
@@ -260,7 +262,7 @@ class MainViewController: UIViewController {
             transformCell(cell)
         }*/
         
-        print("aaa")
+     //   print("aaa")
         
         for playerView in playerViews {
             playerView.removeFromSuperview()
@@ -271,7 +273,7 @@ class MainViewController: UIViewController {
         createPlayers()
         
       //  loadPlayerPositions()
-    
+        print("oluşturulacak uuid tactic\(uuidString)")
         predicateById(uuidString: uuidString)
         
         
@@ -509,6 +511,7 @@ class MainViewController: UIViewController {
 
    
      //   collectionViewSetUp()
+        
         //Tactic Oluşturma Penceresi
         view.addSubview(newTacticView)
         newTacticView.addSubview(addTacticButton)
@@ -558,7 +561,7 @@ class MainViewController: UIViewController {
         
         
         
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        /*let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let context = appDelegate.persistentContainer.viewContext
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "PlayerPosition")
         request.returnsObjectsAsFaults = false
@@ -572,22 +575,15 @@ class MainViewController: UIViewController {
             
         } catch  {
             print(error.localizedDescription)
-        }
+        }*/
         
         
        // addSubviews()
         
-       
-      /*  let screenWidth = UIScreen.main.bounds.width
-        let screenHeight = UIScreen.main.bounds.height
 
-        let aspectRatio = screenWidth / screenHeight
-        
-        print(aspectRatio)*/
         
         
         view.addSubview(tacticsView)
-       // tacticsView.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
         tacticsView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4 + 40).isActive = true
         tacticsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 40).isActive = true
         tacticsView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
@@ -1122,7 +1118,7 @@ class MainViewController: UIViewController {
                 self.tableView.reloadData()
             }
             // Farklı UUID'leri yazdır
-            print("Farklı UUID Sayısı: \(uniqueUUIDs.count)")
+           // print("Farklı UUID Sayısı: \(uniqueUUIDs.count)")
             for uniqueUUID in uniqueUUIDs {
                 print("UUID: \(uniqueUUID)")
             }
@@ -1140,7 +1136,41 @@ class MainViewController: UIViewController {
     
     
     
-    
+    func fetchTactics(uuidString: String){
+        
+        guard let uuid = UUID(uuidString: uuidString) else{return}
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context = appDelegate.persistentContainer.viewContext
+        
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "FootballTactics")
+        let predicate = NSPredicate(format: "id == %@", uuid as CVarArg)
+
+        request.predicate = predicate
+        
+        
+        do{
+            let results = try context.fetch(request)
+            
+            guard let result = results.first as? NSManagedObject else{return}
+            
+           guard let id = result.value(forKey: "id") as? UUID,
+            let formation = result.value(forKey: "formation") as? String,
+            let name = result.value(forKey: "name") as? String,
+                 let size = result.value(forKey: "size") as? Int else{return}
+
+            
+            chosenTactic = Tactic(id: id, formation: formation, name: name, size: size)
+            
+            print(chosenTactic)
+            
+        }catch{
+            
+        }
+        
+        
+        
+    }
     
     
     
@@ -1475,6 +1505,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         
         predicateById(uuidString: uuidString)
         
+        fetchTactics(uuidString: uuidString)
         
         if indexPath.item == layout.currentPage{
             layout.currentPage = indexPath.item
@@ -1487,6 +1518,9 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             setupCell()
         }
     }
+    
+    
+
     
     
     
