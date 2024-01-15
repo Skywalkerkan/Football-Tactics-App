@@ -82,8 +82,6 @@
 				DE39AEC72B3B5FF9002DCD77 /* LaunchScreen.storyboard */,
 				DE39AECA2B3B5FF9002DCD77 /* Info.plist */,
 				DE39AEC22B3B5FF6002DCD77 /* Football_Tactics_App.xcdatamodeld */,
-				DEA09B8A2B3D6E040070A374 /* SliderExtension.swift */,
-				DEAC5E132B4463B000EEA1CA /* CustomLayout.swift */,
 			);
 			path = "Football Tactics App";
 			sourceTree = "<group>";
@@ -91,6 +89,8 @@
 		DE997BD72B46CF83007C0654 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				DEA09B8A2B3D6E040070A374 /* SliderExtension.swift */,
+				DEAC5E132B4463B000EEA1CA /* CustomLayout.swift */,
 				DE997BD82B46CF92007C0654 /* Alerts.swift */,
 			);
 			path = Extensions;

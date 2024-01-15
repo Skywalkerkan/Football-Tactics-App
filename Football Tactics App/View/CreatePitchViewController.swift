@@ -37,7 +37,7 @@ class CreatePitchViewController: UIViewController {
         tacticView.translatesAutoresizingMaskIntoConstraints = false
         //view.layer.cornerRadius = 30
         //tacticView.backgroundColor = UIColor(red: <#T##CGFloat#>, green: <#T##CGFloat#>, blue: <#T##CGFloat#>, alpha: <#T##CGFloat#>)
-        tacticView.layer.cornerRadius = 40
+      //  tacticView.layer.cornerRadius = 40
         tacticView.clipsToBounds = true
         return tacticView
     }()
@@ -56,25 +56,75 @@ class CreatePitchViewController: UIViewController {
     
     private let oyuncuSayisiTableView: UITableView = {
         let tableview = UITableView()
-        tableview.alpha = 0.0
+        tableview.alpha = 1
         tableview.bounces = false
-        tableview.isHidden = true
+        tableview.isHidden = false
         tableview.showsVerticalScrollIndicator = false
-        tableview.backgroundColor = .clear
+        tableview.backgroundColor = .red
         tableview.translatesAutoresizingMaskIntoConstraints = false
         return tableview
     }()
     
+    lazy var oyuncuSayiLabel: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("11", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .black)
+        button.titleLabel?.textAlignment = .center
+        button.addTarget(self, action: #selector(sayiButtonClicked), for: .touchUpInside)
+        return button
+    }()
+    
     private let dizilisTableView: UITableView = {
         let tableview = UITableView()
-        tableview.alpha = 0.0
-        tableview.isHidden = true
+        tableview.alpha = 1
+        tableview.isHidden = false
         tableview.showsVerticalScrollIndicator = false
         tableview.showsHorizontalScrollIndicator = false
         tableview.backgroundColor = .clear
         tableview.translatesAutoresizingMaskIntoConstraints = false
         return tableview
     }()
+    
+    lazy var dizilisLabelButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("4-4-2", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .black)
+        button.titleLabel?.textAlignment = .center
+        button.addTarget(self, action: #selector(taktikDizilisClicked), for: .touchUpInside)
+        return button
+    }()
+    
+    
+    let oyuncuSayiView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.isHidden = true
+        view.backgroundColor = .gray
+        view.layer.cornerRadius = 15
+        view.layer.borderColor = UIColor.black.cgColor
+        view.layer.borderWidth = 1
+        return view
+    }()
+    
+    
+    
+    let taktikDizilisView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.isHidden = true
+        view.backgroundColor = .gray
+        view.layer.cornerRadius = 15
+        view.layer.borderColor = UIColor.black.cgColor
+        view.layer.borderWidth = 1
+        return view
+    }()
+    
+    
+    
     
     
     let collectionView: UICollectionView = {
@@ -84,6 +134,7 @@ class CreatePitchViewController: UIViewController {
       //  view.isHidden = true
         return view
     }()
+    
     
     lazy var saveButton: UIButton = {
         let button = UIButton(type: .system)
@@ -101,9 +152,39 @@ class CreatePitchViewController: UIViewController {
     
     @objc func saveButtonClicked(){
         let VC = MainViewController()
+      
+        
+        let id = UUID()
+        let uuidString = id.uuidString
         VC.chosenTacticSize = tacticSize
         VC.ChosenTacticFormation = tacticFormation
+        VC.uuidString = uuidString
+        
+        addTactic(uuid: id)
+        
         navigationController?.pushViewController(VC, animated: true)
+    }
+    
+    
+    
+    private func addTactic(uuid: UUID){
+        
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else{return}
+        let context = appDelegate.persistentContainer.viewContext
+        let newTactic = FootballTactics(context: context)
+        newTactic.size = 11
+        newTactic.id = uuid
+        newTactic.name = tacticTextField.text
+        
+        do{
+            
+            try context.save()
+            print("Kaydedildi")
+        }catch{
+            
+        }
+        
+        
     }
     
     
@@ -119,13 +200,13 @@ class CreatePitchViewController: UIViewController {
     
     
     @objc func sayiButtonClicked(){
-        if oyuncuSayisiTableView.isHidden{
+        if oyuncuSayiView.isHidden{
         
-            oyuncuSayisiTableView.isHidden = false
+            oyuncuSayiView.isHidden = false
             
             UIView.animate(withDuration: 0.5) {
                 self.view.layoutIfNeeded()
-                self.oyuncuSayisiTableView.alpha = 1.0
+                self.oyuncuSayiView.alpha = 1.0
               //  self.dizilisTableView.alpha = 0
                // self.dizilisTableView.isHidden = true
             }
@@ -133,15 +214,16 @@ class CreatePitchViewController: UIViewController {
         }else{
             UIView.animate(withDuration: 0.5) {
                 self.view.layoutIfNeeded()
-                self.oyuncuSayisiTableView.alpha = 0.0
+                self.oyuncuSayiView.alpha = 0.0
             } completion: { _ in
-                self.oyuncuSayisiTableView.isHidden = true
+                self.oyuncuSayiView.isHidden = true
             }
 
         }
        
         
     }
+    
     
     lazy var taktikDizilisButton: UIButton = {
         let button = UIButton(type: .system)
@@ -155,21 +237,21 @@ class CreatePitchViewController: UIViewController {
     
     
     @objc func taktikDizilisClicked(){
-        if dizilisTableView.isHidden{
+        if taktikDizilisView.isHidden{
         
-            dizilisTableView.isHidden = false
+            taktikDizilisView.isHidden = false
             
             UIView.animate(withDuration: 0.5) {
                 self.view.layoutIfNeeded()
-                self.dizilisTableView.alpha = 1.0
+                self.taktikDizilisView.alpha = 1.0
             }
             
         }else{
             UIView.animate(withDuration: 0.5) {
                 self.view.layoutIfNeeded()
-                self.dizilisTableView.alpha = 0.0
+                self.taktikDizilisView.alpha = 0.0
             } completion: { _ in
-                self.dizilisTableView.isHidden = true
+                self.taktikDizilisView.isHidden = true
             }
 
         }
@@ -204,37 +286,55 @@ class CreatePitchViewController: UIViewController {
       
         
         viewSetup()
-        //oyuncuSayisiTableView.separatorStyle = .none
-        
-        view.addSubview(buttonsStackView)
-        buttonsStackView.addArrangedSubview(oyuncuSayiButton)
-        buttonsStackView.addArrangedSubview(taktikDizilisButton)
-        
-        buttonsStackView.topAnchor.constraint(equalTo: tacticTextField.bottomAnchor, constant: 20).isActive = true
-        buttonsStackView.leadingAnchor.constraint(equalTo: tacticTextField.leadingAnchor, constant: 0).isActive = true
-        buttonsStackView.trailingAnchor.constraint(equalTo: tacticTextField.trailingAnchor, constant: 0).isActive = true
-
-        oyuncuSayiTableViewSetup()
-        taktikDizilisTableViewSetup()
         
         
         view.addSubview(tacticsView)
        // tacticsView.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
         tacticsView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4).isActive = true
-        tacticsView.topAnchor.constraint(equalTo: oyuncuSayisiTableView.bottomAnchor).isActive = true
+        tacticsView.topAnchor.constraint(equalTo: oyuncuSayiLabel.bottomAnchor, constant: 15).isActive = true
       //  tacticsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
         tacticsView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         tacticsView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-
-        collectionViewSetUp()
-        
         
         view.addSubview(saveButton)
         saveButton.topAnchor.constraint(equalTo: tacticsView.bottomAnchor, constant: 15).isActive = true
         saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         saveButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
         saveButton.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        
+        sayiVeDizilisViewSetup()
+        oyuncuSayiTableViewSetup()
+        taktikDizilisTableViewSetup()
+        
+        
+        
 
+        collectionViewSetUp()
+        
+        
+       
+
+    }
+    
+    
+    func sayiVeDizilisViewSetup(){
+        view.addSubview(oyuncuSayiView)
+        view.addSubview(taktikDizilisView)
+        
+        
+        oyuncuSayiView.heightAnchor.constraint(equalToConstant: view.frame.size.height/2).isActive = true
+        oyuncuSayiView.widthAnchor.constraint(equalToConstant: view.frame.size.width/2).isActive = true
+        oyuncuSayiView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        oyuncuSayiView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+
+        
+        
+        taktikDizilisView.heightAnchor.constraint(equalToConstant: view.frame.size.height/2).isActive = true
+        taktikDizilisView.widthAnchor.constraint(equalToConstant: view.frame.size.width/2).isActive = true
+        taktikDizilisView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        taktikDizilisView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        
+        
     }
     
     
@@ -248,14 +348,35 @@ class CreatePitchViewController: UIViewController {
         oyuncuSayiButton.heightAnchor.constraint(equalToConstant: 50).isActive = true*/
 
         //OyuncuSayiTableView
-        view.addSubview(oyuncuSayisiTableView)
+        
+        
+        
+        
+        let labelSayiView = UILabel()
+        labelSayiView.translatesAutoresizingMaskIntoConstraints = false
+        labelSayiView.text = "Oyuncu Sayısı"
+        
+        oyuncuSayiView.addSubview(labelSayiView)
+        
+        oyuncuSayiView.addSubview(oyuncuSayisiTableView)
+        
         oyuncuSayisiTableView.delegate = self
         oyuncuSayisiTableView.dataSource = self
         oyuncuSayisiTableView.register(UITableViewCell.self, forCellReuseIdentifier: "oyuncuSayiCell")
-        oyuncuSayisiTableView.topAnchor.constraint(equalTo: oyuncuSayiButton.bottomAnchor, constant: 0).isActive = true
-        oyuncuSayisiTableView.leadingAnchor.constraint(equalTo: oyuncuSayiButton.leadingAnchor, constant: 0).isActive = true
-        oyuncuSayisiTableView.trailingAnchor.constraint(equalTo: oyuncuSayiButton.trailingAnchor, constant: 0).isActive = true
-        oyuncuSayisiTableView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        
+        labelSayiView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        labelSayiView.topAnchor.constraint(equalTo: oyuncuSayiView.topAnchor, constant: 10).isActive = true
+        labelSayiView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+
+        
+        oyuncuSayisiTableView.topAnchor.constraint(equalTo: labelSayiView.bottomAnchor, constant: 0).isActive = true
+        oyuncuSayisiTableView.leadingAnchor.constraint(equalTo: oyuncuSayiView.leadingAnchor, constant: 0).isActive = true
+        oyuncuSayisiTableView.trailingAnchor.constraint(equalTo: oyuncuSayiView.trailingAnchor, constant: 0).isActive = true
+        oyuncuSayisiTableView.bottomAnchor.constraint(equalTo: oyuncuSayiView.bottomAnchor, constant: 0).isActive = true
+        
+        
+        
+
     }
     
     
@@ -270,14 +391,40 @@ class CreatePitchViewController: UIViewController {
         oyuncuSayiButton.heightAnchor.constraint(equalToConstant: 50).isActive = true*/
 
         //OyuncuSayiTableView
-        view.addSubview(dizilisTableView)
+        taktikDizilisView.addSubview(dizilisTableView)
+        
+        let labelTaktikView = UILabel()
+        labelTaktikView.translatesAutoresizingMaskIntoConstraints = false
+        labelTaktikView.text = "Taktik Diziliş"
+        
+        taktikDizilisView.addSubview(labelTaktikView)
+        labelTaktikView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        labelTaktikView.topAnchor.constraint(equalTo: taktikDizilisView.topAnchor, constant: 10).isActive = true
+        labelTaktikView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+    
+        
+        
+        taktikDizilisView.addSubview(dizilisTableView)
+        
+        
         dizilisTableView.delegate = self
         dizilisTableView.dataSource = self
         dizilisTableView.register(UITableViewCell.self, forCellReuseIdentifier: "taktikDizilisCell")
-        dizilisTableView.topAnchor.constraint(equalTo: taktikDizilisButton.bottomAnchor, constant: 0).isActive = true
-        dizilisTableView.leadingAnchor.constraint(equalTo: taktikDizilisButton.leadingAnchor, constant: 0).isActive = true
-        dizilisTableView.trailingAnchor.constraint(equalTo: taktikDizilisButton.trailingAnchor, constant: 0).isActive = true
-        dizilisTableView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        
+        dizilisTableView.topAnchor.constraint(equalTo: labelTaktikView.bottomAnchor, constant: 0).isActive = true
+        dizilisTableView.leadingAnchor.constraint(equalTo: taktikDizilisView.leadingAnchor, constant: 0).isActive = true
+        dizilisTableView.trailingAnchor.constraint(equalTo: taktikDizilisView.trailingAnchor, constant: 0).isActive = true
+        dizilisTableView.bottomAnchor.constraint(equalTo: taktikDizilisView.bottomAnchor, constant: 0).isActive = true
+
+        
+      
+        
+        
+        
+        
+        
+        
+        
     }
     
     
@@ -292,8 +439,29 @@ class CreatePitchViewController: UIViewController {
         tacticTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
         tacticTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
         tacticTextField.heightAnchor.constraint(equalToConstant: 80).isActive = true
-
         
+        
+        //oyuncuSayisiTableView.separatorStyle = .none
+        
+        view.addSubview(buttonsStackView)
+        buttonsStackView.addArrangedSubview(oyuncuSayiButton)
+        buttonsStackView.addArrangedSubview(taktikDizilisButton)
+        
+        buttonsStackView.topAnchor.constraint(equalTo: tacticTextField.bottomAnchor, constant: 20).isActive = true
+        buttonsStackView.leadingAnchor.constraint(equalTo: tacticTextField.leadingAnchor, constant: 0).isActive = true
+        buttonsStackView.trailingAnchor.constraint(equalTo: tacticTextField.trailingAnchor, constant: 0).isActive = true
+        
+        
+        view.addSubview(oyuncuSayiLabel)
+        oyuncuSayiLabel.topAnchor.constraint(equalTo: oyuncuSayiButton.bottomAnchor, constant: 20).isActive = true
+        oyuncuSayiLabel.leadingAnchor.constraint(equalTo: oyuncuSayiButton.leadingAnchor, constant: 20).isActive = true
+        oyuncuSayiLabel.trailingAnchor.constraint(equalTo: oyuncuSayiButton.trailingAnchor, constant: -20).isActive = true
+        
+        view.addSubview(dizilisLabelButton)
+        
+        dizilisLabelButton.topAnchor.constraint(equalTo: taktikDizilisButton.bottomAnchor, constant: 20).isActive = true
+        dizilisLabelButton.leadingAnchor.constraint(equalTo: taktikDizilisButton.leadingAnchor, constant: 20).isActive = true
+        dizilisLabelButton.trailingAnchor.constraint(equalTo: taktikDizilisButton.trailingAnchor, constant: -20).isActive = true
         
         
         
@@ -433,6 +601,11 @@ extension CreatePitchViewController{
 
 extension CreatePitchViewController: UITableViewDelegate, UITableViewDataSource{
     
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 55
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
        /* let cell = tableView.dequeueReusableCell(withIdentifier: "oyuncuSayiCell", for: indexPath)
         cell.textLabel?.text = "Erkan"
@@ -447,7 +620,7 @@ extension CreatePitchViewController: UITableViewDelegate, UITableViewDataSource{
             let cell = tableView.dequeueReusableCell(withIdentifier: "oyuncuSayiCell", for: indexPath)
              cell.textLabel?.text = "\(playerSize[indexPath.row])"
              cell.textLabel?.textAlignment = .center
-             cell.backgroundColor = UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1)
+            cell.backgroundColor = UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1)
              return cell
         
         case dizilisTableView:
@@ -483,6 +656,8 @@ extension CreatePitchViewController: UITableViewDelegate, UITableViewDataSource{
         
     }
     
+    
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         switch tableView{
@@ -490,13 +665,15 @@ extension CreatePitchViewController: UITableViewDelegate, UITableViewDataSource{
         case oyuncuSayisiTableView:
             
             sayiButtonClicked()
-            tableView.deselectRow(at: indexPath, animated: true)
             self.tacticSize = playerSize[indexPath.row]
-            
+            oyuncuSayiLabel.setTitle("\(playerSize[indexPath.row])", for: .normal)
+            tableView.deselectRow(at: indexPath, animated: true)
+
         case dizilisTableView:
             taktikDizilisClicked()
-            tableView.deselectRow(at: indexPath, animated: true)
             self.tacticFormation = pitchTactic[indexPath.row]
+            dizilisLabelButton.setTitle("\(pitchTactic[indexPath.row])", for: .normal)
+            tableView.deselectRow(at: indexPath, animated: true)
 
             
         default: 

@@ -29,6 +29,17 @@ class PitchCollectionViewCell: UICollectionViewCell {
         return label
         }()
     
+    let tacticNameLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Erkan's Tactic"
+        label.textAlignment = .center
+        label.textColor = .black
+        label.numberOfLines = 0
+        label.font = UIFont.systemFont(ofSize: 16, weight: .black)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+        }()
+    
     
     
     override init(frame: CGRect) {
@@ -43,7 +54,8 @@ class PitchCollectionViewCell: UICollectionViewCell {
     
     private func setUpUI(){
         contentView.addSubview(pitchImageView)
-        pitchImageView.addSubview(pitchNameLabel)
+        contentView.addSubview(tacticNameLabel)
+        contentView.addSubview(pitchNameLabel)
 
        //Image
         NSLayoutConstraint.activate([
@@ -52,10 +64,18 @@ class PitchCollectionViewCell: UICollectionViewCell {
             pitchImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             pitchImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
+        
+        
+        NSLayoutConstraint.activate([
+            tacticNameLabel.topAnchor.constraint(equalTo: pitchImageView.topAnchor, constant: 8),
+            tacticNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 2),
+            tacticNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -2),
+            tacticNameLabel.heightAnchor.constraint(equalToConstant: 40)
+        ])
               
         //Label
         NSLayoutConstraint.activate([
-            pitchNameLabel.topAnchor.constraint(equalTo: pitchImageView.topAnchor, constant: 8),
+            pitchNameLabel.topAnchor.constraint(equalTo: tacticNameLabel.bottomAnchor, constant: 8),
             pitchNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
             pitchNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
             pitchNameLabel.heightAnchor.constraint(equalToConstant: 30)

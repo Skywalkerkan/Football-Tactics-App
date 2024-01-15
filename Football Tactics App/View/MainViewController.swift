@@ -21,7 +21,7 @@ class MainViewController: UIViewController {
 
     var uuidString: String = ""{
         didSet{
-            //print("uuid \(uuidString)")
+           // print("uuid \(uuidString)")
         }
     }
     var characterID = ""
@@ -225,6 +225,15 @@ class MainViewController: UIViewController {
         //tacticView.backgroundColor = UIColor(red: <#T##CGFloat#>, green: <#T##CGFloat#>, blue: <#T##CGFloat#>, alpha: <#T##CGFloat#>)
         tacticView.layer.cornerRadius = 40
         tacticView.clipsToBounds = true
+        tacticView.backgroundColor = .lightGray
+
+        tacticView.layer.shadowColor = UIColor.black.cgColor
+        tacticView.layer.shadowRadius = 10
+        tacticView.layer.borderColor = UIColor.black.cgColor
+        tacticView.layer.borderWidth = 2
+       // tacticView.layer.shadowOffset = 5
+      //  tacticView.isHidden = true
+        tacticView.layer.shadowOpacity = 0.3
         return tacticView
     }()
     
@@ -266,6 +275,9 @@ class MainViewController: UIViewController {
         predicateById(uuidString: uuidString)
         
         
+      //  uniqueuuids()
+
+        
         
     }
     
@@ -305,7 +317,7 @@ class MainViewController: UIViewController {
     }
     
     var itemHeigth: CGFloat{
-        return itemWidth*1.15
+        return itemWidth
     }
     
     func collectionViewSetUp(){
@@ -315,24 +327,27 @@ class MainViewController: UIViewController {
         collectionView.contentInsetAdjustmentBehavior = .never
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 50, bottom: 0, right: 50)
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         collectionView.register(PitchCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.clipsToBounds = true
         tacticsView.addSubview(collectionView)
+        //tacticsView.backgroundColor = .blue
+        collectionView.backgroundColor = .clear
         
-        collectionView.collectionViewLayout = layout
-        layout.scrollDirection = .horizontal
+       // collectionView.collectionViewLayout = layout
+       /* layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 30.0
         layout.minimumInteritemSpacing = 30.0
-        layout.itemSize.width = itemWidth
-        collectionView.clipsToBounds = true
+        layout.itemSize.width = itemWidth*/
+        
         collectionView.leadingAnchor.constraint(equalTo: tacticsView.leadingAnchor, constant: 0).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: tacticsView.trailingAnchor, constant: 0).isActive = true
        // collectionView.centerYAnchor.constraint(equalTo: tacticsView.centerYAnchor).isActive = true
-        collectionView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4 - 20).isActive = true
+        //collectionView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4).isActive = true
         collectionView.topAnchor.constraint(equalTo: tacticsView.topAnchor).isActive = true
-        collectionView.backgroundColor = .clear
+        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 15).isActive = true
         
         
     }
@@ -355,9 +370,15 @@ class MainViewController: UIViewController {
 
     
     let collectionView: UICollectionView = {
-        let view = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 30.0
+        layout.minimumInteritemSpacing = 30.0
+        layout.scrollDirection = .horizontal
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .red
+        view.clipsToBounds = true
+
       //  view.isHidden = true
         return view
     }()
@@ -391,12 +412,14 @@ class MainViewController: UIViewController {
     @objc func addButtonClick(){
         
         //İlk önce tüm oyuncuları kaldır
-        for playerView in playerViews {
+       /* for playerView in playerViews {
             playerView.removeFromSuperview()
         }
 
         // Dizi içindeki tüm view'leri temizle
         playerViews.removeAll()
+        
+        
         createPlayers()
         savePlayerPositions()
       //  loadPlayerPositions()
@@ -406,8 +429,10 @@ class MainViewController: UIViewController {
 
         DispatchQueue.main.async {
             self.tableView.reloadData()
-        }
+        }*/
         
+        
+        navigationController?.popViewController(animated: true)
         
     }
     
@@ -418,6 +443,34 @@ class MainViewController: UIViewController {
     
     
     @objc func settingsButtonClicked(){
+        
+    }
+    
+    var footballPitchBasildiMi: Bool = false
+    
+    lazy var footballPitchImage: UIButton = {
+        let button = UIButton(type: .custom)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setBackgroundImage(UIImage(systemName: "sportscourt.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(UIColor(red: 107/255, green: 142/255, blue: 65/255, alpha: 1)), for: .normal)
+        button.addTarget(self, action: #selector(clickedFootballPitch), for: .touchUpInside)
+        return button
+    }()
+    
+    @objc func clickedFootballPitch(){
+        
+        if footballPitchBasildiMi{
+            
+            footballPitchImage.setBackgroundImage(UIImage(systemName: "sportscourt.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(UIColor(red: 107/255, green: 142/255, blue: 65/255, alpha: 1)), for: .normal)
+            
+        }else{
+            footballPitchImage.setBackgroundImage(UIImage(systemName: "sportscourt.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(.black), for: .normal)
+        }
+            
+        
+        self.footballPitchBasildiMi = !footballPitchBasildiMi
+        
+    
+        
         
     }
     
@@ -479,7 +532,7 @@ class MainViewController: UIViewController {
         
         
         //Uygulamanın ilk kez açıldığının kontrolü
-        let isFirstLaunch = UserDefaults.standard.bool(forKey: "firstLaunch")
+     /*   let isFirstLaunch = UserDefaults.standard.bool(forKey: "firstLaunch")
                // Eğer uygulama ilk kez açılıyorsa
         if !isFirstLaunch {
             // İlk kez açılıyormuş gibi işlemler
@@ -490,7 +543,15 @@ class MainViewController: UIViewController {
                 self.tableView.reloadData()
             }
             UserDefaults.standard.set(true, forKey: "firstLaunch")
+        }*/
+        
+        savePlayerPositions()
+        uniqueuuids()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
         }
+        
+        
         
         
       //  loadPlayerPositions()
@@ -527,13 +588,26 @@ class MainViewController: UIViewController {
         
         view.addSubview(tacticsView)
        // tacticsView.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
-        tacticsView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4).isActive = true
-        tacticsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
+        tacticsView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4 + 40).isActive = true
+        tacticsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 40).isActive = true
         tacticsView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         tacticsView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        
+        
+       
+       
+        
+        view.addSubview(footballPitchImage)
+        footballPitchImage.topAnchor.constraint(equalTo: tacticsView.topAnchor, constant: 5).isActive = true
+        footballPitchImage.leadingAnchor.constraint(equalTo: tacticsView.leadingAnchor, constant: 25).isActive = true
+        footballPitchImage.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        footballPitchImage.widthAnchor.constraint(equalToConstant: 30).isActive = true
 
         
-       // collectionViewSetUp()
+        
+        
+        
+        collectionViewSetUp()
        
         
         
@@ -731,8 +805,8 @@ class MainViewController: UIViewController {
     func savePlayerPositions() {
             guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
             let managedContext = appDelegate.persistentContainer.viewContext
-            
-            let id = UUID()
+            print("idye kaydedilece \(uuidString)")
+            let id = UUID(uuidString: uuidString)
             //let idString = self.uuidString
             // Clear existing data
         //    deleteAllPlayerPositions()
@@ -941,7 +1015,7 @@ class MainViewController: UIViewController {
                     index < playerViews.count {
                     
                    // let characterLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
-                    print(characterName)
+                  //  print(characterName)
 
                //     title = tacticName
                     
@@ -966,7 +1040,7 @@ class MainViewController: UIViewController {
                         label.text = "33"
                         label.textAlignment = .center
                         label.translatesAutoresizingMaskIntoConstraints = false
-                        label.layer.cornerRadius = 15
+                        label.layer.cornerRadius = 13
                         label.layer.borderWidth = 2
                         label.font = UIFont.systemFont(ofSize: 13, weight: .black)
                         label.backgroundColor = .lightGray
@@ -1050,7 +1124,7 @@ class MainViewController: UIViewController {
             // Farklı UUID'leri yazdır
             print("Farklı UUID Sayısı: \(uniqueUUIDs.count)")
             for uniqueUUID in uniqueUUIDs {
-            //    print("UUID: \(uniqueUUID)")
+                print("UUID: \(uniqueUUID)")
             }
 
         } catch {
@@ -1328,7 +1402,6 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.isUserInteractionEnabled = true
-
         cell.backgroundColor = .red
         cell.textLabel?.text = uniqueUUIDs[indexPath.row].uuidString
         return cell
@@ -1358,19 +1431,24 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource{
 
 
 
+
+
+
+
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     
     
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return uniqueUUIDs.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? PitchCollectionViewCell else{
             return UICollectionViewCell()
         }
+        
         cell.contentView.layer.cornerRadius = 20
         cell.contentView.backgroundColor = .gray
         cell.contentView.clipsToBounds = true
@@ -1380,12 +1458,28 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: itemWidth, height: itemHeigth)
+        return CGSize(width: view.frame.size.width/3.3, height: itemHeigth)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let uuidString = uniqueUUIDs[indexPath.row].uuidString
+        print(uuidString)
+        for playerView in playerViews {
+            playerView.removeFromSuperview()
+        }
+
+        // Dizi içindeki tüm view'leri temizle
+        playerViews.removeAll()
+        createPlayers()
+        
+        predicateById(uuidString: uuidString)
+        
+        
         if indexPath.item == layout.currentPage{
-            
+            layout.currentPage = indexPath.item
+            layout.previousOffset = layout.updateOffset(collectionView)
+            setupCell()
         }else{
             collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
             layout.currentPage = indexPath.item
