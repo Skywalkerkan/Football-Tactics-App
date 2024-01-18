@@ -12,7 +12,8 @@ class MainViewController: UIViewController {
 
     
     
-    
+    var player: Player? = nil
+    var characterIndex = 0
     var playerViews: [UIView] = []
 
     var uuidLists: [UUID] = []
@@ -30,7 +31,7 @@ class MainViewController: UIViewController {
     var chosenTacticSize: Int = 11
     var ChosenTacticFormation: String = "4-4-2"
     
-    
+    var allTactics: [FootballTactics] = []
     var chosenTactic: Tactic?
     
     let firstView: UIView = {
@@ -64,9 +65,14 @@ class MainViewController: UIViewController {
     }()
     
     @objc private func detailClicked(){
+                
         
-        let detailVC = CharacterDetailViewController()
-        navigationController?.pushViewController(detailVC, animated: true)
+        let CharacterDetailVC = CharacterDetailViewController()
+        CharacterDetailVC.characterIndex = characterIndex
+        CharacterDetailVC.tacticUUIDString = uuidString
+        
+        
+        navigationController?.pushViewController(CharacterDetailVC, animated: true)
         
     }
     
@@ -213,7 +219,7 @@ class MainViewController: UIViewController {
     //Buraya kadar
     
     private let backgroundImageView: UIImageView = {
-        let image = UIImage(named: "football_pitch")
+        let image = UIImage(named: "pitch")
         let imageView = UIImageView(image: image)
         imageView.contentMode = .scaleToFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -225,7 +231,7 @@ class MainViewController: UIViewController {
         tacticView.translatesAutoresizingMaskIntoConstraints = false
         //view.layer.cornerRadius = 30
         //tacticView.backgroundColor = UIColor(red: <#T##CGFloat#>, green: <#T##CGFloat#>, blue: <#T##CGFloat#>, alpha: <#T##CGFloat#>)
-        tacticView.layer.cornerRadius = 40
+        tacticView.layer.cornerRadius = 30
         tacticView.clipsToBounds = true
         tacticView.backgroundColor = .lightGray
 
@@ -271,6 +277,9 @@ class MainViewController: UIViewController {
         // Dizi içindeki tüm view'leri temizle
         playerViews.removeAll()
         createPlayers()
+        
+        addSubviews()
+
         
       //  loadPlayerPositions()
         print("oluşturulacak uuid tactic\(uuidString)")
@@ -477,6 +486,27 @@ class MainViewController: UIViewController {
     }
     
     
+    lazy var repeatTacticFormationButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setBackgroundImage(UIImage(systemName: "repeat.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(UIColor(red: 107/255, green: 142/255, blue: 65/255, alpha: 1)), for: .normal)
+        button.addTarget(self, action: #selector(clickedRepeatFormation), for: .touchUpInside)
+        return button
+    }()
+    
+    
+    @objc func clickedRepeatFormation(){
+    
+            
+     
+    
+        
+        
+    }
+    
+ 
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -501,12 +531,9 @@ class MainViewController: UIViewController {
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .done, target: self, action: #selector(settingsButtonClicked))
 
-       /* view.addSubview(backgroundImageView)
+        view.addSubview(backgroundImageView)
         
-        backgroundImageView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        backgroundImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        backgroundImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        backgroundImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true*/
+       
 
 
    
@@ -523,11 +550,13 @@ class MainViewController: UIViewController {
         //Unique uuidleri bulma
         uniqueuuids()
         DispatchQueue.main.async {
-            self.tableView.reloadData()
+            self.collectionView.reloadData()
         }
         
         
         tableViewRegister()
+
+        
 
         
         //Oyuncularn oluşumu buraya sayı verebiliriz!!!
@@ -551,7 +580,7 @@ class MainViewController: UIViewController {
         savePlayerPositions()
         uniqueuuids()
         DispatchQueue.main.async {
-            self.tableView.reloadData()
+            self.collectionView.reloadData()
         }
         
         
@@ -600,12 +629,22 @@ class MainViewController: UIViewController {
         footballPitchImage.widthAnchor.constraint(equalToConstant: 30).isActive = true
 
         
+        view.addSubview(repeatTacticFormationButton)
+        repeatTacticFormationButton.topAnchor.constraint(equalTo: tacticsView.topAnchor, constant: 5).isActive = true
+        repeatTacticFormationButton.trailingAnchor.constraint(equalTo: tacticsView.trailingAnchor, constant: -25).isActive = true
+        repeatTacticFormationButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        repeatTacticFormationButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        
         
         
         
         collectionViewSetUp()
        
         
+        backgroundImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        backgroundImageView.bottomAnchor.constraint(equalTo: tacticsView.topAnchor, constant: -view.frame.size.height/40).isActive = true
+        backgroundImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        backgroundImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         
         
         
@@ -619,24 +658,262 @@ class MainViewController: UIViewController {
             var numberX = 0
             var katsayi = 1
             var eklenenX = 30
+        
+        var playerWidthHeigth = view.frame.size.width/6
+        
+        print("\(view.frame.size.width/6)")
 
+        var numberYKaleci = 0.75*view.frame.size.height - view.frame.size.height/7
+        
+  
+        // 4 - 4 - 2
             for i in 0..<11 {
-               
-              
-               
-              /*  if i != 0 && i % 4 == 0{
-                    numberY = 150
-                  //  print("number \(numberY)")
-                    numberX = 0
-                    katsayi += 1
-                    numberY = katsayi * numberY
-                }*/
-                
+      
                 var playerView: UIView = UIView()
                 
-              //  playerView.backgroundColor = .red
+                playerView.backgroundColor = .red
                 playerView.translatesAutoresizingMaskIntoConstraints = false
+                
+                
                 if i == 0{
+                    playerView = UIView(frame: CGRect(x: Int((view.frame.size.width)/2 - 32.5), y: Int(numberYKaleci), width: 65, height: 65))
+
+                }
+                else if i > 0 && i < 5{
+                    if i == 1{
+                        eklenenX = Int(view.frame.size.width / 10)
+                    }
+                    numberY = Int(view.frame.size.height/2)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += 80
+                }
+                else if i >= 5 && i < 9{
+                    if i == 5{
+                        eklenenX = Int(view.frame.size.width / 10)
+                    }
+                    numberY = Int(view.frame.size.height/3)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += 80
+                }
+                else{
+                    if i == 9{
+                        eklenenX = Int(view.frame.width/2 - 75)
+                    }
+                    numberY = Int(view.frame.size.height/5)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += 80
+                }
+        
+        
+        // 4 - 3 - 3
+           /* for i in 0..<11 {
+         
+                   var playerView: UIView = UIView()
+                   
+                   playerView.backgroundColor = .red
+                   playerView.translatesAutoresizingMaskIntoConstraints = false
+                   
+                   
+                   if i == 0{
+                       playerView = UIView(frame: CGRect(x: Int((view.frame.size.width)/2 - 32.5), y: Int(numberYKaleci), width: 65, height: 65))
+
+                   }
+                   else if i > 0 && i < 5{
+                       if i == 1{
+                           eklenenX = Int(view.frame.size.width / 10)
+                       }
+                       numberY = Int(view.frame.size.height/2)
+                       playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                       eklenenX += 80
+                   }
+                   else if i >= 5 && i < 8{
+                       if i == 5{
+                           eklenenX = Int(view.frame.size.width / 3 - 65)
+                       }
+                       numberY = Int(view.frame.size.height/3)
+                       playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                       eklenenX += Int(view.frame.size.width) / 4
+
+                       
+                   }
+                   else{
+                       if i == 8{
+                           eklenenX = Int(view.frame.size.width / 3 - 65)
+                       }
+                       
+                       numberY = Int(view.frame.size.height/5)
+
+                       if i == 9{
+                           numberY = Int(view.frame.size.height/5.5)
+
+                       }
+                       
+                       playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                       eklenenX += Int(view.frame.size.width) / 4
+                   }*/
+        
+        
+        //4 - 3 - 2 - 1
+        /*
+            for i in 0..<11 {
+      
+                var playerView: UIView = UIView()
+                
+                playerView.backgroundColor = .red
+                playerView.translatesAutoresizingMaskIntoConstraints = false
+                
+                
+                if i == 0{
+                    playerView = UIView(frame: CGRect(x: Int((view.frame.size.width)/2 - 32.5), y: Int(numberYKaleci), width: 65, height: 65))
+
+                }
+                else if i > 0 && i < 5{
+                    if i == 1{
+                        eklenenX = Int(view.frame.size.width / 10)
+                    }
+                    numberY = Int(view.frame.size.height/2)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += 80
+                }
+                else if i >= 5 && i < 8{
+                    if i == 5{
+                        eklenenX = Int(view.frame.size.width / 5)
+                    }
+                    numberY = Int(view.frame.size.height/2.5)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += 85
+                }
+                else if i >= 8 && i < 10{
+                    if i == 8{
+                        eklenenX = Int(view.frame.width/2 - 90)
+                    }
+                    numberY = Int(view.frame.size.height/3.5)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += 120
+                    
+                    
+                }else{
+                    numberY = Int(view.frame.size.height/4.2)
+                    eklenenX = Int(view.frame.width/2 - 32.5)
+
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+
+                    
+                    
+                }*/
+        // 3 - 5 - 2
+           /* for i in 0..<11 {
+        
+                  var playerView: UIView = UIView()
+                  
+                  playerView.backgroundColor = .red
+                  playerView.translatesAutoresizingMaskIntoConstraints = false
+                  
+                  
+                  if i == 0{
+                      playerView = UIView(frame: CGRect(x: Int((view.frame.size.width)/2 - 32.5), y: Int(numberYKaleci), width: 65, height: 65))
+
+                  }
+                  else if i > 0 && i < 4{
+                      if i == 1{
+                          eklenenX = Int(view.frame.size.width / 3 - 65)
+                      }
+                      numberY = Int(view.frame.size.height/2)
+                      playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                      eklenenX += Int(view.frame.size.width) / 4
+                  }else if i == 4{
+                      
+                      eklenenX = Int(view.frame.size.width / 2 - 32.5)
+                  
+                      numberY = Int(view.frame.size.height/2.5 - 10)
+                      playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                  }
+                  else if i >= 5 && i < 9{
+                     
+                      numberY = Int(view.frame.size.height/3.5)
+                      if i == 5{
+                          eklenenX = Int(view.frame.size.width / 10)
+                          numberY = Int(view.frame.size.height/3.2)
+                      }
+                      
+                      if i == 8{
+                          numberY = Int(view.frame.size.height/3.2)
+                      }
+                      
+                      playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                      eklenenX += 80
+                      
+                      
+                  }
+                  else{
+                      if i == 9{
+                          eklenenX = Int(view.frame.width/2 - 75)
+                      }
+                      numberY = Int(view.frame.size.height/6)
+                      playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                      eklenenX += 80
+                  }*/
+        
+            // 3 - 4 - 3
+         /*   for i in 0..<11 {
+         
+                   var playerView: UIView = UIView()
+                   
+                   playerView.backgroundColor = .red
+                   playerView.translatesAutoresizingMaskIntoConstraints = false
+                   
+                   
+                   if i == 0{
+                       playerView = UIView(frame: CGRect(x: Int((view.frame.size.width)/2 - 32.5), y: Int(numberYKaleci), width: 65, height: 65))
+
+                   }
+                   else if i > 0 && i < 4{
+                       if i == 1{
+                           eklenenX = Int(view.frame.size.width / 3 - 65)
+                       }
+                       numberY = Int(view.frame.size.height/2.05)
+                       playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                       eklenenX += Int(view.frame.size.width) / 4
+                   }
+                   else if i >= 4 && i < 8{
+                      
+                       numberY = Int(view.frame.size.height/3.2)
+                       if i == 4{
+                           eklenenX = Int(view.frame.size.width / 10)
+                           numberY = Int(view.frame.size.height/3)
+                       }
+                       
+                       if i == 7{
+                           numberY = Int(view.frame.size.height/3)
+                       }
+                       
+                       playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                       eklenenX += 80
+                       
+                       
+                   }
+                   else{
+                       if i == 8{
+                           eklenenX = Int(view.frame.size.width / 3 - 65)
+                       }
+                       numberY = Int(view.frame.size.height/6)
+                       if i == 9{
+                           numberY = Int(view.frame.size.height/7)
+                       }
+                       playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                       eklenenX += Int(view.frame.size.width) / 4
+
+                       
+                       
+                     
+                       
+                   }
+            */
+            
+        
+        
+                
+              /*  if i == 0{
                     playerView = UIView(frame: CGRect(x: Int((view.frame.size.width)/2 - 37.5), y: numberY, width: 75, height: 75))
                 }else if i > 0 && i < 5{
                     numberY = Int(view.frame.size.height/5)
@@ -656,7 +933,7 @@ class MainViewController: UIViewController {
                     numberY = Int(view.frame.size.height/1.5)
                     playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 75, height: 75))
                     eklenenX += 80
-                }
+                }*/
                 
                 
                // playerView.backgroundColor = UIColor.blue
@@ -689,6 +966,8 @@ class MainViewController: UIViewController {
             return
         }
         
+        characterIndex = index
+        
         let playerViewcik = playerViews[index]
         
         if gestureRecognizer.state == .began && !isAnimating {
@@ -696,7 +975,7 @@ class MainViewController: UIViewController {
             isAnimating = true
             print("Uzun basma başladı!")
         
-        
+            fetchCharacter(tacticUUID: uuidString, characterIndex: index)
             
             
             UIView.animate(withDuration: 0.5, animations: {
@@ -705,6 +984,7 @@ class MainViewController: UIViewController {
             }) { _ in
                 // Animasyon tamamlandığında yapılacak işlemler
                 //self.isAnimating = false
+                self.customAlertView.isHidden = false
             }
             
         }
@@ -729,6 +1009,68 @@ class MainViewController: UIViewController {
         
         
     }
+    
+    
+    private func fetchCharacter(tacticUUID: String?, characterIndex: Int?){
+        
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else{return}
+        let context = appDelegate.persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "PlayerPosition")
+
+        guard let tacticUUIDString = tacticUUID else{return}
+        guard let tacticUUID = UUID(uuidString: tacticUUIDString) else{return}
+        guard let characterIndex = characterIndex else {return}
+        
+        let predicate = NSPredicate(format: "id == %@ AND index == %d", tacticUUID as CVarArg, characterIndex)
+        fetchRequest.predicate = predicate
+        
+        
+        do {
+            guard let result = try context.fetch(fetchRequest).first as? NSManagedObject else{return}
+            
+        
+            guard let imageData = result.value(forKey: "image") as? Data,
+                  let playerName = result.value(forKey: "name") as? String,
+                  let pace = result.value(forKey: "pace") as? Int16,
+                  let passing = result.value(forKey: "passing") as? Int16,
+                  let physical = result.value(forKey: "physical") as? Int16,
+                  let shooting = result.value(forKey: "shooting") as? Int16,
+                  let dribbling = result.value(forKey: "dribbling") as? Int16,
+                  let defending = result.value(forKey: "defending") as? Int16
+            else{
+                return
+            }
+
+            player = Player(name: playerName, image: imageData, hizlanma: pace, sut: shooting, pas: passing, dribbling: dribbling, defending: defending, physical: physical)
+            
+            guard let player = player else{return}
+            /*characterNameTextField.text = player.name
+            characterImageView.image = UIImage(data: player.image)
+            characterImageCard.image = UIImage(data: player.image)*/
+            print(player)
+            
+            
+            hizlanmaLabel.text = "\(player.hizlanma)" + " Pac"
+            sutLabel.text = "\(player.sut)" + " Sht"
+            pasLabel.text = "\(player.pas)" + " Pac"
+            dripplingLabel.text = "\(player.dribbling)" + " Drp"
+            defLabel.text = "\(player.defending)" + " Def"
+            phyLabel.text = "\(player.physical)" + " Phy"
+            
+            characterImage.image = UIImage(data: player.image)
+            
+            characterName.text = player.name
+
+
+          
+        } catch {
+            print("Fetch error: \(error)")
+        }
+        
+    }
+    
+    
     
     
     
@@ -1059,11 +1401,11 @@ class MainViewController: UIViewController {
                     characterImage.topAnchor.constraint(equalTo: playerView.topAnchor).isActive = true
                     characterImage.leadingAnchor.constraint(equalTo: playerView.leadingAnchor).isActive = true
                     characterImage.trailingAnchor.constraint(equalTo: playerView.trailingAnchor).isActive = true
-                    characterImage.heightAnchor.constraint(equalToConstant: 75).isActive = true
-                    characterImage.widthAnchor.constraint(equalToConstant: 75).isActive = true
+                    characterImage.heightAnchor.constraint(equalToConstant: 65).isActive = true
+                    characterImage.widthAnchor.constraint(equalToConstant: 65).isActive = true
 
                     
-                    characterLabel.topAnchor.constraint(equalTo: characterImage.bottomAnchor).isActive = true
+                    characterLabel.topAnchor.constraint(equalTo: characterImage.bottomAnchor, constant: -5).isActive = true
                     characterLabel.leadingAnchor.constraint(equalTo: playerView.leadingAnchor).isActive = true
                     characterLabel.trailingAnchor.constraint(equalTo: playerView.trailingAnchor).isActive = true
                     
@@ -1097,7 +1439,7 @@ class MainViewController: UIViewController {
         let managedContext = appDelegate.persistentContainer.viewContext
 
         // NSFetchRequest oluştur
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "PlayerPosition")
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "FootballTactics")
 
         do {
             // Fetch işlemi gerçekleştir
@@ -1105,14 +1447,28 @@ class MainViewController: UIViewController {
 
             // Farklı UUID'leri bulmak için bir dizi oluştur
             var uniqueUUIDsSet = Set<UUID>()
-
+            
+            allTactics.removeAll()
             for result in results {
-                if let playerPosition = result as? PlayerPosition, let uuid = playerPosition.id {
+                if let footballTactics = result as? FootballTactics, let uuid = footballTactics.id {
                     uniqueUUIDsSet.insert(uuid)
+                    allTactics.append(footballTactics)
+                    
                 }
             }
-
+            
+            print("all tacticler \(allTactics.count)")
+            
             uniqueUUIDs = Array(uniqueUUIDsSet)
+            
+            guard let imageData = allTactics.last?.image as? Data else{
+                return
+                
+            }
+            DispatchQueue.main.async {
+                self.backgroundImageView.image = UIImage(data: imageData)
+
+            }
             
             DispatchQueue.main.async {
                 self.tableView.reloadData()
@@ -1326,10 +1682,10 @@ class MainViewController: UIViewController {
         view.addSubview(customAlertView)
         
         
-        backgroundImageView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+      /*  backgroundImageView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         backgroundImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         backgroundImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        backgroundImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        backgroundImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true*/
 
         
         customAlertView.heightAnchor.constraint(equalToConstant: 360).isActive = true
@@ -1471,7 +1827,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return uniqueUUIDs.count
+        return allTactics.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -1479,10 +1835,24 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             return UICollectionViewCell()
         }
         
-        cell.contentView.layer.cornerRadius = 20
+        cell.contentView.layer.cornerRadius = 15
         cell.contentView.backgroundColor = .gray
         cell.contentView.clipsToBounds = true
         cell.clipsToBounds = true
+        
+        cell.tacticNameLabel.text = allTactics[indexPath.row].name
+        cell.pitchNameLabel.text = allTactics[indexPath.row].formation
+        if let imageData = allTactics[indexPath.row].image {
+            
+            DispatchQueue.main.async {
+                cell.pitchImageView.image = UIImage(data: imageData)
+                
+            }
+           } else {
+               // Handle the case when image data is nil (optional Data is nil)
+               // You might want to set a placeholder image or handle it differently
+               cell.pitchImageView.image = UIImage(named: "2")
+           }
         
         return cell
     }
@@ -1503,9 +1873,26 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         playerViews.removeAll()
         createPlayers()
         
+        addSubviews()
+        
         predicateById(uuidString: uuidString)
         
         fetchTactics(uuidString: uuidString)
+        
+        if let imageData = allTactics[indexPath.row].image{
+            DispatchQueue.main.async {
+                self.backgroundImageView.image = UIImage(data: imageData)
+
+            }
+        }else{
+            
+            DispatchQueue.main.async {
+                self.backgroundImageView.image = UIImage(named: "2")
+
+            }
+
+        }
+        
         
         if indexPath.item == layout.currentPage{
             layout.currentPage = indexPath.item
@@ -1574,3 +1961,5 @@ extension MainViewController{
     }
     
 }
+
+

@@ -12,7 +12,7 @@ class PitchCollectionViewCell: UICollectionViewCell {
     let pitchImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleToFill
-        imageView.image = UIImage(named: "football_pitch")
+        imageView.image = UIImage(named: "pitch")
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView

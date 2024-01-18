@@ -16,9 +16,9 @@ class CreatePitchViewController: UIViewController {
     let screenWidth =  UIScreen.main.bounds.size.width
     let screenHeigth =  UIScreen.main.bounds.size.height
     let isCellIdentify = false
-    
     var tacticSize: Int = 11
     var tacticFormation: String = "4-4-2"
+    var chosenPitchImage: UIImage?
     
     
     var playerSize: [Int] = [5,6,7,8,9,10,11]
@@ -31,6 +31,9 @@ class CreatePitchViewController: UIViewController {
     var itemHeigth: CGFloat{
         return itemWidth*1.15
     }
+    
+    
+    var pitchImages: [UIImage] = []
     
     private let tacticsView: UIView = {
         let tacticView = UIView()
@@ -57,10 +60,10 @@ class CreatePitchViewController: UIViewController {
     private let oyuncuSayisiTableView: UITableView = {
         let tableview = UITableView()
         tableview.alpha = 1
-        tableview.bounces = false
+       // tableview.bounces = false
         tableview.isHidden = false
         tableview.showsVerticalScrollIndicator = false
-        tableview.backgroundColor = .red
+        tableview.backgroundColor = .clear
         tableview.translatesAutoresizingMaskIntoConstraints = false
         return tableview
     }()
@@ -103,8 +106,9 @@ class CreatePitchViewController: UIViewController {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.isHidden = true
-        view.backgroundColor = .gray
+        view.backgroundColor = UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1)
         view.layer.cornerRadius = 15
+        view.clipsToBounds = true
         view.layer.borderColor = UIColor.black.cgColor
         view.layer.borderWidth = 1
         return view
@@ -116,7 +120,8 @@ class CreatePitchViewController: UIViewController {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.isHidden = true
-        view.backgroundColor = .gray
+        view.clipsToBounds = true
+        view.backgroundColor = UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1)
         view.layer.cornerRadius = 15
         view.layer.borderColor = UIColor.black.cgColor
         view.layer.borderWidth = 1
@@ -176,6 +181,14 @@ class CreatePitchViewController: UIViewController {
         newTactic.id = uuid
         newTactic.name = tacticTextField.text
         newTactic.formation = "4-4-2"
+        
+        guard let data = self.chosenPitchImage?.pngData() as? Data else{
+            return
+        }
+        
+        newTactic.image = data
+        
+        
         print("id \(uuid)")
         do{
             
@@ -204,20 +217,24 @@ class CreatePitchViewController: UIViewController {
         if oyuncuSayiView.isHidden{
         
             oyuncuSayiView.isHidden = false
+            blackView.isHidden = false
             
             UIView.animate(withDuration: 0.5) {
                 self.view.layoutIfNeeded()
                 self.oyuncuSayiView.alpha = 1.0
               //  self.dizilisTableView.alpha = 0
                // self.dizilisTableView.isHidden = true
+                self.blackView.alpha = 0.3
             }
             
         }else{
             UIView.animate(withDuration: 0.5) {
                 self.view.layoutIfNeeded()
                 self.oyuncuSayiView.alpha = 0.0
+                self.blackView.alpha = 0.0
             } completion: { _ in
                 self.oyuncuSayiView.isHidden = true
+                self.blackView.isHidden = true
             }
 
         }
@@ -239,20 +256,26 @@ class CreatePitchViewController: UIViewController {
     
     @objc func taktikDizilisClicked(){
         if taktikDizilisView.isHidden{
-        
+            blackView.isHidden = false
             taktikDizilisView.isHidden = false
-            
+          //  self.blackView.alpha = 0.3
             UIView.animate(withDuration: 0.5) {
                 self.view.layoutIfNeeded()
                 self.taktikDizilisView.alpha = 1.0
+                self.blackView.alpha = 0.3
+
             }
             
         }else{
             UIView.animate(withDuration: 0.5) {
                 self.view.layoutIfNeeded()
                 self.taktikDizilisView.alpha = 0.0
+                self.blackView.alpha = 0.0
+
             } completion: { _ in
                 self.taktikDizilisView.isHidden = true
+                self.blackView.isHidden = true
+
             }
 
         }
@@ -269,7 +292,22 @@ class CreatePitchViewController: UIViewController {
     }()
     
     
+    
+    let blackView: UIView = {
+        let blackView = UIView()
+        blackView.backgroundColor = .black
+        blackView.alpha = 0.3
+        blackView.isHidden = true
+        blackView.translatesAutoresizingMaskIntoConstraints = false
+        return blackView
+    }()
+    
+    
    
+    override func viewWillAppear(_ animated: Bool) {
+
+       
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -279,6 +317,20 @@ class CreatePitchViewController: UIViewController {
          UIColor(red: 181/255, green: 210/255, blue: 203/255, alpha: 1)
          UIColor(red: 168/255, green: 174/255, blue: 193/255, alpha: 1)
          */
+        
+        
+        if let pitch2 = UIImage(named: "2"),
+           let pitch3 = UIImage(named: "3"),
+           let pitch4 = UIImage(named: "4"),
+           let pitch5 = UIImage(named: "5"),
+           let pitch6 = UIImage(named: "6"),
+           let pitch7 = UIImage(named: "7"),
+           let pitch8 = UIImage(named: "8"),
+           let pitch9 = UIImage(named: "9"){
+            pitchImages = [pitch2, pitch3, pitch4, pitch5, pitch6, pitch7, pitch8, pitch9]
+        }else{
+            return
+        }
         
         
         
@@ -303,17 +355,29 @@ class CreatePitchViewController: UIViewController {
         saveButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
         saveButton.widthAnchor.constraint(equalToConstant: 150).isActive = true
         
-        sayiVeDizilisViewSetup()
-        oyuncuSayiTableViewSetup()
-        taktikDizilisTableViewSetup()
+     
         
         
         
 
-        collectionViewSetUp()
-        
         
        
+        
+        view.addSubview(blackView)
+        
+        blackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        blackView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        blackView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        blackView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+
+        
+        sayiVeDizilisViewSetup()
+        oyuncuSayiTableViewSetup()
+        taktikDizilisTableViewSetup()
+        
+        collectionViewSetUp()
+
+        
 
     }
     
@@ -356,17 +420,23 @@ class CreatePitchViewController: UIViewController {
         let labelSayiView = UILabel()
         labelSayiView.translatesAutoresizingMaskIntoConstraints = false
         labelSayiView.text = "Oyuncu Sayısı"
+        labelSayiView.textAlignment = .center
+        labelSayiView.backgroundColor = .lightGray
         
         oyuncuSayiView.addSubview(labelSayiView)
         
         oyuncuSayiView.addSubview(oyuncuSayisiTableView)
+        oyuncuSayiView.backgroundColor = .clear
+
+        
         
         oyuncuSayisiTableView.delegate = self
         oyuncuSayisiTableView.dataSource = self
         oyuncuSayisiTableView.register(UITableViewCell.self, forCellReuseIdentifier: "oyuncuSayiCell")
         
-        labelSayiView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        labelSayiView.topAnchor.constraint(equalTo: oyuncuSayiView.topAnchor, constant: 10).isActive = true
+        labelSayiView.leadingAnchor.constraint(equalTo: oyuncuSayiView.leadingAnchor, constant: 0).isActive = true
+        labelSayiView.trailingAnchor.constraint(equalTo: oyuncuSayiView.trailingAnchor, constant: 0).isActive = true
+        labelSayiView.topAnchor.constraint(equalTo: oyuncuSayiView.topAnchor, constant: 0).isActive = true
         labelSayiView.heightAnchor.constraint(equalToConstant: 50).isActive = true
 
         
@@ -393,25 +463,28 @@ class CreatePitchViewController: UIViewController {
 
         //OyuncuSayiTableView
         taktikDizilisView.addSubview(dizilisTableView)
-        
+        dizilisTableView.backgroundColor = .clear
         let labelTaktikView = UILabel()
+        labelTaktikView.backgroundColor = .lightGray
+        labelTaktikView.textAlignment = .center
         labelTaktikView.translatesAutoresizingMaskIntoConstraints = false
         labelTaktikView.text = "Taktik Diziliş"
-        
-        taktikDizilisView.addSubview(labelTaktikView)
-        labelTaktikView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        labelTaktikView.topAnchor.constraint(equalTo: taktikDizilisView.topAnchor, constant: 10).isActive = true
-        labelTaktikView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-    
-        
-        
-        taktikDizilisView.addSubview(dizilisTableView)
         
         
         dizilisTableView.delegate = self
         dizilisTableView.dataSource = self
         dizilisTableView.register(UITableViewCell.self, forCellReuseIdentifier: "taktikDizilisCell")
         
+        
+        taktikDizilisView.addSubview(labelTaktikView)
+        labelTaktikView.leadingAnchor.constraint(equalTo: taktikDizilisView.leadingAnchor, constant: 0).isActive = true
+        labelTaktikView.trailingAnchor.constraint(equalTo: taktikDizilisView.trailingAnchor, constant: 0).isActive = true
+        labelTaktikView.topAnchor.constraint(equalTo: taktikDizilisView.topAnchor, constant: 0).isActive = true
+        labelTaktikView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+    
+        
+        
+        taktikDizilisView.addSubview(dizilisTableView)
         dizilisTableView.topAnchor.constraint(equalTo: labelTaktikView.bottomAnchor, constant: 0).isActive = true
         dizilisTableView.leadingAnchor.constraint(equalTo: taktikDizilisView.leadingAnchor, constant: 0).isActive = true
         dizilisTableView.trailingAnchor.constraint(equalTo: taktikDizilisView.trailingAnchor, constant: 0).isActive = true
@@ -494,7 +567,7 @@ class CreatePitchViewController: UIViewController {
         collectionView.leadingAnchor.constraint(equalTo: tacticsView.leadingAnchor, constant: 0).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: tacticsView.trailingAnchor, constant: 0).isActive = true
        // collectionView.centerYAnchor.constraint(equalTo: tacticsView.centerYAnchor).isActive = true
-        collectionView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4 - 20).isActive = true
+        collectionView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4).isActive = true
         collectionView.topAnchor.constraint(equalTo: tacticsView.topAnchor).isActive = true
         collectionView.backgroundColor = .clear
         
@@ -513,13 +586,14 @@ extension CreatePitchViewController: UICollectionViewDelegate, UICollectionViewD
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return pitchImages.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? PitchCollectionViewCell else{
             return UICollectionViewCell()
         }
+        cell.pitchImageView.image = pitchImages[indexPath.row]
         cell.contentView.layer.cornerRadius = 20
         cell.contentView.backgroundColor = .gray
         cell.contentView.clipsToBounds = true
@@ -540,6 +614,9 @@ extension CreatePitchViewController: UICollectionViewDelegate, UICollectionViewD
             layout.currentPage = indexPath.item
             layout.previousOffset = layout.updateOffset(collectionView)
             setupCell()
+            
+            self.chosenPitchImage = pitchImages[indexPath.row]
+            print(chosenPitchImage)
         }
     }
     
