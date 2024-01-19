@@ -29,7 +29,7 @@ class MainViewController: UIViewController {
     
     
     var chosenTacticSize: Int = 11
-    var ChosenTacticFormation: String = "4-4-2"
+    var ChosenTacticFormation: String = "4-3-2-1"
     
     var allTactics: [FootballTactics] = []
     var chosenTactic: Tactic?
@@ -276,7 +276,7 @@ class MainViewController: UIViewController {
 
         // Dizi içindeki tüm view'leri temizle
         playerViews.removeAll()
-        createPlayers()
+        createPlayers(tacticSize: chosenTacticSize)
         
         addSubviews()
 
@@ -353,6 +353,10 @@ class MainViewController: UIViewController {
         layout.minimumInteritemSpacing = 30.0
         layout.itemSize.width = itemWidth*/
         
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+        collectionView.addGestureRecognizer(longPressGesture)
+        
+        
         collectionView.leadingAnchor.constraint(equalTo: tacticsView.leadingAnchor, constant: 0).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: tacticsView.trailingAnchor, constant: 0).isActive = true
        // collectionView.centerYAnchor.constraint(equalTo: tacticsView.centerYAnchor).isActive = true
@@ -362,6 +366,114 @@ class MainViewController: UIViewController {
         
         
     }
+    
+    var selectedIndexPath: IndexPath? // Animasyonu uygulanan hücrenin indeksi
+
+    var shakingIndexPath: IndexPath? // Animasyonu uygulanan hücrenin indeksi
+    var selectedIndexPaths: Set<IndexPath> = Set() // Seçilen hücrelerin indeksleri
+  //  var selectedIndexPath: IndexPath?
+    
+    func stopAllAnimations() {
+        for cell in collectionView.visibleCells {
+            // Animasyonları durdur
+                cell.transform = .identity
+        }
+        
+        // Başka animasyonları durdurmak için gerekirse burada ilave işlemleri yapabilirsiniz.
+        
+        // shakingIndexPath'yi sıfırla
+        shakingIndexPath = nil
+        
+        
+        print("sonlandı")
+        
+        
+    }
+    
+    
+    @objc func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+           let point = gestureRecognizer.location(in: collectionView)
+          // stopAllAnimations()
+           switch gestureRecognizer.state {
+           case .began:
+               // Uzun basma noktasındaki hücrenin indeksini al
+               if let indexPath = collectionView.indexPathForItem(at: point) {
+                   // Seçilen hücrenin indeksini ekleyin
+                   selectedIndexPaths.insert(indexPath)
+                   
+                   startShakingAnimation(indexPath: indexPath)
+               }
+           case .ended, .cancelled:
+               // Uzun basma sona erdiğinde veya iptal edildiğinde animasyonları durdur
+              // stopShakingAnimation()
+               print("sonlanıyor")
+              // stopAllAnimations()
+
+           default:
+               break
+           }
+       }
+       
+     
+       
+    func startShakingAnimation(indexPath: IndexPath) {
+        // Başka bir hücre seçildiğinde mevcut animasyonu durdur
+        stopShakingAnimation()
+
+        // Yeni hücreye ait animasyonu başlat
+       /* collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        layout.currentPage = indexPath.item
+        layout.previousOffset = layout.updateOffset(collectionView)
+        setupCell()*/
+        
+        print(selectedIndexPath)
+        print(indexPath)
+
+        
+        if selectedIndexPath == indexPath{
+            UIView.animate(withDuration: 0.1, delay: 0, options: [.autoreverse, .repeat], animations: {
+                if let cell = self.collectionView.cellForItem(at: indexPath) {
+                    cell.transform = CGAffineTransform(translationX: 5, y: 0).concatenating(CGAffineTransform(scaleX: 1.2, y: 1.2))
+                }
+            }, completion: nil)
+
+        }else{
+            UIView.animate(withDuration: 0.1, delay: 0, options: [.autoreverse, .repeat], animations: {
+                if let cell = self.collectionView.cellForItem(at: indexPath) {
+                    cell.transform = CGAffineTransform(translationX: 5, y: 0)
+                }
+            }, completion: nil)
+
+        }
+        
+
+       
+        // Animasyonu uygulanan hücrenin indeksini güncelle
+        shakingIndexPath = indexPath
+    }
+
+    func stopShakingAnimation() {
+        print("Durdurulacak")
+        // Eğer bir hücre titriyorsa, animasyonu durdur
+        if let indexPath = shakingIndexPath {
+            if let cell = collectionView.cellForItem(at: indexPath) {
+                UIView.animate(withDuration: 0.1) {
+                    cell.transform = .identity
+                    print("Durdurulacak \(indexPath.item)")
+
+                }
+            }
+            shakingIndexPath = nil
+        }
+    }
+
+    // Başka bir hücre seçildiğinde bu fonksiyonu çağırabilirsiniz.
+    func didSelectAnotherCell() {
+        // Mevcut animasyonu durdur
+        stopShakingAnimation()
+        // Diğer işlemleri buraya ekleyin
+    }
+   
 
     
     
@@ -560,7 +672,7 @@ class MainViewController: UIViewController {
 
         
         //Oyuncularn oluşumu buraya sayı verebiliriz!!!
-        createPlayers()
+        createPlayers(tacticSize: chosenTacticSize)
         
         
         //Uygulamanın ilk kez açıldığının kontrolü
@@ -579,6 +691,9 @@ class MainViewController: UIViewController {
         
         savePlayerPositions()
         uniqueuuids()
+        
+      //  allTactics.reverse()
+        
         DispatchQueue.main.async {
             self.collectionView.reloadData()
         }
@@ -653,7 +768,7 @@ class MainViewController: UIViewController {
     
     
     //Kaç tane oyuncunun oluşturulduğu
-    func createPlayers() {
+    func createPlayers(tacticSize: Int) {
             var numberY = 60
             var numberX = 0
             var katsayi = 1
@@ -666,8 +781,388 @@ class MainViewController: UIViewController {
         var numberYKaleci = 0.75*view.frame.size.height - view.frame.size.height/7
         
   
+        switch ChosenTacticFormation{
+         
+        case "4-4-2":
+            for i in 0..<tacticSize {
+                
+                var playerView: UIView = UIView()
+                
+                playerView.backgroundColor = .red
+                playerView.translatesAutoresizingMaskIntoConstraints = false
+                
+                
+                if i == 0{
+                    playerView = UIView(frame: CGRect(x: Int((view.frame.size.width)/2 - 32.5), y: Int(numberYKaleci), width: 65, height: 65))
+                    
+                }
+                else if i > 0 && i < 5{
+                    if i == 1{
+                        eklenenX = Int(view.frame.size.width / 10)
+                    }
+                    numberY = Int(view.frame.size.height/2)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += 80
+                }
+                else if i >= 5 && i < 9{
+                    if i == 5{
+                        eklenenX = Int(view.frame.size.width / 10)
+                    }
+                    numberY = Int(view.frame.size.height/3)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += 80
+                }
+                else{
+                    if i == 9{
+                        eklenenX = Int(view.frame.width/2 - 75)
+                    }
+                    numberY = Int(view.frame.size.height/5)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += 80
+                }
+                
+                let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+                 playerView.addGestureRecognizer(panGesture)
+
+                 let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+                 playerView.addGestureRecognizer(tapGesture)
+                 
+                 let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(longHandleTap(_:)))
+                 longTapGesture.minimumPressDuration = 0.75
+                 playerView.addGestureRecognizer(longTapGesture)
+                 
+                 playerViews.append(playerView)
+                 view.addSubview(playerView)
+            }
+            
+            
+        case "4-3-3":
+            for i in 0..<tacticSize {
+                
+                var playerView: UIView = UIView()
+                
+                playerView.backgroundColor = .red
+                playerView.translatesAutoresizingMaskIntoConstraints = false
+                
+                
+                if i == 0{
+                    playerView = UIView(frame: CGRect(x: Int((view.frame.size.width)/2 - 32.5), y: Int(numberYKaleci), width: 65, height: 65))
+                    
+                }
+                else if i > 0 && i < 5{
+                    if i == 1{
+                        eklenenX = Int(view.frame.size.width / 10)
+                    }
+                    numberY = Int(view.frame.size.height/2)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += 80
+                }
+                else if i >= 5 && i < 8{
+                    if i == 5{
+                        eklenenX = Int(view.frame.size.width / 3 - 65)
+                    }
+                    numberY = Int(view.frame.size.height/3)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += Int(view.frame.size.width) / 4
+                    
+                    
+                }
+                else{
+                    if i == 8{
+                        eklenenX = Int(view.frame.size.width / 3 - 65)
+                    }
+                    
+                    numberY = Int(view.frame.size.height/5)
+                    
+                    if i == 9{
+                        numberY = Int(view.frame.size.height/5.5)
+                        
+                    }
+                    
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += Int(view.frame.size.width) / 4
+                }
+                
+                
+                let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+                 playerView.addGestureRecognizer(panGesture)
+
+                 let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+                 playerView.addGestureRecognizer(tapGesture)
+                 
+                 let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(longHandleTap(_:)))
+                 longTapGesture.minimumPressDuration = 0.75
+                 playerView.addGestureRecognizer(longTapGesture)
+                 
+                 playerViews.append(playerView)
+                 view.addSubview(playerView)
+            }
+            
+        case "4-3-2-1":
+            for i in 0..<tacticSize {
+                
+                var playerView: UIView = UIView()
+                
+                playerView.backgroundColor = .red
+                playerView.translatesAutoresizingMaskIntoConstraints = false
+                
+                
+                if i == 0{
+                    playerView = UIView(frame: CGRect(x: Int((view.frame.size.width)/2 - 32.5), y: Int(numberYKaleci), width: 65, height: 65))
+                    
+                }
+                else if i > 0 && i < 5{
+                    if i == 1{
+                        eklenenX = Int(view.frame.size.width / 10)
+                    }
+                    numberY = Int(view.frame.size.height/2)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += 80
+                }
+                else if i >= 5 && i < 8{
+                    if i == 5{
+                        eklenenX = Int(view.frame.size.width / 5)
+                    }
+                    numberY = Int(view.frame.size.height/2.5)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += 85
+                }
+                else if i >= 8 && i < 10{
+                    if i == 8{
+                        eklenenX = Int(view.frame.width/2 - 90)
+                    }
+                    numberY = Int(view.frame.size.height/3.5)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += 120
+                    
+                    
+                }else{
+                    numberY = Int(view.frame.size.height/4.2)
+                    eklenenX = Int(view.frame.width/2 - 32.5)
+                    
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    
+                    
+                    
+                }
+                
+                let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+                 playerView.addGestureRecognizer(panGesture)
+
+                 let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+                 playerView.addGestureRecognizer(tapGesture)
+                 
+                 let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(longHandleTap(_:)))
+                 longTapGesture.minimumPressDuration = 0.75
+                 playerView.addGestureRecognizer(longTapGesture)
+                 
+                 playerViews.append(playerView)
+                 view.addSubview(playerView)
+                
+            }
+            
+            
+        case "3-5-2":
+            
+            for i in 0..<tacticSize {
+         
+                   var playerView: UIView = UIView()
+                   
+                   playerView.backgroundColor = .red
+                   playerView.translatesAutoresizingMaskIntoConstraints = false
+                   
+                   
+                   if i == 0{
+                       playerView = UIView(frame: CGRect(x: Int((view.frame.size.width)/2 - 32.5), y: Int(numberYKaleci), width: 65, height: 65))
+
+                   }
+                   else if i > 0 && i < 4{
+                       if i == 1{
+                           eklenenX = Int(view.frame.size.width / 3 - 65)
+                       }
+                       numberY = Int(view.frame.size.height/2)
+                       playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                       eklenenX += Int(view.frame.size.width) / 4
+                   }else if i == 4{
+                       
+                       eklenenX = Int(view.frame.size.width / 2 - 32.5)
+                   
+                       numberY = Int(view.frame.size.height/2.5 - 10)
+                       playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                   }
+                   else if i >= 5 && i < 9{
+                      
+                       numberY = Int(view.frame.size.height/3.5)
+                       if i == 5{
+                           eklenenX = Int(view.frame.size.width / 10)
+                           numberY = Int(view.frame.size.height/3.2)
+                       }
+                       
+                       if i == 8{
+                           numberY = Int(view.frame.size.height/3.2)
+                       }
+                       
+                       playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                       eklenenX += 80
+                       
+                       
+                   }
+                   else{
+                       if i == 9{
+                           eklenenX = Int(view.frame.width/2 - 75)
+                       }
+                       numberY = Int(view.frame.size.height/6)
+                       playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                       eklenenX += 80
+                   }
+                
+                let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+                 playerView.addGestureRecognizer(panGesture)
+
+                 let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+                 playerView.addGestureRecognizer(tapGesture)
+                 
+                 let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(longHandleTap(_:)))
+                 longTapGesture.minimumPressDuration = 0.75
+                 playerView.addGestureRecognizer(longTapGesture)
+                 
+                 playerViews.append(playerView)
+                 view.addSubview(playerView)
+                
+            }
+            
+            
+        case "3-4-3":
+            
+            for i in 0..<tacticSize {
+            
+                      var playerView: UIView = UIView()
+                      
+                      playerView.backgroundColor = .red
+                      playerView.translatesAutoresizingMaskIntoConstraints = false
+                      
+                      
+                      if i == 0{
+                          playerView = UIView(frame: CGRect(x: Int((view.frame.size.width)/2 - 32.5), y: Int(numberYKaleci), width: 65, height: 65))
+
+                      }
+                      else if i > 0 && i < 4{
+                          if i == 1{
+                              eklenenX = Int(view.frame.size.width / 3 - 65)
+                          }
+                          numberY = Int(view.frame.size.height/2.05)
+                          playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                          eklenenX += Int(view.frame.size.width) / 4
+                      }
+                      else if i >= 4 && i < 8{
+                         
+                          numberY = Int(view.frame.size.height/3.2)
+                          if i == 4{
+                              eklenenX = Int(view.frame.size.width / 10)
+                              numberY = Int(view.frame.size.height/3)
+                          }
+                          
+                          if i == 7{
+                              numberY = Int(view.frame.size.height/3)
+                          }
+                          
+                          playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                          eklenenX += 80
+                          
+                          
+                      }
+                      else{
+                          if i == 8{
+                              eklenenX = Int(view.frame.size.width / 3 - 65)
+                          }
+                          numberY = Int(view.frame.size.height/6)
+                          if i == 9{
+                              numberY = Int(view.frame.size.height/7)
+                          }
+                          playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                          eklenenX += Int(view.frame.size.width) / 4
+
+                          
+                          
+                        
+                          
+                      }
+                
+                let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+                 playerView.addGestureRecognizer(panGesture)
+
+                 let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+                 playerView.addGestureRecognizer(tapGesture)
+                 
+                 let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(longHandleTap(_:)))
+                 longTapGesture.minimumPressDuration = 0.75
+                 playerView.addGestureRecognizer(longTapGesture)
+                 
+                 playerViews.append(playerView)
+                 view.addSubview(playerView)
+                
+            }
+            
+
+            
+        default:
+            for i in 0..<tacticSize {
+                
+                var playerView: UIView = UIView()
+                
+                playerView.backgroundColor = .red
+                playerView.translatesAutoresizingMaskIntoConstraints = false
+                
+                
+                if i == 0{
+                    playerView = UIView(frame: CGRect(x: Int((view.frame.size.width)/2 - 32.5), y: Int(numberYKaleci), width: 65, height: 65))
+                    
+                }
+                else if i > 0 && i < 5{
+                    if i == 1{
+                        eklenenX = Int(view.frame.size.width / 10)
+                    }
+                    numberY = Int(view.frame.size.height/2)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += 80
+                }
+                else if i >= 5 && i < 9{
+                    if i == 5{
+                        eklenenX = Int(view.frame.size.width / 10)
+                    }
+                    numberY = Int(view.frame.size.height/3)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += 80
+                }
+                else{
+                    if i == 9{
+                        eklenenX = Int(view.frame.width/2 - 75)
+                    }
+                    numberY = Int(view.frame.size.height/5)
+                    playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
+                    eklenenX += 80
+                }
+                
+                let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+                 playerView.addGestureRecognizer(panGesture)
+
+                 let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+                 playerView.addGestureRecognizer(tapGesture)
+                 
+                 let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(longHandleTap(_:)))
+                 longTapGesture.minimumPressDuration = 0.75
+                 playerView.addGestureRecognizer(longTapGesture)
+                 
+                 playerViews.append(playerView)
+                 view.addSubview(playerView)
+            }
+            
+            
+            
+        }
+        
         // 4 - 4 - 2
-            for i in 0..<11 {
+           /* for i in 0..<11 {
       
                 var playerView: UIView = UIView()
                 
@@ -702,7 +1197,7 @@ class MainViewController: UIViewController {
                     numberY = Int(view.frame.size.height/5)
                     playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
                     eklenenX += 80
-                }
+                }*/
         
         
         // 4 - 3 - 3
@@ -938,7 +1433,7 @@ class MainViewController: UIViewController {
                 
                // playerView.backgroundColor = UIColor.blue
 
-                let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+               /* let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
                 playerView.addGestureRecognizer(panGesture)
 
                 let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
@@ -949,11 +1444,10 @@ class MainViewController: UIViewController {
                 playerView.addGestureRecognizer(longTapGesture)
                 
                 playerViews.append(playerView)
-                view.addSubview(playerView)
-               // playerView.addSubview(characterLabel)
-               // numberX += 1
+                view.addSubview(playerView)*/
+               
                 
-            }
+            
         }
     
     
@@ -1405,7 +1899,7 @@ class MainViewController: UIViewController {
                     characterImage.widthAnchor.constraint(equalToConstant: 65).isActive = true
 
                     
-                    characterLabel.topAnchor.constraint(equalTo: characterImage.bottomAnchor, constant: -5).isActive = true
+                    characterLabel.topAnchor.constraint(equalTo: characterImage.bottomAnchor, constant: -2.5).isActive = true
                     characterLabel.leadingAnchor.constraint(equalTo: playerView.leadingAnchor).isActive = true
                     characterLabel.trailingAnchor.constraint(equalTo: playerView.trailingAnchor).isActive = true
                     
@@ -1441,6 +1935,9 @@ class MainViewController: UIViewController {
         // NSFetchRequest oluştur
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "FootballTactics")
 
+        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
         do {
             // Fetch işlemi gerçekleştir
             let results = try managedContext.fetch(fetchRequest)
@@ -1448,20 +1945,30 @@ class MainViewController: UIViewController {
             // Farklı UUID'leri bulmak için bir dizi oluştur
             var uniqueUUIDsSet = Set<UUID>()
             
+            
+            
+            
+            
+           // print("all tactikler \(allTactics)")
+            
             allTactics.removeAll()
+            uniqueUUIDs.removeAll()
             for result in results {
                 if let footballTactics = result as? FootballTactics, let uuid = footballTactics.id {
-                    uniqueUUIDsSet.insert(uuid)
+                   // uniqueUUIDsSet.insert(uuid)
+                    uniqueUUIDs.append(uuid)
                     allTactics.append(footballTactics)
-                    
+                    print(footballTactics.id)
                 }
             }
+            allTactics.reverse()
+            uniqueUUIDs.reverse()
             
-            print("all tacticler \(allTactics.count)")
+           // print("all tacticler \(allTactics.count)")
             
-            uniqueUUIDs = Array(uniqueUUIDsSet)
+           // uniqueUUIDs = Array(uniqueUUIDsSet)
             
-            guard let imageData = allTactics.last?.image as? Data else{
+            guard let imageData = allTactics.first?.image as? Data else{
                 return
                 
             }
@@ -1804,7 +2311,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource{
 
         // Dizi içindeki tüm view'leri temizle
         playerViews.removeAll()
-        createPlayers()
+        createPlayers(tacticSize: chosenTacticSize)
         
         predicateById(uuidString: uuidString)
 
@@ -1826,8 +2333,9 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     
     
     
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return allTactics.count
+        return 10
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -1839,6 +2347,8 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         cell.contentView.backgroundColor = .gray
         cell.contentView.clipsToBounds = true
         cell.clipsToBounds = true
+        cell.contentView.layer.borderWidth = 2
+        cell.contentView.layer.borderColor = UIColor.gray.cgColor
         
         cell.tacticNameLabel.text = allTactics[indexPath.row].name
         cell.pitchNameLabel.text = allTactics[indexPath.row].formation
@@ -1871,7 +2381,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
 
         // Dizi içindeki tüm view'leri temizle
         playerViews.removeAll()
-        createPlayers()
+        createPlayers(tacticSize: chosenTacticSize)
         
         addSubviews()
         
@@ -1893,17 +2403,39 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
 
         }
         
+        guard let cell = collectionView.cellForItem(at: indexPath) as? PitchCollectionViewCell else{
+            return
+        }
+        
         
         if indexPath.item == layout.currentPage{
             layout.currentPage = indexPath.item
             layout.previousOffset = layout.updateOffset(collectionView)
             setupCell()
+            print("1")
         }else{
             collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
             layout.currentPage = indexPath.item
             layout.previousOffset = layout.updateOffset(collectionView)
             setupCell()
+            print("2")
         }
+        
+        selectedIndexPath = indexPath
+
+           // Tüm hücreleri döngü ile kontrol et
+        for i in 0..<collectionView.numberOfItems(inSection: selectedIndexPath!.section) {
+               // Her hücreyi al
+            if let cell = collectionView.cellForItem(at: IndexPath(item: i, section: selectedIndexPath!.section)) as? PitchCollectionViewCell {
+                   // Seçilen hücre ise deleteTacticButton.isHidden'i false yap, aksi takdirde true yap
+                cell.deleteTacticButton.isHidden = (i == selectedIndexPath!.item) ? false : true
+               }
+           }
+      
+        
+     //   cell.deleteTacticButton.isHidden = false
+        
+        
     }
     
     
@@ -1933,6 +2465,7 @@ extension MainViewController{
         let indexPath = IndexPath(item: layout.currentPage, section: 0)
         if let cell = collectionView.cellForItem(at: indexPath){
             transformCell(cell)
+           didSelectAnotherCell()
         }
         
     }

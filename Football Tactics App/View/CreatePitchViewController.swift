@@ -20,9 +20,11 @@ class CreatePitchViewController: UIViewController {
     var tacticFormation: String = "4-4-2"
     var chosenPitchImage: UIImage?
     
+    var selectedIndexPath: IndexPath?
+
     
     var playerSize: [Int] = [5,6,7,8,9,10,11]
-    var pitchTactic: [String] = ["4-4-2", "4-3-3", "4-3-2-1","3-4-3","5-3-2","5-4-1" ]
+    var pitchTactic: [String] = ["4-4-2", "4-3-3", "4-3-2-1","3-4-3","3-5-2","5-4-1" ]
     
     var itemWidth: CGFloat{
         return screenWidth * 0.33
@@ -53,14 +55,17 @@ class CreatePitchViewController: UIViewController {
         text.layer.borderWidth = 2
         text.layer.cornerRadius = 10
         text.font = UIFont.systemFont(ofSize: 35, weight: .bold)
+        text.font = UIFont(name: "HoeflerText-Black", size: 35)
         text.translatesAutoresizingMaskIntoConstraints = false
+      //  text.backgroundColor = UIColor(red: 185/255, green: 255/255, blue: 238/255, alpha: 1)
+        text.backgroundColor = UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1)
         return text
     }()
     
     private let oyuncuSayisiTableView: UITableView = {
         let tableview = UITableView()
         tableview.alpha = 1
-       // tableview.bounces = false
+        tableview.bounces = false
         tableview.isHidden = false
         tableview.showsVerticalScrollIndicator = false
         tableview.backgroundColor = .clear
@@ -73,8 +78,12 @@ class CreatePitchViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("11", for: .normal)
         button.setTitleColor(.black, for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .black)
+        button.titleLabel?.font = UIFont(name: "AvenirNext-Bold", size: 20)
         button.titleLabel?.textAlignment = .center
+       /* button.layer.borderWidth = 2
+        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.cornerRadius = 5*/
+        
         button.addTarget(self, action: #selector(sayiButtonClicked), for: .touchUpInside)
         return button
     }()
@@ -83,6 +92,7 @@ class CreatePitchViewController: UIViewController {
         let tableview = UITableView()
         tableview.alpha = 1
         tableview.isHidden = false
+        tableview.bounces = false
         tableview.showsVerticalScrollIndicator = false
         tableview.showsHorizontalScrollIndicator = false
         tableview.backgroundColor = .clear
@@ -95,8 +105,12 @@ class CreatePitchViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("4-4-2", for: .normal)
         button.setTitleColor(.black, for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .black)
+        button.titleLabel?.font = UIFont(name: "AvenirNext-Bold", size: 20)
         button.titleLabel?.textAlignment = .center
+       /* button.layer.borderWidth = 2
+        button.layer.borderColor = UIColor.black.cgColor
+        button.layer.cornerRadius = 5*/
+
         button.addTarget(self, action: #selector(taktikDizilisClicked), for: .touchUpInside)
         return button
     }()
@@ -106,7 +120,7 @@ class CreatePitchViewController: UIViewController {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.isHidden = true
-        view.backgroundColor = UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1)
+        view.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
         view.layer.cornerRadius = 15
         view.clipsToBounds = true
         view.layer.borderColor = UIColor.black.cgColor
@@ -121,7 +135,7 @@ class CreatePitchViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.isHidden = true
         view.clipsToBounds = true
-        view.backgroundColor = UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1)
+        view.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
         view.layer.cornerRadius = 15
         view.layer.borderColor = UIColor.black.cgColor
         view.layer.borderWidth = 1
@@ -159,28 +173,51 @@ class CreatePitchViewController: UIViewController {
         let VC = MainViewController()
       
         
-        let id = UUID()
-        let uuidString = id.uuidString
-        VC.chosenTacticSize = tacticSize
-        VC.ChosenTacticFormation = tacticFormation
-        VC.uuidString = uuidString
+      
         
-        addTactic(uuid: id)
+        if tacticTextField.text == ""{
+            let alertController = UIAlertController(title: "Alert", message: "Tactic Name Can Not Be Empty ", preferredStyle: .alert)
+            let action = UIAlertAction(title: "Ok", style: .cancel)
+            
+            alertController.addAction(action)
+            
+            present(alertController, animated: true)
+            
+            
+        }else if tacticTextField.text!.count > 20{
+            let alertController = UIAlertController(title: "Alert", message: "Tactic Name Can Not Exceed 20 Letters", preferredStyle: .alert)
+            let action = UIAlertAction(title: "Ok", style: .cancel)
+            
+            alertController.addAction(action)
+            
+            present(alertController, animated: true)
+        }
+        else{
+            let id = UUID()
+            let uuidString = id.uuidString
+            VC.chosenTacticSize = tacticSize
+            VC.ChosenTacticFormation = tacticFormation
+            VC.uuidString = uuidString
+            
+            addTactic(uuid: id, tacticSize: tacticSize, tacticFormation: tacticFormation)
+            navigationController?.pushViewController(VC, animated: true)
+        }
         
-        navigationController?.pushViewController(VC, animated: true)
+        
     }
     
     
     
-    private func addTactic(uuid: UUID){
+    private func addTactic(uuid: UUID, tacticSize: Int, tacticFormation: String){
         
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else{return}
         let context = appDelegate.persistentContainer.viewContext
         let newTactic = FootballTactics(context: context)
-        newTactic.size = 11
+        newTactic.size = Int16(tacticSize)
         newTactic.id = uuid
         newTactic.name = tacticTextField.text
-        newTactic.formation = "4-4-2"
+        newTactic.formation = tacticFormation
+        newTactic.creationDate = Date()
         
         guard let data = self.chosenPitchImage?.pngData() as? Data else{
             return
@@ -205,9 +242,17 @@ class CreatePitchViewController: UIViewController {
     lazy var oyuncuSayiButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Team Size", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: .semibold)
+        button.titleLabel?.font = UIFont(name: "HoeflerText-Black", size: 25)
+
+        
+        
+        
         button.setTitleColor(.black, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = 5
+        button.layer.borderWidth = 2
+        button.layer.borderColor = UIColor.black.cgColor
+        button.backgroundColor = UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1)
         button.addTarget(self, action: #selector(sayiButtonClicked), for: .touchUpInside)
         return button
     }()
@@ -246,9 +291,13 @@ class CreatePitchViewController: UIViewController {
     lazy var taktikDizilisButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Formation", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: .semibold)
+        button.titleLabel?.font = UIFont(name: "HoeflerText-Black", size: 25)
         button.setTitleColor(.black, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = 5
+        button.layer.borderWidth = 2
+        button.layer.borderColor = UIColor.black.cgColor
+        button.backgroundColor = UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1)
         button.addTarget(self, action: #selector(taktikDizilisClicked), for: .touchUpInside)
         return button
     }()
@@ -287,6 +336,7 @@ class CreatePitchViewController: UIViewController {
         let stackView = UIStackView()
         stackView.distribution = .fillEqually
         stackView.axis = .horizontal
+        stackView.spacing = 35
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -302,11 +352,17 @@ class CreatePitchViewController: UIViewController {
         return blackView
     }()
     
-    
+    var screenRatio: CGFloat = 0.0
    
     override func viewWillAppear(_ animated: Bool) {
 
-       
+        print(view.frame.size.width/view.frame.size.height )
+        
+            
+      
+    
+        
+        
     }
     
     override func viewDidLoad() {
@@ -318,6 +374,7 @@ class CreatePitchViewController: UIViewController {
          UIColor(red: 168/255, green: 174/255, blue: 193/255, alpha: 1)
          */
         
+        screenRatio = view.frame.size.width/view.frame.size.height
         
         if let pitch2 = UIImage(named: "2"),
            let pitch3 = UIImage(named: "3"),
@@ -334,8 +391,8 @@ class CreatePitchViewController: UIViewController {
         
         
         
-        view.backgroundColor = UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1)
-
+     //   view.backgroundColor = UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1)
+        view.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
       
         
         viewSetup()
@@ -344,7 +401,7 @@ class CreatePitchViewController: UIViewController {
         view.addSubview(tacticsView)
        // tacticsView.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
         tacticsView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4).isActive = true
-        tacticsView.topAnchor.constraint(equalTo: oyuncuSayiLabel.bottomAnchor, constant: 15).isActive = true
+        tacticsView.topAnchor.constraint(equalTo: oyuncuSayiLabel.bottomAnchor, constant: 25).isActive = true
       //  tacticsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
         tacticsView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         tacticsView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
@@ -427,7 +484,7 @@ class CreatePitchViewController: UIViewController {
         
         oyuncuSayiView.addSubview(oyuncuSayisiTableView)
         oyuncuSayiView.backgroundColor = .clear
-
+        
         
         
         oyuncuSayisiTableView.delegate = self
@@ -522,21 +579,24 @@ class CreatePitchViewController: UIViewController {
         buttonsStackView.addArrangedSubview(taktikDizilisButton)
         
         buttonsStackView.topAnchor.constraint(equalTo: tacticTextField.bottomAnchor, constant: 20).isActive = true
+        buttonsStackView.heightAnchor.constraint(equalToConstant: 50).isActive = true
         buttonsStackView.leadingAnchor.constraint(equalTo: tacticTextField.leadingAnchor, constant: 0).isActive = true
         buttonsStackView.trailingAnchor.constraint(equalTo: tacticTextField.trailingAnchor, constant: 0).isActive = true
         
         
         view.addSubview(oyuncuSayiLabel)
-        oyuncuSayiLabel.topAnchor.constraint(equalTo: oyuncuSayiButton.bottomAnchor, constant: 20).isActive = true
+        oyuncuSayiLabel.topAnchor.constraint(equalTo: oyuncuSayiButton.bottomAnchor, constant: 10).isActive = true
         oyuncuSayiLabel.leadingAnchor.constraint(equalTo: oyuncuSayiButton.leadingAnchor, constant: 20).isActive = true
         oyuncuSayiLabel.trailingAnchor.constraint(equalTo: oyuncuSayiButton.trailingAnchor, constant: -20).isActive = true
+        oyuncuSayiLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         view.addSubview(dizilisLabelButton)
         
-        dizilisLabelButton.topAnchor.constraint(equalTo: taktikDizilisButton.bottomAnchor, constant: 20).isActive = true
+        dizilisLabelButton.topAnchor.constraint(equalTo: taktikDizilisButton.bottomAnchor, constant: 10).isActive = true
         dizilisLabelButton.leadingAnchor.constraint(equalTo: taktikDizilisButton.leadingAnchor, constant: 20).isActive = true
         dizilisLabelButton.trailingAnchor.constraint(equalTo: taktikDizilisButton.trailingAnchor, constant: -20).isActive = true
-        
+        dizilisLabelButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+
         
         
         
@@ -570,6 +630,14 @@ class CreatePitchViewController: UIViewController {
         collectionView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4).isActive = true
         collectionView.topAnchor.constraint(equalTo: tacticsView.topAnchor).isActive = true
         collectionView.backgroundColor = .clear
+        //tacticsView.backgroundColor = .red
+       /* let tacticalFieldsLabel = UILabel()
+        tacticalFieldsLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(tacticalFieldsLabel)
+        tacticalFieldsLabel.text = "Tactical Fields"
+        tacticalFieldsLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        tacticalFieldsLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        tacticalFieldsLabel.bottomAnchor.constraint(equalTo: tacticsView.topAnchor, constant: view.frame.size.width / 35).isActive = true*/
         
         
     }
@@ -594,16 +662,29 @@ extension CreatePitchViewController: UICollectionViewDelegate, UICollectionViewD
             return UICollectionViewCell()
         }
         cell.pitchImageView.image = pitchImages[indexPath.row]
-        cell.contentView.layer.cornerRadius = 20
         cell.contentView.backgroundColor = .gray
+        cell.contentView.layer.cornerRadius = 20
         cell.contentView.clipsToBounds = true
         cell.clipsToBounds = true
+        cell.contentView.layer.borderWidth = 2
+        cell.contentView.layer.borderColor = UIColor.gray.cgColor
+        
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: itemWidth, height: itemHeigth)
+        
+        
+        
+        if screenRatio > 0.5{
+            
+            return CGSize(width: itemWidth - 15, height: itemWidth)
+            
+        }else{
+            return CGSize(width: itemWidth, height: itemHeigth)
+        }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -618,8 +699,24 @@ extension CreatePitchViewController: UICollectionViewDelegate, UICollectionViewD
             self.chosenPitchImage = pitchImages[indexPath.row]
             print(chosenPitchImage)
         }
+        
+        
+            selectedIndexPath = indexPath
+
+           // Tüm hücreleri döngü ile kontrol et
+        for i in 0..<collectionView.numberOfItems(inSection: selectedIndexPath!.section) {
+               // Her hücreyi al
+            if let cell = collectionView.cellForItem(at: IndexPath(item: i, section: selectedIndexPath!.section)) as? PitchCollectionViewCell {
+                   // Seçilen hücre ise deleteTacticButton.isHidden'i false yap, aksi takdirde true yap
+                
+                cell.contentView.layer.borderWidth = (i == selectedIndexPath!.item) ? 1.5 : 2
+                cell.contentView.layer.borderColor = (i == selectedIndexPath!.item) ? UIColor.black.cgColor : UIColor.gray.cgColor
+                
+           //     cell.deleteTacticButton.isHidden = (i == selectedIndexPath!.item) ? false : true
+               }
+           }
+        
     }
-    
     
     
 }
@@ -652,10 +749,13 @@ extension CreatePitchViewController{
     func transformCell(_ cell: UICollectionViewCell, isEffect: Bool = true){
         if !isEffect{
             cell.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+            print("girdi1")
+
             return
         }
         UIView.animate(withDuration: 0.2) {
             cell.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+            print("girdi2")
         }
         
         for otherCell in collectionView.visibleCells{
@@ -665,6 +765,8 @@ extension CreatePitchViewController{
                     UIView.animate(withDuration: 0.2) {
                         otherCell.transform = .identity
                         print(indexPath)
+                        print("girdi3")
+
                     }
                 }
             }
@@ -698,14 +800,14 @@ extension CreatePitchViewController: UITableViewDelegate, UITableViewDataSource{
             let cell = tableView.dequeueReusableCell(withIdentifier: "oyuncuSayiCell", for: indexPath)
              cell.textLabel?.text = "\(playerSize[indexPath.row])"
              cell.textLabel?.textAlignment = .center
-            cell.backgroundColor = UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1)
+            cell.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
              return cell
         
         case dizilisTableView:
             let cell = tableView.dequeueReusableCell(withIdentifier: "taktikDizilisCell", for: indexPath)
             cell.textLabel?.text = (pitchTactic[indexPath.row])
             cell.textLabel?.textAlignment = .center
-            cell.backgroundColor = UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1)
+            cell.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
             return cell
             
         default:
@@ -741,7 +843,6 @@ extension CreatePitchViewController: UITableViewDelegate, UITableViewDataSource{
         switch tableView{
             
         case oyuncuSayisiTableView:
-            
             sayiButtonClicked()
             self.tacticSize = playerSize[indexPath.row]
             oyuncuSayiLabel.setTitle("\(playerSize[indexPath.row])", for: .normal)

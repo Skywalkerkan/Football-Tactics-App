@@ -14,6 +14,7 @@ class PitchCollectionViewCell: UICollectionViewCell {
         imageView.contentMode = .scaleToFill
         imageView.image = UIImage(named: "pitch")
         imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 20
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
         }()
@@ -21,7 +22,7 @@ class PitchCollectionViewCell: UICollectionViewCell {
 
     let pitchNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "4 4 2"
+        label.text = ""
         label.textAlignment = .center
         label.textColor = .black
         label.font = UIFont.systemFont(ofSize: 20, weight: .black)
@@ -31,7 +32,7 @@ class PitchCollectionViewCell: UICollectionViewCell {
     
     let tacticNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Erkan's Tactic"
+        label.text = ""
         label.textAlignment = .center
         label.textColor = .black
         label.numberOfLines = 0
@@ -40,6 +41,17 @@ class PitchCollectionViewCell: UICollectionViewCell {
         return label
         }()
     
+    
+    let deleteTacticButton: UIButton = {
+        
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "xmark"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .black
+        button.isHidden = true
+        return button
+        
+    }()
     
     
     override init(frame: CGRect) {
@@ -56,6 +68,10 @@ class PitchCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(pitchImageView)
         contentView.addSubview(tacticNameLabel)
         contentView.addSubview(pitchNameLabel)
+        contentView.addSubview(deleteTacticButton)
+        
+        
+     
 
        //Image
         NSLayoutConstraint.activate([
@@ -80,6 +96,17 @@ class PitchCollectionViewCell: UICollectionViewCell {
             pitchNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
             pitchNameLabel.heightAnchor.constraint(equalToConstant: 30)
         ])
+        
+        NSLayoutConstraint.activate([
+            deleteTacticButton.topAnchor.constraint(equalTo: pitchImageView.topAnchor, constant: 4),
+            //deleteTacticButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            deleteTacticButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4),
+            deleteTacticButton.heightAnchor.constraint(equalToConstant: 20),
+            deleteTacticButton.widthAnchor.constraint(equalToConstant: 20)
+
+        ])
+        
+        
     }
 
     
