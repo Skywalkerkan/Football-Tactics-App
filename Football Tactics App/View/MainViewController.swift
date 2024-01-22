@@ -7,10 +7,12 @@
 
 import UIKit
 import CoreData
+import SideMenu
 
 class MainViewController: UIViewController {
 
     
+    var menu: SideMenuNavigationController?
     
     var player: Player? = nil
     var characterIndex = 0
@@ -233,15 +235,14 @@ class MainViewController: UIViewController {
         //tacticView.backgroundColor = UIColor(red: <#T##CGFloat#>, green: <#T##CGFloat#>, blue: <#T##CGFloat#>, alpha: <#T##CGFloat#>)
         tacticView.layer.cornerRadius = 30
         tacticView.clipsToBounds = true
-        tacticView.backgroundColor = .lightGray
+        tacticView.backgroundColor = .clear
 
-        tacticView.layer.shadowColor = UIColor.black.cgColor
-        tacticView.layer.shadowRadius = 10
+        tacticView.layer.shadowColor = UIColor.lightGray.cgColor
+        tacticView.layer.shadowRadius = 5
         tacticView.layer.borderColor = UIColor.black.cgColor
         tacticView.layer.borderWidth = 2
-       // tacticView.layer.shadowOffset = 5
       //  tacticView.isHidden = true
-        tacticView.layer.shadowOpacity = 0.3
+        tacticView.layer.shadowOpacity = 0.65
         return tacticView
     }()
     
@@ -426,8 +427,6 @@ class MainViewController: UIViewController {
         layout.previousOffset = layout.updateOffset(collectionView)
         setupCell()*/
         
-        print(selectedIndexPath)
-        print(indexPath)
 
         
         if selectedIndexPath == indexPath{
@@ -566,7 +565,7 @@ class MainViewController: UIViewController {
     
     
     @objc func settingsButtonClicked(){
-        
+        present(menu!, animated: true)
     }
     
     var footballPitchBasildiMi: Bool = false
@@ -574,7 +573,7 @@ class MainViewController: UIViewController {
     lazy var footballPitchImage: UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setBackgroundImage(UIImage(systemName: "sportscourt.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(UIColor(red: 107/255, green: 142/255, blue: 65/255, alpha: 1)), for: .normal)
+        button.setBackgroundImage(UIImage(systemName: "sportscourt.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(.white), for: .normal)
         button.addTarget(self, action: #selector(clickedFootballPitch), for: .touchUpInside)
         return button
     }()
@@ -601,7 +600,7 @@ class MainViewController: UIViewController {
     lazy var repeatTacticFormationButton: UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setBackgroundImage(UIImage(systemName: "repeat.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(UIColor(red: 107/255, green: 142/255, blue: 65/255, alpha: 1)), for: .normal)
+        button.setBackgroundImage(UIImage(systemName: "repeat.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(.white), for: .normal)
         button.addTarget(self, action: #selector(clickedRepeatFormation), for: .touchUpInside)
         return button
     }()
@@ -610,9 +609,38 @@ class MainViewController: UIViewController {
     @objc func clickedRepeatFormation(){
     
             
+        let alertController = UIAlertController(title: "Alert", message: "Are you sure that you want to rebuild you tactic", preferredStyle: .alert)
+        
+        let yesAction = UIAlertAction(title: "Yes", style: .cancel){_ in
+            
+            print("Oyuncuları Sıfırla")
+            
+            /*for playerView in self.playerViews {
+                playerView.removeFromSuperview()
+            }
+
+            
+            // Dizi içindeki tüm view'leri temizle
+            self.playerViews.removeAll()
+            
+            print(self.playerViews)
+
+            
+            self.createPlayers(tacticSize: self.chosenTacticSize)
+            
+            
+            print(self.playerViews)*/
+            
+        }
+        
+        let noAction = UIAlertAction(title: "No", style: .destructive)
+
+        
+        alertController.addAction(noAction)
+        alertController.addAction(yesAction)
      
     
-        
+        present(alertController, animated: true)
         
     }
     
@@ -632,6 +660,11 @@ class MainViewController: UIViewController {
         
         
         
+        menu = SideMenuNavigationController(rootViewController: MenuTableViewController())
+        
+        view.addSubview(viewAsagiTaraf)
+
+        
         
         view.backgroundColor = .white
         
@@ -642,7 +675,12 @@ class MainViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewTactic))
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .done, target: self, action: #selector(settingsButtonClicked))
-
+        
+        menu?.leftSide = true
+       // menu?.animationOptions = .curveEaseOut
+       // menu!.presentationStyle = .viewSlideOutMenuZoom
+        SideMenuManager.default.rightMenuNavigationController = menu
+        SideMenuManager.default.addPanGestureToPresent(toView: self.view)
         view.addSubview(backgroundImageView)
         
        
@@ -724,6 +762,13 @@ class MainViewController: UIViewController {
         
        // addSubviews()
         
+        
+        viewAsagiTaraf.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        viewAsagiTaraf.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
+        viewAsagiTaraf.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        viewAsagiTaraf.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        
+        
 
         
         
@@ -757,13 +802,24 @@ class MainViewController: UIViewController {
        
         
         backgroundImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        backgroundImageView.bottomAnchor.constraint(equalTo: tacticsView.topAnchor, constant: -view.frame.size.height/40).isActive = true
+       // backgroundImageView.bottomAnchor.constraint(equalTo: tacticsView.topAnchor, constant: -view.frame.size.height/40).isActive = true
+        backgroundImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
+
         backgroundImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         backgroundImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         
         
         
+        
+
+        
     }
+    
+    let viewAsagiTaraf: UIView = {
+       let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     
     
     
@@ -1964,7 +2020,7 @@ class MainViewController: UIViewController {
             allTactics.reverse()
             uniqueUUIDs.reverse()
             
-           // print("all tacticler \(allTactics.count)")
+            print("all tacticler \(allTactics.count)")
             
            // uniqueUUIDs = Array(uniqueUUIDsSet)
             
@@ -2335,7 +2391,15 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        
+        if allTactics.count > 10{
+            return 10
+
+        }else{
+            return allTactics.count
+
+        }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -2392,8 +2456,41 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         if let imageData = allTactics[indexPath.row].image{
             DispatchQueue.main.async {
                 self.backgroundImageView.image = UIImage(data: imageData)
+               // self.tacticsView.backgroundColor = UIColor(red: 102/255, green: 175/255, blue: 171/255, alpha: 1)
+                
+                print(imageData)
+                
+                /*if self.backgroundImageView.image?.pngData() == UIImage(named: "2")?.pngData(){
+                    self.viewAsagiTaraf.backgroundColor = UIColor(red: 73/255, green: 150/255, blue: 129/255, alpha: 1)
 
+                }else if self.backgroundImageView.image?.pngData() == UIImage(named: "3")?.pngData(){
+                    self.viewAsagiTaraf.backgroundColor = UIColor(red: 155/255, green: 139/255, blue: 93/255, alpha: 1)
+
+                }else if self.backgroundImageView.image?.pngData() == UIImage(named: "4")?.pngData(){
+                    self.viewAsagiTaraf.backgroundColor = UIColor(red: 102/255, green: 175/255, blue: 171/255, alpha: 1)
+
+                }else if self.backgroundImageView.image?.pngData() == UIImage(named: "5")?.pngData(){
+                    self.viewAsagiTaraf.backgroundColor = UIColor(red: 95/255, green: 121/255, blue: 76/255, alpha: 1)
+
+                }else if self.backgroundImageView.image?.pngData() == UIImage(named: "6")?.pngData(){
+                    self.viewAsagiTaraf.backgroundColor = UIColor(red: 31/255, green: 99/255, blue: 117/255, alpha: 1)
+
+                }else if self.backgroundImageView.image?.pngData() == UIImage(named: "7")?.pngData(){
+                    self.viewAsagiTaraf.backgroundColor = UIColor(red: 168/255, green: 155/255, blue: 95/255, alpha: 1)
+
+                }else if self.backgroundImageView.image?.pngData() == UIImage(named: "8")?.pngData(){
+                    self.viewAsagiTaraf.backgroundColor = UIColor(red: 0/255, green: 108/255, blue: 73/255, alpha: 1)
+
+                }
+                else if self.backgroundImageView.image?.pngData() == UIImage(named: "9")?.pngData(){
+                    self.viewAsagiTaraf.backgroundColor = UIColor(red: 33/255, green: 150/255, blue: 94/255, alpha: 1)
+
+                }*/
+                
+                
             }
+            
+            
         }else{
             
             DispatchQueue.main.async {
@@ -2429,8 +2526,14 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             if let cell = collectionView.cellForItem(at: IndexPath(item: i, section: selectedIndexPath!.section)) as? PitchCollectionViewCell {
                    // Seçilen hücre ise deleteTacticButton.isHidden'i false yap, aksi takdirde true yap
                 cell.deleteTacticButton.isHidden = (i == selectedIndexPath!.item) ? false : true
+                
+                cell.contentView.layer.borderWidth = (i == selectedIndexPath!.item) ? 1.5 : 2
+                cell.contentView.layer.borderColor = (i == selectedIndexPath!.item) ? UIColor.black.cgColor : UIColor.gray.cgColor
+                
                }
            }
+        
+  
       
         
      //   cell.deleteTacticButton.isHidden = false

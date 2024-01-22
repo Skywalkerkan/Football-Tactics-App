@@ -78,7 +78,7 @@ class PitchCollectionViewCell: UICollectionViewCell {
             pitchImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             pitchImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             pitchImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            pitchImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            pitchImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: contentView.frame.size.height/3)
         ])
         
         

@@ -17,9 +17,11 @@
 		DE39AEC62B3B5FF9002DCD77 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE39AEC52B3B5FF9002DCD77 /* Assets.xcassets */; };
 		DE39AEC92B3B5FF9002DCD77 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE39AEC72B3B5FF9002DCD77 /* LaunchScreen.storyboard */; };
 		DE49A4C62B554F3200E63E20 /* Tactic.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE49A4C52B554F3200E63E20 /* Tactic.swift */; };
+		DE692DDD2B5D723300F43EA8 /* SideMenu in Frameworks */ = {isa = PBXBuildFile; productRef = DE692DDC2B5D723300F43EA8 /* SideMenu */; };
 		DE997BD62B46CB56007C0654 /* Character.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE997BD52B46CB56007C0654 /* Character.swift */; };
 		DE997BD92B46CF92007C0654 /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE997BD82B46CF92007C0654 /* Alerts.swift */; };
 		DEA09B8B2B3D6E040070A374 /* SliderExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA09B8A2B3D6E040070A374 /* SliderExtension.swift */; };
+		DEA551532B5E670C00CC9BFB /* MenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA551522B5E670C00CC9BFB /* MenuTableViewController.swift */; };
 		DEA676232B3C5B100060FC83 /* CharacterDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA676222B3C5B100060FC83 /* CharacterDetailViewController.swift */; };
 		DEAC5E142B4463B000EEA1CA /* CustomLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAC5E132B4463B000EEA1CA /* CustomLayout.swift */; };
 /* End PBXBuildFile section */
@@ -40,6 +42,7 @@
 		DE997BD52B46CB56007C0654 /* Character.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Character.swift; sourceTree = "<group>"; };
 		DE997BD82B46CF92007C0654 /* Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
 		DEA09B8A2B3D6E040070A374 /* SliderExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderExtension.swift; sourceTree = "<group>"; };
+		DEA551522B5E670C00CC9BFB /* MenuTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableViewController.swift; sourceTree = "<group>"; };
 		DEA676222B3C5B100060FC83 /* CharacterDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterDetailViewController.swift; sourceTree = "<group>"; };
 		DEAC5E132B4463B000EEA1CA /* CustomLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLayout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -49,6 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE692DDD2B5D723300F43EA8 /* SideMenu in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -114,6 +118,7 @@
 				DEA676222B3C5B100060FC83 /* CharacterDetailViewController.swift */,
 				DE24CDE22B46D4D600AA5114 /* PitchCollectionViewCell.swift */,
 				DE24CDE42B46F59800AA5114 /* CreatePitchViewController.swift */,
+				DEA551522B5E670C00CC9BFB /* MenuTableViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -134,6 +139,9 @@
 			dependencies = (
 			);
 			name = "Football Tactics App";
+			packageProductDependencies = (
+				DE692DDC2B5D723300F43EA8 /* SideMenu */,
+			);
 			productName = "Football Tactics App";
 			productReference = DE39AEB62B3B5FF6002DCD77 /* Football Tactics App.app */;
 			productType = "com.apple.product-type.application";
@@ -162,6 +170,9 @@
 				Base,
 			);
 			mainGroup = DE39AEAD2B3B5FF6002DCD77;
+			packageReferences = (
+				DE692DDB2B5D723200F43EA8 /* XCRemoteSwiftPackageReference "SideMenu" */,
+			);
 			productRefGroup = DE39AEB72B3B5FF6002DCD77 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -191,6 +202,7 @@
 			files = (
 				DEA09B8B2B3D6E040070A374 /* SliderExtension.swift in Sources */,
 				DE24CDE32B46D4D600AA5114 /* PitchCollectionViewCell.swift in Sources */,
+				DEA551532B5E670C00CC9BFB /* MenuTableViewController.swift in Sources */,
 				DEAC5E142B4463B000EEA1CA /* CustomLayout.swift in Sources */,
 				DE24CDE52B46F59800AA5114 /* CreatePitchViewController.swift in Sources */,
 				DEA676232B3C5B100060FC83 /* CharacterDetailViewController.swift in Sources */,
@@ -425,6 +437,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DE692DDB2B5D723200F43EA8 /* XCRemoteSwiftPackageReference "SideMenu" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jonkykong/SideMenu";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DE692DDC2B5D723300F43EA8 /* SideMenu */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DE692DDB2B5D723200F43EA8 /* XCRemoteSwiftPackageReference "SideMenu" */;
+			productName = SideMenu;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		DE39AEC22B3B5FF6002DCD77 /* Football_Tactics_App.xcdatamodeld */ = {

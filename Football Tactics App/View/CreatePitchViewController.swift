@@ -125,6 +125,7 @@ class CreatePitchViewController: UIViewController {
         view.clipsToBounds = true
         view.layer.borderColor = UIColor.black.cgColor
         view.layer.borderWidth = 1
+        view.alpha = 0
         return view
     }()
     
@@ -139,6 +140,7 @@ class CreatePitchViewController: UIViewController {
         view.layer.cornerRadius = 15
         view.layer.borderColor = UIColor.black.cgColor
         view.layer.borderWidth = 1
+        view.alpha = 0.0
         return view
     }()
     
@@ -261,11 +263,13 @@ class CreatePitchViewController: UIViewController {
     @objc func sayiButtonClicked(){
         if oyuncuSayiView.isHidden{
         
-            oyuncuSayiView.isHidden = false
+           // oyuncuSayiView.isHidden = false
             blackView.isHidden = false
+            
             
             UIView.animate(withDuration: 0.5) {
                 self.view.layoutIfNeeded()
+                self.oyuncuSayiView.isHidden = false
                 self.oyuncuSayiView.alpha = 1.0
               //  self.dizilisTableView.alpha = 0
                // self.dizilisTableView.isHidden = true
@@ -273,6 +277,8 @@ class CreatePitchViewController: UIViewController {
             }
             
         }else{
+            print("2")
+
             UIView.animate(withDuration: 0.5) {
                 self.view.layoutIfNeeded()
                 self.oyuncuSayiView.alpha = 0.0
@@ -346,7 +352,7 @@ class CreatePitchViewController: UIViewController {
     let blackView: UIView = {
         let blackView = UIView()
         blackView.backgroundColor = .black
-        blackView.alpha = 0.3
+        blackView.alpha = 0.0
         blackView.isHidden = true
         blackView.translatesAutoresizingMaskIntoConstraints = false
         return blackView
