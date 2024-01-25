@@ -80,13 +80,15 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
     private lazy var saveButton: UIButton = {
         let button = UIButton(type: .system)
         
-        button.setTitle("Save Character", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = .cyan
-        button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.gray.cgColor
+        button.layer.borderWidth = 2
         button.layer.cornerRadius = 5
+        button.backgroundColor = UIColor(red: 172/255, green: 215/255, blue: 236/255, alpha: 1)
+        button.setTitleColor(.black, for: .normal)
+        button.setTitle("Save Player", for: .normal)
+        button.titleLabel?.font = UIFont(name: "HoeflerText-Black", size: 22)
+        button.layer.borderColor = UIColor.black.cgColor
+        //button.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: .semibold)
         button.addTarget(self, action: #selector(saveButtonClicked), for: .touchUpInside)
         return button
     }()
@@ -109,10 +111,11 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
     //Oyuncu Kart Önizlemesi
     private let customCardView: UIView = {
         let alertView = UIView()
-        alertView.layer.cornerRadius = 30
-        alertView.layer.borderWidth = 1
-        alertView.layer.borderColor = UIColor.green.cgColor
-        alertView.backgroundColor = .lightGray
+       // alertView.layer.cornerRadius = 30
+       // alertView.layer.borderWidth = 2
+       // alertView.layer.borderColor = UIColor.black.cgColor
+       // alertView.backgroundColor =  UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
+        alertView.backgroundColor = .clear
         alertView.isHidden = true
         alertView.translatesAutoresizingMaskIntoConstraints = false
         return alertView
@@ -133,6 +136,7 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         button.setTitle("Details", for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .black
+        button.isHidden = true
        // button.backgroundColor = .green
         button.addTarget(self, action: #selector(detailClicked), for: .touchUpInside)
         return button
@@ -420,7 +424,8 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
     private let hizlanmaLabel: UILabel = {
         let label = UILabel()
         label.text = "Pace (Pac)"
-        label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+       // label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        label.font = UIFont(name: "HoeflerText-Black", size: 18)
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -431,7 +436,9 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         let label = UILabel()
         label.text = "50"
         label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+       // label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+        label.font = UIFont(name: "HoeflerText-Black", size: 18)
+
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
 
@@ -439,7 +446,8 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
     
     private let sutLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+//        label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        label.font = UIFont(name: "HoeflerText-Black", size: 18)
 
         label.text = "Shooting (SHO)"
         label.numberOfLines = 0
@@ -452,7 +460,8 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         let label = UILabel()
         label.text = "50"
         label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+       // label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+        label.font = UIFont(name: "HoeflerText-Black", size: 18)
 
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -460,7 +469,8 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
     }()
     private let pasLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+      //  label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        label.font = UIFont(name: "HoeflerText-Black", size: 18)
 
         label.text = "Passing (PAS)"
         label.numberOfLines = 0
@@ -473,7 +483,8 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         let label = UILabel()
         label.text = "50"
         label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+      //  label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+        label.font = UIFont(name: "HoeflerText-Black", size: 18)
 
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -483,7 +494,8 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         let label = UILabel()
         label.text = "Dribbling (DRI)"
         label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+   //     label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        label.font = UIFont(name: "HoeflerText-Black", size: 18)
 
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -494,7 +506,8 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         let label = UILabel()
         label.text = "50"
         label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+   //     label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+        label.font = UIFont(name: "HoeflerText-Black", size: 18)
 
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -505,7 +518,9 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         let label = UILabel()
         label.text = "Defending (DEF)"
         label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+      //  label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        label.font = UIFont(name: "HoeflerText-Black", size: 18)
+
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
 
@@ -515,7 +530,9 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         let label = UILabel()
         label.text = "50"
         label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+      //  label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+        label.font = UIFont(name: "HoeflerText-Black", size: 18)
+
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
 
@@ -524,7 +541,9 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         let label = UILabel()
         label.text = "Physical (PHY)"
         label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+      //  label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        label.font = UIFont(name: "HoeflerText-Black", size: 18)
+
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
 
@@ -534,7 +553,9 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         let label = UILabel()
         label.text = "50"
         label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+      //  label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+        label.font = UIFont(name: "HoeflerText-Black", size: 18)
+
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
 
@@ -568,6 +589,9 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Preview Card", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.titleLabel?.font = UIFont(name: "HoeflerText-Black", size: 16)
+     //   button.setTitleColor(UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1), for: .normal)
         button.addTarget(self, action: #selector(previewCharacter), for: .touchUpInside)
         return button
     }()
@@ -623,7 +647,8 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
   
         characterNameTextField.delegate = self
 
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
+        
         characterImageView.layer.cornerRadius = view.frame.width/6
         addSubviews()
         addCardSubviews()
@@ -990,8 +1015,12 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         
         view.addSubview(saveButton)
         
+        
         saveButton.topAnchor.constraint(equalTo: customSliderPhy.bottomAnchor, constant: 15).isActive = true
         saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        saveButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        saveButton.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        
         
     }
     
@@ -1014,7 +1043,7 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         backgroundImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true*/
 
         
-        customCardView.heightAnchor.constraint(equalToConstant: 360).isActive = true
+        customCardView.heightAnchor.constraint(equalToConstant: 380).isActive = true
         
         customCardView.widthAnchor.constraint(equalToConstant: 300).isActive = true
 
@@ -1023,10 +1052,25 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
 
         
         // closeCharacterButton
-        customCardView.addSubview(closeCharacterButtonCard)
         
-        closeCharacterButtonCard.trailingAnchor.constraint(equalTo: customCardView.trailingAnchor, constant: -5).isActive = true
-        closeCharacterButtonCard.topAnchor.constraint(equalTo: customCardView.topAnchor, constant: 5).isActive = true
+        let cardBackImageView = UIImageView(image: UIImage(named: "cardView"))
+        cardBackImageView.translatesAutoresizingMaskIntoConstraints = false
+        cardBackImageView.contentMode = .scaleToFill
+        cardBackImageView.clipsToBounds = true
+        customCardView.clipsToBounds = true
+        
+        
+        customCardView.addSubview(cardBackImageView)
+        
+        cardBackImageView.topAnchor.constraint(equalTo: customCardView.topAnchor).isActive = true
+        cardBackImageView.bottomAnchor.constraint(equalTo: customCardView.bottomAnchor).isActive = true
+        cardBackImageView.leadingAnchor.constraint(equalTo: customCardView.leadingAnchor).isActive = true
+        cardBackImageView.trailingAnchor.constraint(equalTo: customCardView.trailingAnchor).isActive = true
+
+        customCardView.addSubview(closeCharacterButtonCard)
+
+        closeCharacterButtonCard.trailingAnchor.constraint(equalTo: customCardView.trailingAnchor, constant: -15).isActive = true
+        closeCharacterButtonCard.topAnchor.constraint(equalTo: customCardView.topAnchor, constant: 15).isActive = true
         closeCharacterButtonCard.widthAnchor.constraint(equalToConstant: 35).isActive = true
         closeCharacterButtonCard.heightAnchor.constraint(equalToConstant: 35).isActive = true
 

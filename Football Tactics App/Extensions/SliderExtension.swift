@@ -49,8 +49,8 @@ final class Slider: UISlider {
 
     // Step 7
     private func configureTrackLayer() {
-        let firstColor = UIColor(red: 217/255, green: 247/255, blue: 180/255, alpha: 1).cgColor
-        let secondColor = UIColor(red: 170/255, green: 230/255, blue: 100/255, alpha: 1).cgColor
+        let firstColor =  UIColor(red: 200/255, green: 255/255, blue: 255/255, alpha: 1).cgColor
+        let secondColor =  UIColor(red: 120/255, green: 255/255, blue: 255/255, alpha: 1).cgColor
         trackLayer.colors = [firstColor, secondColor]
         trackLayer.startPoint = .init(x: 0, y: 0.5)
         trackLayer.endPoint = .init(x: 1, y: 0.5)

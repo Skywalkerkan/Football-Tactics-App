@@ -6,17 +6,67 @@
 //
 
 import UIKit
+import CoreData
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
+    
+    
+    var kayitliMi = false
+    
+    func uniqueuuids() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        let managedContext = appDelegate.persistentContainer.viewContext
+
+        // NSFetchRequest oluştur
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "FootballTactics")
+
+        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        do {
+            // Fetch işlemi gerçekleştir
+            let results = try managedContext.fetch(fetchRequest)
+
+            // Farklı UUID'leri bulmak için bir dizi oluştur
+     
+            if results.count > 0{
+                self.kayitliMi = true
+            }
+
+        } catch {
+            print("Hata: \(error.localizedDescription)")
+        }
+    }
+    
     var window: UIWindow?
+           func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+               
+               guard let windowScene = scene as? UIWindowScene else { return }
+               window = UIWindow(windowScene: windowScene)
 
+               uniqueuuids()
+               print(kayitliMi)
 
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+               let storyboard = UIStoryboard(name: "Main", bundle: nil)
+               var rootViewController: UIViewController
+
+               // Unique UUIDs listesinin count değerini kontrol et
+               if kayitliMi {
+                   // Eğer unique UUIDs listesi boş değilse, MainViewController'ı başlat
+                   let mainViewController = storyboard.instantiateViewController(withIdentifier: "MainViewController") as! MainViewController
+                   rootViewController = UINavigationController(rootViewController: mainViewController)
+               } else {
+                   // Eğer unique UUIDs listesi boşsa, CreatePitchViewController'ı başlat
+                   let createPitchViewController = storyboard.instantiateViewController(withIdentifier: "CreatePitchViewController") as! CreatePitchViewController
+                   rootViewController = UINavigationController(rootViewController: createPitchViewController)
+               }
+
+               window?.rootViewController = rootViewController
+               window?.makeKeyAndVisible()
+           
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

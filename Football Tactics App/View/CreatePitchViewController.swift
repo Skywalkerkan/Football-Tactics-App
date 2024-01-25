@@ -202,6 +202,10 @@ class CreatePitchViewController: UIViewController {
             VC.uuidString = uuidString
             
             addTactic(uuid: id, tacticSize: tacticSize, tacticFormation: tacticFormation)
+            
+            
+            
+           //   navigationController?.popViewController(animated: true)
             navigationController?.pushViewController(VC, animated: true)
         }
         
@@ -360,11 +364,31 @@ class CreatePitchViewController: UIViewController {
     
     var screenRatio: CGFloat = 0.0
    
+    var backButtonHides = false
+    
     override func viewWillAppear(_ animated: Bool) {
 
         print(view.frame.size.width/view.frame.size.height )
         
             
+        print(backButtonHides)
+        
+        if let kaydedilmisBoolValue = UserDefaults.standard.value(forKey: "boolAnahtar") as? Bool {
+            print("Kaydedilmiş Boolean Değer: \(kaydedilmisBoolValue)")
+            
+            
+            if kaydedilmisBoolValue{
+                navigationItem.hidesBackButton = true
+                UserDefaults.standard.set(false, forKey: "boolAnahtar")
+            }else{
+                navigationItem.hidesBackButton = false
+
+            }
+            
+            
+        }
+        
+        
       
     
         
@@ -861,7 +885,7 @@ extension CreatePitchViewController: UITableViewDelegate, UITableViewDataSource{
             tableView.deselectRow(at: indexPath, animated: true)
 
             
-        default: 
+        default:
             break
             
         }

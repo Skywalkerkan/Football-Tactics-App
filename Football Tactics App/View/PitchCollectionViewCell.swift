@@ -7,7 +7,17 @@
 
 import UIKit
 
+
+protocol YourCollectionViewCellDelegate: AnyObject {
+    func deleteButtonClicked(in cell: PitchCollectionViewCell)
+}
+
 class PitchCollectionViewCell: UICollectionViewCell {
+    
+    
+    
+    weak var delegate: YourCollectionViewCellDelegate?
+
     
     let pitchImageView: UIImageView = {
         let imageView = UIImageView()
@@ -42,16 +52,26 @@ class PitchCollectionViewCell: UICollectionViewCell {
         }()
     
     
-    let deleteTacticButton: UIButton = {
+    lazy var deleteTacticButton: UIButton = {
         
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "xmark"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = .black
         button.isHidden = true
+        button.addTarget(self, action: #selector(deleteClicked), for: .touchUpInside)
         return button
         
     }()
+    
+    @objc func deleteClicked(){
+        
+        print("aaa")
+        
+        delegate?.deleteButtonClicked(in: self)
+
+        
+    }
     
     
     override init(frame: CGRect) {

@@ -10,14 +10,16 @@ import UIKit
 class MenuTableViewController: UITableViewController {
 
     
-    var items = ["1","2","3","4"]
+    var items = ["Delete All Tactics","Languages","Info"]
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        view.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
+        
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
 
+        
     }
 
     // MARK: - Table view data source
@@ -37,9 +39,17 @@ class MenuTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
 
         // Configure the cell...
+        cell.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
         cell.textLabel?.text = items[indexPath.row]
+        cell.textLabel?.textAlignment = .center
         
         return cell
+    }
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if items[indexPath.row] == "Languages"{
+            navigationController?.pushViewController(CreateCharacterViewController(), animated: true)
+
+        }
     }
     
 

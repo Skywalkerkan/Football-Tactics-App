@@ -9,7 +9,90 @@ import UIKit
 import CoreData
 import SideMenu
 
-class MainViewController: UIViewController {
+class MainViewController: UIViewController, YourCollectionViewCellDelegate {
+    
+    
+    func deleteButtonClicked(in cell: PitchCollectionViewCell) {
+            // Burada CollectionViewCell'den gelen olayı işleyebilirsiniz.
+        if let indexPath = collectionView.indexPath(for: cell) {
+            let deletedTactic = allTactics[indexPath.row]
+            print("Delete button clicked in cell at index \(indexPath.row)")
+            print("Deleted Tactic ID: \(deletedTactic.id)")
+            
+            
+            guard let uuid = deletedTactic.id else{return}
+            deleteSelectedPlayerPositions(id: uuid)
+            deleteSelectedTactic(id: uuid)
+            
+            uniqueuuids()
+            
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+                
+            }
+            
+            if allTactics.count == 0{
+                
+                let boolValueToSave = true
+                UserDefaults.standard.set(boolValueToSave, forKey: "boolAnahtar")
+                
+                
+                self.navigationController?.pushViewController(CreatePitchViewController(), animated: true)
+                
+            }
+            
+            else{
+                collectionView.selectItem(at: IndexPath(item: indexPath.row, section: 0), animated: true, scrollPosition: .centeredVertically)
+                
+                let uuidString = uniqueUUIDs.first?.uuidString
+                print(uuidString)
+                for playerView in playerViews {
+                    playerView.removeFromSuperview()
+                }
+                
+                // Dizi içindeki tüm view'leri temizle
+                playerViews.removeAll()
+                
+                // uniqueuuids()
+                
+                chosenTacticSize = Int(allTactics.first!.size)
+                ChosenTacticFormation = (allTactics.first?.formation)!
+                
+                
+                createPlayers(tacticSize: chosenTacticSize)
+                
+             //   addSubviews()
+                
+                predicateById(uuidString: uuidString!)
+                
+                
+                if let imageData = allTactics.first!.image{
+                    DispatchQueue.main.async {
+                        self.backgroundImageView.image = UIImage(data: imageData)
+                        
+                        
+                    }
+                    
+                    
+                }else{
+                    
+                    DispatchQueue.main.async {
+                        self.backgroundImageView.image = UIImage(named: "2")
+                        
+                    }
+                    
+                }
+                
+                
+                
+                
+                
+                // Silme işlemini gerçekleştir
+            }
+        }
+        
+        }
+    
 
     
     var menu: SideMenuNavigationController?
@@ -224,6 +307,7 @@ class MainViewController: UIViewController {
         let image = UIImage(named: "pitch")
         let imageView = UIImageView(image: image)
         imageView.contentMode = .scaleToFill
+        imageView.isHidden = false
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -271,25 +355,46 @@ class MainViewController: UIViewController {
         
      //   print("aaa")
         
+        
+        uniqueuuids()
+        
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
+        
+        
+        
         for playerView in playerViews {
             playerView.removeFromSuperview()
         }
+        
+        print(playerViews.count)
+
 
         // Dizi içindeki tüm view'leri temizle
         playerViews.removeAll()
+        
+        print(playerViews.count)
+        
+        
         createPlayers(tacticSize: chosenTacticSize)
         
-        addSubviews()
+       // savePlayerPositions()
+        print(playerViews.count)
 
-        
+       // addSubviews()
+
+        print(playerViews.count)
+
       //  loadPlayerPositions()
         print("oluşturulacak uuid tactic\(uuidString)")
         predicateById(uuidString: uuidString)
         
-        
+      
+
       //  uniqueuuids()
 
-        
+        addSubviews()
         
     }
     
@@ -553,8 +658,9 @@ class MainViewController: UIViewController {
             self.tableView.reloadData()
         }*/
         
-        
-        navigationController?.popViewController(animated: true)
+        navigationController?.pushViewController(CreatePitchViewController(), animated: true)
+
+     //   navigationController?.popViewController(animated: true)
         
     }
     
@@ -600,7 +706,7 @@ class MainViewController: UIViewController {
     lazy var repeatTacticFormationButton: UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setBackgroundImage(UIImage(systemName: "repeat.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(.white), for: .normal)
+        button.setBackgroundImage(UIImage(systemName: "trash.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(.white), for: .normal)
         button.addTarget(self, action: #selector(clickedRepeatFormation), for: .touchUpInside)
         return button
     }()
@@ -609,27 +715,46 @@ class MainViewController: UIViewController {
     @objc func clickedRepeatFormation(){
     
             
-        let alertController = UIAlertController(title: "Alert", message: "Are you sure that you want to rebuild you tactic", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Alert", message: "Are you sure that you want to delete all tactics ?", preferredStyle: .alert)
         
         let yesAction = UIAlertAction(title: "Yes", style: .cancel){_ in
             
-            print("Oyuncuları Sıfırla")
+        /*    for playerView in self.playerViews {
+                playerView.removeFromSuperview()
+            }
+
+            // Dizi içindeki tüm view'leri temizle
+            self.playerViews.removeAll()
             
-            /*for playerView in self.playerViews {
+            
+            
+            
+            
+            self.createPlayers(tacticSize: self.chosenTacticSize)
+            
+            for i in self.playerViews{
+                print(i.frame)
+            }
+            
+            self.savePlayerPositions()
+
+            for playerView in self.playerViews {
                 playerView.removeFromSuperview()
             }
 
             
-            // Dizi içindeki tüm view'leri temizle
-            self.playerViews.removeAll()
+            self.predicateById(uuidString: self.uuidString)*/
             
-            print(self.playerViews)
+            
+            self.deleteAllTactics()
+            self.deleteAllPlayerPositions()
+            
 
+            let boolValueToSave = true
+            UserDefaults.standard.set(boolValueToSave, forKey: "boolAnahtar")
             
-            self.createPlayers(tacticSize: self.chosenTacticSize)
             
-            
-            print(self.playerViews)*/
+            self.navigationController?.pushViewController(CreatePitchViewController(), animated: true)
             
         }
         
@@ -644,8 +769,26 @@ class MainViewController: UIViewController {
         
     }
     
- 
+    let iconeImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.layer.cornerRadius = 5
+        imageView.clipsToBounds = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        let image = UIImage(named: "icone")
+        imageView.image = image
+        return imageView
+    }()
+
     
+    
+    func getStatusBarHeight() -> CGFloat {
+        var statusBarHeight: CGFloat = 0
+        let scenes = UIApplication.shared.connectedScenes
+        let windowScene = scenes.first as? UIWindowScene
+        let window = windowScene?.windows.first
+        statusBarHeight = window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+        return statusBarHeight
+    }
     
     
     override func viewDidLoad() {
@@ -658,7 +801,12 @@ class MainViewController: UIViewController {
         firstView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         firstView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true*/
         
+    
         
+        let statusBarHeight = getStatusBarHeight()
+        let barHeight = self.navigationController?.navigationBar.frame.height ?? 0
+
+        print("navigation \(barHeight)")
         
         menu = SideMenuNavigationController(rootViewController: MenuTableViewController())
         
@@ -672,7 +820,9 @@ class MainViewController: UIViewController {
         
         
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewTactic))
+       // navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewTactic))
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Add Tactic", style: .done, target: self, action: #selector(addButtonClick))
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .done, target: self, action: #selector(settingsButtonClicked))
         
@@ -698,10 +848,10 @@ class MainViewController: UIViewController {
       //  navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewTactic))
         
         //Unique uuidleri bulma
-        uniqueuuids()
+       /* uniqueuuids()
         DispatchQueue.main.async {
             self.collectionView.reloadData()
-        }
+        }*/
         
         
         tableViewRegister()
@@ -738,6 +888,8 @@ class MainViewController: UIViewController {
         
         
         
+        print(playerViews.count)
+        
         
       //  loadPlayerPositions()
         
@@ -760,7 +912,7 @@ class MainViewController: UIViewController {
         }*/
         
         
-       // addSubviews()
+        //addSubviews()
         
         
         viewAsagiTaraf.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
@@ -809,6 +961,12 @@ class MainViewController: UIViewController {
         backgroundImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         
         
+        
+        view.addSubview(iconeImageView)
+        iconeImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: statusBarHeight).isActive = true
+        iconeImageView.heightAnchor.constraint(equalToConstant: barHeight).isActive = true
+        iconeImageView.widthAnchor.constraint(equalToConstant: barHeight).isActive = true
+        iconeImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         
 
@@ -1813,21 +1971,119 @@ class MainViewController: UIViewController {
             }
         }
 
-        func deleteAllPlayerPositions() {
+        func deleteSelectedPlayerPositions(id: UUID) {
             guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
             let managedContext = appDelegate.persistentContainer.viewContext
 
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "PlayerPosition")
 
+            guard let uuid = UUID(uuidString: uuidString) else{
+                return
+            }
+            
+            
+            let predicate = NSPredicate(format: "id == %@", uuid as CVarArg)
+            
+            fetchRequest.predicate = predicate
+            
             do {
                 let results = try managedContext.fetch(fetchRequest)
                 for case let result as NSManagedObject in results {
                     managedContext.delete(result)
                 }
+                
+                try managedContext.save()
+
+                
             } catch let error as NSError {
                 print("Could not delete. \(error), \(error.userInfo)")
             }
         }
+    
+    func deleteSelectedTactic(id: UUID) {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let managedContext = appDelegate.persistentContainer.viewContext
+
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "FootballTactics")
+
+        guard let uuid = UUID(uuidString: uuidString) else{
+            return
+        }
+        
+        
+        let predicate = NSPredicate(format: "id == %@", uuid as CVarArg)
+        
+        fetchRequest.predicate = predicate
+        
+        do {
+            let results = try managedContext.fetch(fetchRequest)
+            for case let result as NSManagedObject in results {
+                managedContext.delete(result)
+            }
+            
+            try managedContext.save()
+
+        } catch let error as NSError {
+            print("Could not delete. \(error), \(error.userInfo)")
+        }
+    }
+    
+    
+    func deleteAllPlayerPositions() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let managedContext = appDelegate.persistentContainer.viewContext
+
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "PlayerPosition")
+
+        guard let uuid = UUID(uuidString: uuidString) else{
+            return
+        }
+        
+
+        do {
+            let results = try managedContext.fetch(fetchRequest)
+            for case let result as NSManagedObject in results {
+                managedContext.delete(result)
+            }
+            
+            try managedContext.save()
+
+            
+        } catch let error as NSError {
+            print("Could not delete. \(error), \(error.userInfo)")
+        }
+    }
+    
+    func deleteAllTactics() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        let managedContext = appDelegate.persistentContainer.viewContext
+
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "FootballTactics")
+
+        guard let uuid = UUID(uuidString: uuidString) else{
+            return
+        }
+        
+
+        do {
+            let results = try managedContext.fetch(fetchRequest)
+            for case let result as NSManagedObject in results {
+                managedContext.delete(result)
+            }
+            
+            try managedContext.save()
+
+            
+        } catch let error as NSError {
+            print("Could not delete. \(error), \(error.userInfo)")
+        }
+    }
+
+    
+    
+    
+   
+
     
     
     
@@ -1883,9 +2139,9 @@ class MainViewController: UIViewController {
         }
         
         let predicate = NSPredicate(format: "id == %@", "\(uuid)")
-
+        print("uuid \(uuid)")
         fetchRequest.predicate = predicate
-        
+        print("predicateById")
         
         do {
             let results = try managedContext.fetch(fetchRequest)
@@ -1900,12 +2156,16 @@ class MainViewController: UIViewController {
                  //  let tacticName = result.value(forKey: "tacticname") as? String,
                    
                     
-                    index < playerViews.count {
+                   
                     
+                    index < playerViews.count {
+                    print(index, x, y, id, uuidString, imageData, characterName)
+
                    // let characterLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
                   //  print(characterName)
 
                //     title = tacticName
+                    
                     
                     let characterLabel: UILabel = {
                        let label = UILabel()
@@ -1973,9 +2233,16 @@ class MainViewController: UIViewController {
                     
                 }
                 
+                print("giremedik abi3")
             }
-        }catch{
+            print("giremedik abi1")
             
+            let resultlar = try managedContext.fetch(fetchRequest)
+            
+            print(resultlar)
+            
+        }catch{
+            print("giremedik abi2")
         }
 
     }
@@ -2020,26 +2287,41 @@ class MainViewController: UIViewController {
             allTactics.reverse()
             uniqueUUIDs.reverse()
             
-            print("all tacticler \(allTactics.count)")
-            
-           // uniqueUUIDs = Array(uniqueUUIDsSet)
-            
-            guard let imageData = allTactics.first?.image as? Data else{
-                return
+            if allTactics.count > 0{
                 
-            }
-            DispatchQueue.main.async {
-                self.backgroundImageView.image = UIImage(data: imageData)
-
-            }
-            
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-            // Farklı UUID'leri yazdır
-           // print("Farklı UUID Sayısı: \(uniqueUUIDs.count)")
-            for uniqueUUID in uniqueUUIDs {
-                print("UUID: \(uniqueUUID)")
+                
+                
+                
+                if let tacticSize = allTactics.first?.size {
+                    chosenTacticSize = Int(tacticSize)
+                } else {
+                    // Eğer allTactics.first?.size nil ise, uygun bir varsayılan değer veya başka bir strateji belirleyebilirsiniz.
+                    chosenTacticSize = 11 // Veya başka bir değer
+                }
+                ChosenTacticFormation = (allTactics.first?.formation)!
+                uuidString = (allTactics.first?.id!.uuidString)!
+                
+                print("all tacticler \(allTactics.count)")
+                
+                // uniqueUUIDs = Array(uniqueUUIDsSet)
+                
+                guard let imageData = allTactics.first?.image as? Data else{
+                    return
+                    
+                }
+                DispatchQueue.main.async {
+                    self.backgroundImageView.image = UIImage(data: imageData)
+                    
+                }
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+                // Farklı UUID'leri yazdır
+                // print("Farklı UUID Sayısı: \(uniqueUUIDs.count)")
+                for uniqueUUID in uniqueUUIDs {
+                    print("UUID: \(uniqueUUID)")
+                }
             }
 
         } catch {
@@ -2407,6 +2689,8 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             return UICollectionViewCell()
         }
         
+        cell.delegate = self
+        
         cell.contentView.layer.cornerRadius = 15
         cell.contentView.backgroundColor = .gray
         cell.contentView.clipsToBounds = true
@@ -2445,6 +2729,13 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
 
         // Dizi içindeki tüm view'leri temizle
         playerViews.removeAll()
+        
+       // uniqueuuids()
+        
+        chosenTacticSize = Int(allTactics[indexPath.row].size)
+        ChosenTacticFormation = allTactics[indexPath.row].formation!
+
+        
         createPlayers(tacticSize: chosenTacticSize)
         
         addSubviews()
@@ -2597,5 +2888,3 @@ extension MainViewController{
     }
     
 }
-
-
