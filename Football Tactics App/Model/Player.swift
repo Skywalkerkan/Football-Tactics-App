@@ -19,6 +19,7 @@ struct Player{
     let dribbling: Int16
     let defending: Int16
     let physical: Int16
+    let playerNo: String
 
     
 }

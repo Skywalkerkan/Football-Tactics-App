@@ -14,7 +14,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
     
     func deleteButtonClicked(in cell: PitchCollectionViewCell) {
             // Burada CollectionViewCell'den gelen olayı işleyebilirsiniz.
-        if let indexPath = collectionView.indexPath(for: cell) {
+        if let indexPath = collectionViewTactics.indexPath(for: cell) {
             let deletedTactic = allTactics[indexPath.row]
             print("Delete button clicked in cell at index \(indexPath.row)")
             print("Deleted Tactic ID: \(deletedTactic.id)")
@@ -27,7 +27,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
             uniqueuuids()
             
             DispatchQueue.main.async {
-                self.collectionView.reloadData()
+                self.collectionViewTactics.reloadData()
                 
             }
             
@@ -42,7 +42,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
             }
             
             else{
-                collectionView.selectItem(at: IndexPath(item: indexPath.row, section: 0), animated: true, scrollPosition: .centeredVertically)
+                collectionViewTactics.selectItem(at: IndexPath(item: indexPath.row, section: 0), animated: true, scrollPosition: .centeredVertically)
                 
                 let uuidString = uniqueUUIDs.first?.uuidString
                 print(uuidString)
@@ -94,10 +94,14 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         }
     
 
+    var selectedPlayerIndex: Int = 0
     
     var menu: SideMenuNavigationController?
     
     var player: Player? = nil
+    
+    var characters: [Player] = []
+    
     var characterIndex = 0
     var playerViews: [UIView] = []
 
@@ -359,7 +363,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         uniqueuuids()
         
         DispatchQueue.main.async {
-            self.collectionView.reloadData()
+            self.collectionViewTactics.reloadData()
         }
         
         
@@ -438,20 +442,20 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
     }
     
     func collectionViewSetUp(){
-        collectionView.dragInteractionEnabled = false
-        collectionView.backgroundColor = .clear
-        collectionView.decelerationRate = .normal
-        collectionView.contentInsetAdjustmentBehavior = .never
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.showsVerticalScrollIndicator = false
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-        collectionView.register(PitchCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.clipsToBounds = true
-        tacticsView.addSubview(collectionView)
+        collectionViewTactics.dragInteractionEnabled = false
+        collectionViewTactics.backgroundColor = .clear
+        collectionViewTactics.decelerationRate = .normal
+        collectionViewTactics.contentInsetAdjustmentBehavior = .never
+        collectionViewTactics.showsHorizontalScrollIndicator = false
+        collectionViewTactics.showsVerticalScrollIndicator = false
+        collectionViewTactics.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        collectionViewTactics.register(PitchCollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionViewTactics.dataSource = self
+        collectionViewTactics.delegate = self
+        collectionViewTactics.clipsToBounds = true
+        tacticsView.addSubview(collectionViewTactics)
         //tacticsView.backgroundColor = .blue
-        collectionView.backgroundColor = .clear
+        collectionViewTactics.backgroundColor = .clear
         
        // collectionView.collectionViewLayout = layout
        /* layout.scrollDirection = .horizontal
@@ -459,19 +463,58 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         layout.minimumInteritemSpacing = 30.0
         layout.itemSize.width = itemWidth*/
         
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
-        collectionView.addGestureRecognizer(longPressGesture)
+       // let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+      //  collectionView.addGestureRecognizer(longPressGesture)
         
         
-        collectionView.leadingAnchor.constraint(equalTo: tacticsView.leadingAnchor, constant: 0).isActive = true
-        collectionView.trailingAnchor.constraint(equalTo: tacticsView.trailingAnchor, constant: 0).isActive = true
+        collectionViewTactics.leadingAnchor.constraint(equalTo: tacticsView.leadingAnchor, constant: 0).isActive = true
+        collectionViewTactics.trailingAnchor.constraint(equalTo: tacticsView.trailingAnchor, constant: 0).isActive = true
        // collectionView.centerYAnchor.constraint(equalTo: tacticsView.centerYAnchor).isActive = true
         //collectionView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4).isActive = true
-        collectionView.topAnchor.constraint(equalTo: tacticsView.topAnchor).isActive = true
-        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 15).isActive = true
+        collectionViewTactics.topAnchor.constraint(equalTo: tacticsView.topAnchor).isActive = true
+        collectionViewTactics.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 15).isActive = true
         
         
     }
+    
+    
+    func collectionViewPlayerSetUp(){
+
+        collectionViewPlayers.dragInteractionEnabled = false
+        collectionViewPlayers.backgroundColor = .clear
+        collectionViewPlayers.decelerationRate = .normal
+        collectionViewPlayers.contentInsetAdjustmentBehavior = .never
+        collectionViewPlayers.showsHorizontalScrollIndicator = false
+        collectionViewPlayers.showsVerticalScrollIndicator = false
+        collectionViewPlayers.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        collectionViewPlayers.register(CharacterCollectionViewCell.self, forCellWithReuseIdentifier: "cell2")
+        collectionViewPlayers.dataSource = self
+        collectionViewPlayers.delegate = self
+        collectionViewPlayers.clipsToBounds = true
+        tacticsView.addSubview(collectionViewPlayers)
+        //tacticsView.backgroundColor = .blue
+        collectionViewPlayers.backgroundColor = .clear
+        
+       // collectionView.collectionViewLayout = layout
+       /* layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = 30.0
+        layout.minimumInteritemSpacing = 30.0
+        layout.itemSize.width = itemWidth*/
+        
+       // let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+      //  collectionView.addGestureRecognizer(longPressGesture)
+        
+        
+        collectionViewPlayers.leadingAnchor.constraint(equalTo: tacticsView.leadingAnchor, constant: 0).isActive = true
+        collectionViewPlayers.trailingAnchor.constraint(equalTo: tacticsView.trailingAnchor, constant: 0).isActive = true
+       // collectionView.centerYAnchor.constraint(equalTo: tacticsView.centerYAnchor).isActive = true
+        //collectionView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4).isActive = true
+        collectionViewPlayers.topAnchor.constraint(equalTo: tacticsView.topAnchor).isActive = true
+        collectionViewPlayers.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 15).isActive = true
+        
+        
+    }
+    
     
     var selectedIndexPath: IndexPath? // Animasyonu uygulanan hücrenin indeksi
 
@@ -480,7 +523,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
   //  var selectedIndexPath: IndexPath?
     
     func stopAllAnimations() {
-        for cell in collectionView.visibleCells {
+        for cell in collectionViewTactics.visibleCells {
             // Animasyonları durdur
                 cell.transform = .identity
         }
@@ -498,12 +541,12 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
     
     
     @objc func handleLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
-           let point = gestureRecognizer.location(in: collectionView)
+           let point = gestureRecognizer.location(in: collectionViewTactics)
           // stopAllAnimations()
            switch gestureRecognizer.state {
            case .began:
                // Uzun basma noktasındaki hücrenin indeksini al
-               if let indexPath = collectionView.indexPathForItem(at: point) {
+               if let indexPath = collectionViewTactics.indexPathForItem(at: point) {
                    // Seçilen hücrenin indeksini ekleyin
                    selectedIndexPaths.insert(indexPath)
                    
@@ -536,14 +579,14 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         
         if selectedIndexPath == indexPath{
             UIView.animate(withDuration: 0.1, delay: 0, options: [.autoreverse, .repeat], animations: {
-                if let cell = self.collectionView.cellForItem(at: indexPath) {
+                if let cell = self.collectionViewTactics.cellForItem(at: indexPath) {
                     cell.transform = CGAffineTransform(translationX: 5, y: 0).concatenating(CGAffineTransform(scaleX: 1.2, y: 1.2))
                 }
             }, completion: nil)
 
         }else{
             UIView.animate(withDuration: 0.1, delay: 0, options: [.autoreverse, .repeat], animations: {
-                if let cell = self.collectionView.cellForItem(at: indexPath) {
+                if let cell = self.collectionViewTactics.cellForItem(at: indexPath) {
                     cell.transform = CGAffineTransform(translationX: 5, y: 0)
                 }
             }, completion: nil)
@@ -560,7 +603,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         print("Durdurulacak")
         // Eğer bir hücre titriyorsa, animasyonu durdur
         if let indexPath = shakingIndexPath {
-            if let cell = collectionView.cellForItem(at: indexPath) {
+            if let cell = collectionViewTactics.cellForItem(at: indexPath) {
                 UIView.animate(withDuration: 0.1) {
                     cell.transform = .identity
                     print("Durdurulacak \(indexPath.item)")
@@ -596,7 +639,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
     let layout = CustomLayout()
 
     
-    let collectionView: UICollectionView = {
+    let collectionViewTactics: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 30.0
         layout.minimumInteritemSpacing = 30.0
@@ -605,6 +648,22 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .red
         view.clipsToBounds = true
+
+      //  view.isHidden = true
+        return view
+    }()
+    
+    let collectionViewPlayers: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 30.0
+        layout.minimumInteritemSpacing = 30.0
+        layout.scrollDirection = .horizontal
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        view.translatesAutoresizingMaskIntoConstraints = false
+      //  view.backgroundColor = .red
+        view.backgroundColor = .clear
+        view.clipsToBounds = true
+        view.isHidden = true
 
       //  view.isHidden = true
         return view
@@ -674,29 +733,72 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         present(menu!, animated: true)
     }
     
-    var footballPitchBasildiMi: Bool = false
-    
+    var footballPitchBasildiMi: Bool = true
     lazy var footballPitchImage: UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setBackgroundImage(UIImage(systemName: "sportscourt.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(.white), for: .normal)
+        button.setBackgroundImage(UIImage(systemName: "sportscourt.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(.black), for: .normal)
         button.addTarget(self, action: #selector(clickedFootballPitch), for: .touchUpInside)
         return button
     }()
     
     @objc func clickedFootballPitch(){
         
-        if footballPitchBasildiMi{
+        if playersImageBasildiMi{
             
-            footballPitchImage.setBackgroundImage(UIImage(systemName: "sportscourt.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(UIColor(red: 107/255, green: 142/255, blue: 65/255, alpha: 1)), for: .normal)
             
-        }else{
-            footballPitchImage.setBackgroundImage(UIImage(systemName: "sportscourt.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(.black), for: .normal)
+            
+            if footballPitchBasildiMi{
+                playersImageButton.setBackgroundImage(UIImage(systemName: "person.2.fill")?.withRenderingMode(.alwaysOriginal).withTintColor(.white), for: .normal)
+                footballPitchImage.setBackgroundImage(UIImage(systemName: "sportscourt.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(.black), for: .normal)
+                footballPitchBasildiMi = true
+                playersImageBasildiMi = false
+                collectionViewTactics.isHidden = false
+                collectionViewPlayers.isHidden = true
+
+                print("sol")
+                
+            }
         }
             
         
-        self.footballPitchBasildiMi = !footballPitchBasildiMi
+        //self.footballPitchBasildiMi = !footballPitchBasildiMi
         
+    
+        
+        
+    }
+    
+    var playersImageBasildiMi: Bool = false
+
+    
+    lazy var playersImageButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setBackgroundImage(UIImage(systemName: "person.2.fill")?.withRenderingMode(.alwaysOriginal).withTintColor(.white), for: .normal)
+        button.addTarget(self, action: #selector(clickedplayersImageButton), for: .touchUpInside)
+        return button
+    }()
+    
+    @objc func clickedplayersImageButton(){
+        
+        
+        if footballPitchBasildiMi{
+            
+            
+            if playersImageBasildiMi == false{
+                playersImageButton.setBackgroundImage(UIImage(systemName: "person.2.fill")?.withRenderingMode(.alwaysOriginal).withTintColor(.black), for: .normal)
+                footballPitchImage.setBackgroundImage(UIImage(systemName: "sportscourt.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(.white), for: .normal)
+                playersImageBasildiMi = true
+                collectionViewTactics.isHidden = true
+                collectionViewPlayers.isHidden = false
+                print("sağ")
+
+            }
+        }
+        
+       // self.playersImageBasildiMi = !playersImageBasildiMi
+
     
         
         
@@ -791,6 +893,56 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
     }
     
     
+    
+    func fetchAllCharacters(){
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context = appDelegate.persistentContainer.viewContext
+        
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Character")
+        request.returnsObjectsAsFaults = false
+        
+        
+        do{
+            let results = try context.fetch(request)
+            
+            guard let results = results as? [NSManagedObject] else {return}
+            
+            for result in results{
+                
+             //   print(result)
+                
+                guard let imageData = result.value(forKey: "image") as? Data,
+                      let playerName = result.value(forKey: "name") as? String,
+                      let pace = result.value(forKey: "pace") as? Int16,
+                     // let no = result.value(forKey: "no") as? String,
+                      let passing = result.value(forKey: "passing") as? Int16,
+                      let physical = result.value(forKey: "physical") as? Int16,
+                      let shooting = result.value(forKey: "shooting") as? Int16,
+                      let dribbling = result.value(forKey: "dribbling") as? Int16,
+                      let defending = result.value(forKey: "defending") as? Int16,
+                      let playerNo = result.value(forKey: "no") as? String
+
+                
+                else{
+                    return
+                }
+                
+                
+                let player = Player(name: playerName, image: imageData, hizlanma: pace, sut: shooting, pas: passing, dribbling: dribbling, defending: defending, physical: physical, playerNo: playerNo)
+            
+                characters.append(player)
+                
+            }
+            
+            
+        }catch{
+            
+        }
+        
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
       /*  firstView.isHidden = false
@@ -801,7 +953,16 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         firstView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         firstView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true*/
         
+        
+        fetchAllCharacters()
+        
+        DispatchQueue.main.async {
+            self.collectionViewPlayers.reloadData()
+        }
+        
     
+        print(characters.count)
+        
         
         let statusBarHeight = getStatusBarHeight()
         let barHeight = self.navigationController?.navigationBar.frame.height ?? 0
@@ -880,10 +1041,13 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         savePlayerPositions()
         uniqueuuids()
         
+        
+       // print(<#T##Any...#>)
+        
       //  allTactics.reverse()
         
         DispatchQueue.main.async {
-            self.collectionView.reloadData()
+            self.collectionViewTactics.reloadData()
         }
         
         
@@ -939,6 +1103,16 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         footballPitchImage.leadingAnchor.constraint(equalTo: tacticsView.leadingAnchor, constant: 25).isActive = true
         footballPitchImage.heightAnchor.constraint(equalToConstant: 30).isActive = true
         footballPitchImage.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        
+        
+        
+        
+        view.addSubview(playersImageButton)
+        playersImageButton.topAnchor.constraint(equalTo: tacticsView.topAnchor, constant: 5).isActive = true
+        playersImageButton.leadingAnchor.constraint(equalTo: footballPitchImage.trailingAnchor, constant: 25).isActive = true
+        playersImageButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        playersImageButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        
 
         
         view.addSubview(repeatTacticFormationButton)
@@ -951,6 +1125,19 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         
         
         collectionViewSetUp()
+        collectionViewPlayerSetUp()
+        /*collectionViewPlayers.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        collectionViewPlayers.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        collectionViewPlayers.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        collectionViewPlayers.widthAnchor.constraint(equalToConstant: 200).isActive = true
+         */
+        
+       // collectionViewPlayers.register(PitchCollectionViewCell.self, forCellWithReuseIdentifier: "cell2")
+/*
+        collectionViewPlayers.delegate = self
+        collectionViewPlayers.dataSource = self*/
+        
+
        
         
         backgroundImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
@@ -964,8 +1151,8 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         
         view.addSubview(iconeImageView)
         iconeImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: statusBarHeight).isActive = true
-        iconeImageView.heightAnchor.constraint(equalToConstant: barHeight).isActive = true
-        iconeImageView.widthAnchor.constraint(equalToConstant: barHeight).isActive = true
+        iconeImageView.heightAnchor.constraint(equalToConstant: barHeight+10).isActive = true
+        iconeImageView.widthAnchor.constraint(equalToConstant: barHeight+10).isActive = true
         iconeImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         
@@ -1675,6 +1862,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         }
         
         characterIndex = index
+        selectedPlayerIndex = characterIndex
         
         let playerViewcik = playerViews[index]
         
@@ -1745,18 +1933,19 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
                   let physical = result.value(forKey: "physical") as? Int16,
                   let shooting = result.value(forKey: "shooting") as? Int16,
                   let dribbling = result.value(forKey: "dribbling") as? Int16,
-                  let defending = result.value(forKey: "defending") as? Int16
+                  let defending = result.value(forKey: "defending") as? Int16,
+                  let playerNo = result.value(forKey: "playerno") as? String
             else{
                 return
             }
 
-            player = Player(name: playerName, image: imageData, hizlanma: pace, sut: shooting, pas: passing, dribbling: dribbling, defending: defending, physical: physical)
+            player = Player(name: playerName, image: imageData, hizlanma: pace, sut: shooting, pas: passing, dribbling: dribbling, defending: defending, physical: physical, playerNo: playerNo)
             
             guard let player = player else{return}
             /*characterNameTextField.text = player.name
             characterImageView.image = UIImage(data: player.image)
             characterImageCard.image = UIImage(data: player.image)*/
-            print(player)
+            //print(player)
             
             
             hizlanmaLabel.text = "\(player.hizlanma)" + " Pac"
@@ -1858,7 +2047,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         //    deleteAllPlayerPositions()
 
         guard let imageData = UIImage(named: "forma")?.pngData() else{return}
-        let characterName = "Adı"
+        let characterName = "Name"
         
         
         //İndexleriyle ve idleriyle x ve y konumlarıyla beraber kaydetme
@@ -1874,7 +2063,8 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
                 playerPosition.setValue(position.y, forKey: "y")
                 playerPosition.setValue(characterName, forKey: "name")
                 playerPosition.setValue(imageData, forKey: "image")
-                
+                playerPosition.setValue("99", forKey: "playerno")
+
                 //Oyuncu Özellikleri
                 playerPosition.setValue(50, forKey: "defending")
                 playerPosition.setValue(50, forKey: "dribbling")
@@ -2139,9 +2329,9 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         }
         
         let predicate = NSPredicate(format: "id == %@", "\(uuid)")
-        print("uuid \(uuid)")
+     //   print("uuid \(uuid)")
         fetchRequest.predicate = predicate
-        print("predicateById")
+   //     print("predicateById")
         
         do {
             let results = try managedContext.fetch(fetchRequest)
@@ -2153,13 +2343,14 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
                    let uuidString = id.uuidString as? String,
                    let imageData = result.value(forKey: "image") as? Data,
                    let characterName = result.value(forKey: "name") as? String,
+                   let playerNo = result.value(forKey: "playerno") as? String,
                  //  let tacticName = result.value(forKey: "tacticname") as? String,
                    
                     
                    
                     
                     index < playerViews.count {
-                    print(index, x, y, id, uuidString, imageData, characterName)
+                 //   print(index, x, y, id, uuidString, imageData, characterName)
 
                    // let characterLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
                   //  print(characterName)
@@ -2170,6 +2361,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
                     let characterLabel: UILabel = {
                        let label = UILabel()
                         label.textAlignment = .center
+                        label.tag = 1
                         label.translatesAutoresizingMaskIntoConstraints = false
                         return label
                     }()
@@ -2186,6 +2378,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
                     let characterNumber: UILabel = {
                         let label = UILabel()
                         label.text = "33"
+                        label.tag = 2
                         label.textAlignment = .center
                         label.translatesAutoresizingMaskIntoConstraints = false
                         label.layer.cornerRadius = 13
@@ -2200,6 +2393,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
                    // characterLabel.text = "Oyuncu Adı"
                     characterLabel.text = characterName
                     characterImage.image = UIImage(data: imageData)
+                    characterNumber.text = playerNo
                     let playerView = playerViews[index]
                     playerView.addSubview(characterImage)
                     playerView.addSubview(characterLabel)
@@ -2233,19 +2427,79 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
                     
                 }
                 
-                print("giremedik abi3")
+            //    print("giremedik abi3")
             }
-            print("giremedik abi1")
+         //   print("giremedik abi1")
             
             let resultlar = try managedContext.fetch(fetchRequest)
             
-            print(resultlar)
+           // print(resultlar)
             
         }catch{
-            print("giremedik abi2")
+          //  print("giremedik abi2")
         }
 
     }
+    
+    
+    func predicateAndUploadCharacter(uuidString: String, index: Int, playerCharacter: Player){
+        
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else{return}
+        let managedContext = appDelegate.persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest<PlayerPosition> = PlayerPosition.fetchRequest()
+
+        guard let uuid = UUID(uuidString: uuidString) else{
+            return
+        }
+        
+        let predicate = NSPredicate(format: "id == %@ AND index == %d", uuid as CVarArg, index)
+        fetchRequest.predicate = predicate
+        
+        
+        
+        
+        
+        do {
+            if let character = try managedContext.fetch(fetchRequest).first {
+                // Güncelleme işlemini gerçekleştir
+             //   print(existingPlayerPosition)
+                /*let position = playerViews[index].center
+                existingPlayerPosition.setValue(position.x, forKey: "x")
+                existingPlayerPosition.setValue(position.y, forKey: "y")*/
+                
+                
+                
+                
+                character.setValue(playerCharacter.name, forKey: "name")
+                character.setValue(playerCharacter.image, forKey: "image")
+                
+                character.setValue(playerCharacter.defending, forKey: "defending")
+                character.setValue(playerCharacter.dribbling, forKey: "dribbling")
+                character.setValue(playerCharacter.physical, forKey: "physical")
+                character.setValue(playerCharacter.hizlanma, forKey: "pace")
+                character.setValue(playerCharacter.sut, forKey: "shooting")
+                character.setValue(playerCharacter.pas, forKey: "passing")
+
+                character.setValue("50", forKey: "playerno")
+
+            } else {
+                // Belirtilen ID ve index'e sahip öğe bulunamazsa buraya düşer
+                print("PlayerPosition not found for the given ID and index.")
+            }
+        } catch {
+            print("Fetch error: \(error)")
+        }
+        
+        
+        
+        do {
+            try managedContext.save()
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+
+    }
+
     
     
     ///Unique UUIDLERİ BUL GETİR tableViewde göster
@@ -2281,7 +2535,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
                    // uniqueUUIDsSet.insert(uuid)
                     uniqueUUIDs.append(uuid)
                     allTactics.append(footballTactics)
-                    print(footballTactics.id)
+                  //  print(footballTactics.id)
                 }
             }
             allTactics.reverse()
@@ -2674,45 +2928,94 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        if allTactics.count > 10{
+        switch collectionView{
+            
+        case collectionViewTactics:
+            if allTactics.count > 10{
+                return 10
+
+            }else{
+                return allTactics.count
+
+            }
+            
+        case collectionViewPlayers:
+            
+            return characters.count
+            
+        default:
             return 10
-
-        }else{
-            return allTactics.count
-
+            
         }
+        
         
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? PitchCollectionViewCell else{
+        
+        switch collectionView{
+        case collectionViewTactics:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? PitchCollectionViewCell else{
+                return UICollectionViewCell()
+            }
+            
+            cell.delegate = self
+            
+            cell.contentView.layer.cornerRadius = 15
+            cell.contentView.backgroundColor = .gray
+            cell.contentView.clipsToBounds = true
+            cell.clipsToBounds = true
+            cell.contentView.layer.borderWidth = 2
+            cell.contentView.layer.borderColor = UIColor.gray.cgColor
+            
+            cell.tacticNameLabel.text = allTactics[indexPath.row].name
+            cell.pitchNameLabel.text = allTactics[indexPath.row].formation
+            if let imageData = allTactics[indexPath.row].image {
+                
+                DispatchQueue.main.async {
+                    cell.pitchImageView.image = UIImage(data: imageData)
+                    
+                }
+               } else {
+                   // Handle the case when image data is nil (optional Data is nil)
+                   // You might want to set a placeholder image or handle it differently
+                   cell.pitchImageView.image = UIImage(named: "2")
+               }
+            return cell
+            
+        
+        case collectionViewPlayers:
+          //  print("aaaaaaaa")
+            guard let cell = collectionViewPlayers.dequeueReusableCell(withReuseIdentifier: "cell2", for: indexPath) as? CharacterCollectionViewCell else{
+                return UICollectionViewCell()
+            }
+            
+           // cell.delegate = self
+            
+            
+            cell.characterNameLabel.text = characters[indexPath.row].name
+            
+            let image = UIImage(data: characters[indexPath.row].image)
+            
+            cell.characterImageView.image = image
+
+
+            
+            cell.contentView.layer.cornerRadius = 15
+            cell.contentView.clipsToBounds = true
+            cell.clipsToBounds = true
+            cell.contentView.layer.borderWidth = 2
+            cell.contentView.layer.borderColor = UIColor.gray.cgColor
+
+       
+            return cell
+            
+        default:
             return UICollectionViewCell()
         }
         
-        cell.delegate = self
         
-        cell.contentView.layer.cornerRadius = 15
-        cell.contentView.backgroundColor = .gray
-        cell.contentView.clipsToBounds = true
-        cell.clipsToBounds = true
-        cell.contentView.layer.borderWidth = 2
-        cell.contentView.layer.borderColor = UIColor.gray.cgColor
         
-        cell.tacticNameLabel.text = allTactics[indexPath.row].name
-        cell.pitchNameLabel.text = allTactics[indexPath.row].formation
-        if let imageData = allTactics[indexPath.row].image {
-            
-            DispatchQueue.main.async {
-                cell.pitchImageView.image = UIImage(data: imageData)
-                
-            }
-           } else {
-               // Handle the case when image data is nil (optional Data is nil)
-               // You might want to set a placeholder image or handle it differently
-               cell.pitchImageView.image = UIImage(named: "2")
-           }
-        
-        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -2721,113 +3024,140 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let uuidString = uniqueUUIDs[indexPath.row].uuidString
-        print(uuidString)
-        for playerView in playerViews {
-            playerView.removeFromSuperview()
-        }
+        switch collectionView{
+        case collectionViewTactics:
+            let uuidString = uniqueUUIDs[indexPath.row].uuidString
+            print(uuidString)
+            for playerView in playerViews {
+                playerView.removeFromSuperview()
+            }
 
-        // Dizi içindeki tüm view'leri temizle
-        playerViews.removeAll()
-        
-       // uniqueuuids()
-        
-        chosenTacticSize = Int(allTactics[indexPath.row].size)
-        ChosenTacticFormation = allTactics[indexPath.row].formation!
+            // Dizi içindeki tüm view'leri temizle
+            playerViews.removeAll()
+            
+           // uniqueuuids()
+            
+            chosenTacticSize = Int(allTactics[indexPath.row].size)
+            ChosenTacticFormation = allTactics[indexPath.row].formation!
 
-        
-        createPlayers(tacticSize: chosenTacticSize)
-        
-        addSubviews()
-        
-        predicateById(uuidString: uuidString)
-        
-        fetchTactics(uuidString: uuidString)
-        
-        if let imageData = allTactics[indexPath.row].image{
-            DispatchQueue.main.async {
-                self.backgroundImageView.image = UIImage(data: imageData)
-               // self.tacticsView.backgroundColor = UIColor(red: 102/255, green: 175/255, blue: 171/255, alpha: 1)
+            
+            createPlayers(tacticSize: chosenTacticSize)
+            
+            addSubviews()
+            
+            predicateById(uuidString: uuidString)
+            
+            fetchTactics(uuidString: uuidString)
+            
+            if let imageData = allTactics[indexPath.row].image{
+                DispatchQueue.main.async {
+                    self.backgroundImageView.image = UIImage(data: imageData)
+                   
+                    
+                }
                 
-                print(imageData)
                 
-                /*if self.backgroundImageView.image?.pngData() == UIImage(named: "2")?.pngData(){
-                    self.viewAsagiTaraf.backgroundColor = UIColor(red: 73/255, green: 150/255, blue: 129/255, alpha: 1)
-
-                }else if self.backgroundImageView.image?.pngData() == UIImage(named: "3")?.pngData(){
-                    self.viewAsagiTaraf.backgroundColor = UIColor(red: 155/255, green: 139/255, blue: 93/255, alpha: 1)
-
-                }else if self.backgroundImageView.image?.pngData() == UIImage(named: "4")?.pngData(){
-                    self.viewAsagiTaraf.backgroundColor = UIColor(red: 102/255, green: 175/255, blue: 171/255, alpha: 1)
-
-                }else if self.backgroundImageView.image?.pngData() == UIImage(named: "5")?.pngData(){
-                    self.viewAsagiTaraf.backgroundColor = UIColor(red: 95/255, green: 121/255, blue: 76/255, alpha: 1)
-
-                }else if self.backgroundImageView.image?.pngData() == UIImage(named: "6")?.pngData(){
-                    self.viewAsagiTaraf.backgroundColor = UIColor(red: 31/255, green: 99/255, blue: 117/255, alpha: 1)
-
-                }else if self.backgroundImageView.image?.pngData() == UIImage(named: "7")?.pngData(){
-                    self.viewAsagiTaraf.backgroundColor = UIColor(red: 168/255, green: 155/255, blue: 95/255, alpha: 1)
-
-                }else if self.backgroundImageView.image?.pngData() == UIImage(named: "8")?.pngData(){
-                    self.viewAsagiTaraf.backgroundColor = UIColor(red: 0/255, green: 108/255, blue: 73/255, alpha: 1)
+            }else{
+                
+                DispatchQueue.main.async {
+                    self.backgroundImageView.image = UIImage(named: "2")
 
                 }
-                else if self.backgroundImageView.image?.pngData() == UIImage(named: "9")?.pngData(){
-                    self.viewAsagiTaraf.backgroundColor = UIColor(red: 33/255, green: 150/255, blue: 94/255, alpha: 1)
 
-                }*/
-                
-                
+            }
+            
+            guard let cell = collectionView.cellForItem(at: indexPath) as? PitchCollectionViewCell else{
+                return
             }
             
             
-        }else{
-            
-            DispatchQueue.main.async {
-                self.backgroundImageView.image = UIImage(named: "2")
-
+            if indexPath.item == layout.currentPage{
+                layout.currentPage = indexPath.item
+                layout.previousOffset = layout.updateOffset(collectionView)
+                setupCell()
+                print("1")
+            }else{
+                collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+                layout.currentPage = indexPath.item
+                layout.previousOffset = layout.updateOffset(collectionView)
+                setupCell()
+                print("2")
             }
+            
+            selectedIndexPath = indexPath
 
-        }
-        
-        guard let cell = collectionView.cellForItem(at: indexPath) as? PitchCollectionViewCell else{
-            return
-        }
-        
-        
-        if indexPath.item == layout.currentPage{
-            layout.currentPage = indexPath.item
-            layout.previousOffset = layout.updateOffset(collectionView)
-            setupCell()
-            print("1")
-        }else{
-            collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-            layout.currentPage = indexPath.item
-            layout.previousOffset = layout.updateOffset(collectionView)
-            setupCell()
-            print("2")
-        }
-        
-        selectedIndexPath = indexPath
-
-           // Tüm hücreleri döngü ile kontrol et
-        for i in 0..<collectionView.numberOfItems(inSection: selectedIndexPath!.section) {
-               // Her hücreyi al
-            if let cell = collectionView.cellForItem(at: IndexPath(item: i, section: selectedIndexPath!.section)) as? PitchCollectionViewCell {
-                   // Seçilen hücre ise deleteTacticButton.isHidden'i false yap, aksi takdirde true yap
-                cell.deleteTacticButton.isHidden = (i == selectedIndexPath!.item) ? false : true
-                
-                cell.contentView.layer.borderWidth = (i == selectedIndexPath!.item) ? 1.5 : 2
-                cell.contentView.layer.borderColor = (i == selectedIndexPath!.item) ? UIColor.black.cgColor : UIColor.gray.cgColor
-                
+               // Tüm hücreleri döngü ile kontrol et
+            for i in 0..<collectionView.numberOfItems(inSection: selectedIndexPath!.section) {
+                   // Her hücreyi al
+                if let cell = collectionView.cellForItem(at: IndexPath(item: i, section: selectedIndexPath!.section)) as? PitchCollectionViewCell {
+                       // Seçilen hücre ise deleteTacticButton.isHidden'i false yap, aksi takdirde true yap
+                    cell.deleteTacticButton.isHidden = (i == selectedIndexPath!.item) ? false : true
+                    
+                    cell.contentView.layer.borderWidth = (i == selectedIndexPath!.item) ? 1.5 : 2
+                    cell.contentView.layer.borderColor = (i == selectedIndexPath!.item) ? UIColor.black.cgColor : UIColor.gray.cgColor
+                    
+                   }
                }
-           }
-        
-  
+            
       
+          
+            
+         //   cell.deleteTacticButton.isHidden = false
+            
+        case collectionViewPlayers:
+            
+            print(characters[indexPath.row])
+            print(playerViews.count)
+            
+            
+            
+            
+            
+                let playerView = playerViews[selectedPlayerIndex]
+                
+                var playerName = "Name"
+                var playerNo = "99"
+                var playerImageData = Data()
+                // ImageView alt görünümüne eriş
+                if let imageView = playerView.subviews.first(where: { $0 is UIImageView }) as? UIImageView {
+                    // ImageView özelliklerini değiştir
+                    guard let image = UIImage(data: characters[indexPath.row].image) else{return}
+                    imageView.image = image
+                    playerImageData = characters[indexPath.row].image
+                    // Diğer özellikleri değiştir...
+                }
+                
+                if let labelView = playerView.subviews.first(where: { $0 is UILabel && $0.tag == 1 }) as? UILabel {
+                       // UILabel özelliklerini değiştir
+                    labelView.text = "\(characters[indexPath.row].name)"
+                    playerName = characters[indexPath.row].name
+                       // Diğer özellikleri değiştir...
+                   }
+                
+                if let labelView = playerView.subviews.first(where: { $0 is UILabel && $0.tag == 2 }) as? UILabel {
+                       // UILabel özelliklerini değiştir
+                    labelView.text = "55"
+                    //No Değiştir
+                    playerNo = "55"
+
+                       // Diğer özellikleri değiştir...
+                   }
+                
+                
+                print("selected \(selectedPlayerIndex)")
+                
+                
+                predicateAndUploadCharacter(uuidString: uuidString, index: characterIndex, playerCharacter: characters[indexPath.row])
+                
+            
+            
+            
+            
+        default:
+            print(indexPath)
+        }
         
-     //   cell.deleteTacticButton.isHidden = false
+        
         
         
     }
@@ -2857,7 +3187,7 @@ extension MainViewController{
     
     func setupCell(){
         let indexPath = IndexPath(item: layout.currentPage, section: 0)
-        if let cell = collectionView.cellForItem(at: indexPath){
+        if let cell = collectionViewTactics.cellForItem(at: indexPath){
             transformCell(cell)
            didSelectAnotherCell()
         }
@@ -2874,9 +3204,9 @@ extension MainViewController{
             cell.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
         }
         
-        for otherCell in collectionView.visibleCells{
+        for otherCell in collectionViewTactics.visibleCells{
             
-            if let indexPath = collectionView.indexPath(for: otherCell){
+            if let indexPath = collectionViewTactics.indexPath(for: otherCell){
                 if indexPath.item != layout.currentPage{
                     UIView.animate(withDuration: 0.2) {
                         otherCell.transform = .identity

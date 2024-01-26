@@ -739,12 +739,13 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
                   let physical = result.value(forKey: "physical") as? Int16,
                   let shooting = result.value(forKey: "shooting") as? Int16,
                   let dribbling = result.value(forKey: "dribbling") as? Int16,
-                  let defending = result.value(forKey: "defending") as? Int16
+                  let defending = result.value(forKey: "defending") as? Int16,
+                  let playerNo = result.value(forKey: "playerno") as? String
             else{
                 return
             }
 
-            player = Player(name: characterName, image: imageData, hizlanma: pace, sut: shooting, pas: passing, dribbling: dribbling, defending: defending, physical: physical)
+            player = Player(name: characterName, image: imageData, hizlanma: pace, sut: shooting, pas: passing, dribbling: dribbling, defending: defending, physical: physical, playerNo: playerNo)
             
             guard let player = player else{return}
             characterNameTextField.text = player.name
@@ -786,7 +787,7 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
                 
                 guard let imageData = characterImageView.image?.pngData() else {return}
                 
-                player = Player(name: nameText, image: imageData, hizlanma: Int16(customSliderHizlanma.value), sut: Int16(customSliderSut.value), pas: Int16(customSliderPas.value), dribbling: Int16(customSliderDrib.value), defending: Int16(customSliderDef.value), physical: Int16(customSliderPhy.value))
+                player = Player(name: nameText, image: imageData, hizlanma: Int16(customSliderHizlanma.value), sut: Int16(customSliderSut.value), pas: Int16(customSliderPas.value), dribbling: Int16(customSliderDrib.value), defending: Int16(customSliderDef.value), physical: Int16(customSliderPhy.value), playerNo: "34")
                 
                 guard let player = player else{return}
                 
@@ -799,6 +800,8 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
                 characterToUpdate.setValue(player.dribbling, forKey: "dribbling")
                 characterToUpdate.setValue(player.defending, forKey: "defending")
                 characterToUpdate.setValue(player.physical, forKey: "physical")
+                characterToUpdate.setValue(player.playerNo, forKey: "playerno")
+
                 
                 
                // fetchCharacter(tacticUUID: tacticUUID, characterIndex: characterIndex)

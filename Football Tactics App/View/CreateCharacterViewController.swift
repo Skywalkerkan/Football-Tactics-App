@@ -77,7 +77,8 @@ class CreateCharacterViewController: UIViewController {
         newPlayer.dribbling = Int16((Int(customSliderDrib.value)))
         newPlayer.defending = Int16((Int(customSliderDef.value)))
         newPlayer.physical = Int16((Int(customSliderPhy.value)))
-        
+        newPlayer.no = "53"
+
         print(newPlayer)
         
         if let imageData = characterImageView.image?.pngData() {
@@ -874,7 +875,7 @@ class CreateCharacterViewController: UIViewController {
 
         guard let image = UIImage(named: "forma")?.pngData() else{return}
         
-        player = Player(name: "Name", image: image, hizlanma: 50, sut: 50, pas: 50, dribbling: 50, defending: 50, physical: 50)
+        player = Player(name: "Name", image: image, hizlanma: 50, sut: 50, pas: 50, dribbling: 50, defending: 50, physical: 50, playerNo: "53")
         guard let player = player else{return}
         
         

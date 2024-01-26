@@ -48,7 +48,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                window = UIWindow(windowScene: windowScene)
 
                uniqueuuids()
-               print(kayitliMi)
+            //   print(kayitliMi)
 
                let storyboard = UIStoryboard(name: "Main", bundle: nil)
                var rootViewController: UIViewController
