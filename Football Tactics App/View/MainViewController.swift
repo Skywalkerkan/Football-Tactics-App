@@ -9,7 +9,10 @@ import UIKit
 import CoreData
 import SideMenu
 
-class MainViewController: UIViewController, YourCollectionViewCellDelegate {
+class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFetchedResultsControllerDelegate {
+    
+    var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
+
     
     
     func deleteButtonClicked(in cell: PitchCollectionViewCell) {
@@ -342,9 +345,35 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
     var imageIDs = [String]() // Farklı ID'leri tutan dizi
 
     var chosenLine = "4 4 2"
+    
+    var degisiklikOlduMu = false
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+           print("Değişiklik oldu!")
+        
+           // degisiklikOlduMu = true
+            
+     
+        
+       }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChange anObject: Any,
+                    at indexPath: IndexPath?,
+                    for type: NSFetchedResultsChangeType,
+                    newIndexPath: IndexPath?) {
+        // Sadece ekleme durumu için işlem yapın
+        if type == .insert {
+            print("Ekleme yapıldı: \(anObject)")
+            degisiklikOlduMu = true
+
+        }
+    }
+    
+    
 
     override func viewWillAppear(_ animated: Bool) {
-        
+        print("ViewwillappearBaşladı")
      //   super.viewWillAppear(animated)
         
       /*  let indexPath = IndexPath(item: 1, section: 0)
@@ -360,8 +389,18 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
      //   print("aaa")
         
         
-        uniqueuuids()
         
+        
+       // uniqueuuids()
+        
+        
+        
+        fetchAllCharacters()
+        
+        DispatchQueue.main.async {
+            self.collectionViewPlayers.reloadData()
+        }
+
         DispatchQueue.main.async {
             self.collectionViewTactics.reloadData()
         }
@@ -378,10 +417,28 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         // Dizi içindeki tüm view'leri temizle
         playerViews.removeAll()
         
+        
         print(playerViews.count)
         
-        
+       // uniqueuuids()
+        print("İlk uuid String")
+        uniqueuuids()
+
         createPlayers(tacticSize: chosenTacticSize)
+        
+        print("Değişiklik = \(degisiklikOlduMu)")
+        
+        if degisiklikOlduMu == true{
+            print("Değişiklik olmuş")
+            uniqueuuids()
+            savePlayerPositions()
+            degisiklikOlduMu = false
+        }
+        
+        
+        
+       // savePlayerPositions()
+        
         
        // savePlayerPositions()
         print(playerViews.count)
@@ -433,6 +490,10 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
     let screenWidth =  UIScreen.main.bounds.size.width
     let screenHeigth =  UIScreen.main.bounds.size.height
     
+    var screenRatio = 0.0
+    
+
+    
     var itemWidth: CGFloat{
         return screenWidth * 0.33
     }
@@ -472,7 +533,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
        // collectionView.centerYAnchor.constraint(equalTo: tacticsView.centerYAnchor).isActive = true
         //collectionView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4).isActive = true
         collectionViewTactics.topAnchor.constraint(equalTo: tacticsView.topAnchor).isActive = true
-        collectionViewTactics.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 15).isActive = true
+        collectionViewTactics.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 25).isActive = true
         
         
     }
@@ -624,7 +685,13 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
 
     
     
-    
+    let langugaesTableView: UITableView = {
+       let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+       // tableView.isHidden = true
+        tableView.backgroundColor = .red
+        return tableView
+    }()
     
     
     let tableView: UITableView = {
@@ -804,11 +871,24 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         
     }
     
+    lazy var characterAddButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setBackgroundImage(UIImage(systemName: "person.crop.circle.badge.plus")?.withRenderingMode(.alwaysOriginal).withTintColor(UIColor(red: 188/255, green: 236/255, blue: 100/255, alpha: 1)), for: .normal)
+        button.addTarget(self, action: #selector(clickedCharacterAdd), for: .touchUpInside)
+        return button
+    }()
+    
+    @objc func clickedCharacterAdd(){
+        navigationController?.pushViewController(CreateCharacterViewController(), animated: true)
+    }
+    
+    
     
     lazy var repeatTacticFormationButton: UIButton = {
         let button = UIButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setBackgroundImage(UIImage(systemName: "trash.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(.white), for: .normal)
+        button.setBackgroundImage(UIImage(systemName: "trash.circle")?.withRenderingMode(.alwaysOriginal).withTintColor(UIColor(red: 247/255, green: 40/255, blue: 73/255, alpha: 1)), for: .normal)
         button.addTarget(self, action: #selector(clickedRepeatFormation), for: .touchUpInside)
         return button
     }()
@@ -900,7 +980,13 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         let context = appDelegate.persistentContainer.viewContext
         
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Character")
+        
+        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
+        request.sortDescriptors = [sortDescriptor]
+
         request.returnsObjectsAsFaults = false
+        
+        characters.removeAll()
         
         
         do{
@@ -953,6 +1039,11 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         firstView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         firstView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true*/
         
+        screenRatio = view.frame.size.width/view.frame.size.height
+
+        print(screenRatio)
+        
+        uniqueuuids()
         
         fetchAllCharacters()
         
@@ -977,6 +1068,38 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         
         view.backgroundColor = .white
         
+
+        
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "FootballTactics")
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context = appDelegate.persistentContainer.viewContext
+                // Fetch request'i yapılandırın (isteğe bağlı)
+                // Örneğin, sıralama ekleyebilir veya bir sorgu ölçütü belirleyebilirsiniz.
+        
+        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: true) // propertyName, sıralama yapmak istediğiniz özellik adıdır.
+               fetchRequest.sortDescriptors = [sortDescriptor]
+
+                // NSFetchedResultsController oluşturun
+                fetchedResultsController = NSFetchedResultsController(
+                    fetchRequest: fetchRequest,
+                    managedObjectContext: context,
+                    sectionNameKeyPath: nil,
+                    cacheName: nil
+                )
+
+                // Delegate'yi ayarlayın
+                fetchedResultsController?.delegate = self
+
+                // Verileri almak için performFetch() metodunu çağırın
+                do {
+                    try fetchedResultsController?.performFetch()
+                    print("aaa")
+                } catch {
+                    print("Fetch Error: \(error.localizedDescription)")
+                }
+        
+
 
         
         
@@ -1021,7 +1144,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
 
         
         //Oyuncularn oluşumu buraya sayı verebiliriz!!!
-        createPlayers(tacticSize: chosenTacticSize)
+       /* createPlayers(tacticSize: chosenTacticSize)
         
         
         //Uygulamanın ilk kez açıldığının kontrolü
@@ -1039,7 +1162,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         }*/
         
         savePlayerPositions()
-        uniqueuuids()
+        uniqueuuids()*/
         
         
        // print(<#T##Any...#>)
@@ -1089,7 +1212,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         
         
         view.addSubview(tacticsView)
-        tacticsView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4 + 40).isActive = true
+        tacticsView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4 + 50).isActive = true
         tacticsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 40).isActive = true
         tacticsView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         tacticsView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
@@ -1111,7 +1234,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         playersImageButton.topAnchor.constraint(equalTo: tacticsView.topAnchor, constant: 5).isActive = true
         playersImageButton.leadingAnchor.constraint(equalTo: footballPitchImage.trailingAnchor, constant: 25).isActive = true
         playersImageButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        playersImageButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        playersImageButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
         
 
         
@@ -1120,6 +1243,13 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         repeatTacticFormationButton.trailingAnchor.constraint(equalTo: tacticsView.trailingAnchor, constant: -25).isActive = true
         repeatTacticFormationButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
         repeatTacticFormationButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        
+        
+        view.addSubview(characterAddButton)
+        characterAddButton.topAnchor.constraint(equalTo: tacticsView.topAnchor, constant: 5).isActive = true
+        characterAddButton.trailingAnchor.constraint(equalTo: repeatTacticFormationButton.leadingAnchor, constant: -25).isActive = true
+        characterAddButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        characterAddButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
         
         
         
@@ -1156,7 +1286,9 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         iconeImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         
-
+      
+        
+        
         
     }
     
@@ -1985,6 +2117,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
                let CharacterDetailVC = CharacterDetailViewController()
                CharacterDetailVC.characterIndex = index
                CharacterDetailVC.tacticUUIDString = uuidString
+               
                navigationController?.pushViewController(CharacterDetailVC, animated: true)
                
               // predicateById(uuidString: uuidString)
@@ -2042,6 +2175,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
             let managedContext = appDelegate.persistentContainer.viewContext
             print("idye kaydedilece \(uuidString)")
             let id = UUID(uuidString: uuidString)
+            guard let id = id else{return}
             //let idString = self.uuidString
             // Clear existing data
         //    deleteAllPlayerPositions()
@@ -2058,6 +2192,9 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
                 let position = playerView.center
                 
                 playerPosition.setValue(id, forKey: "id")
+                
+                print("Save ID \(id)")
+                
                 playerPosition.setValue(index, forKey: "index")
                 playerPosition.setValue(position.x, forKey: "x")
                 playerPosition.setValue(position.y, forKey: "y")
@@ -2329,13 +2466,21 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
         }
         
         let predicate = NSPredicate(format: "id == %@", "\(uuid)")
-     //   print("uuid \(uuid)")
+        print("predicate oncesi \(uuid)")
         fetchRequest.predicate = predicate
    //     print("predicateById")
         
         do {
             let results = try managedContext.fetch(fetchRequest)
-            for case let result as NSManagedObject in results {
+            print("Result sayısı \(results.count)")
+            for result in results {
+                
+                
+                print("result =")
+                
+                guard let result = result as? NSManagedObject else{return}
+                
+                print("Resultlar \(result)")
                 if let index = result.value(forKey: "index") as? Int,
                    let x = result.value(forKey: "x") as? CGFloat,
                    let y = result.value(forKey: "y") as? CGFloat,
@@ -2358,10 +2503,14 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
                //     title = tacticName
                     
                     
+                    print("Başarıyla giriş yapıldı")
+                    
                     let characterLabel: UILabel = {
                        let label = UILabel()
                         label.textAlignment = .center
                         label.tag = 1
+                        label.font = UIFont.boldSystemFont(ofSize: 14)
+                        label.numberOfLines = 0
                         label.translatesAutoresizingMaskIntoConstraints = false
                         return label
                     }()
@@ -2427,9 +2576,11 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
                     
                 }
                 
-            //    print("giremedik abi3")
+                print("İNDEX SAYIDAN BÜYÜK")
             }
          //   print("giremedik abi1")
+            print("Predicate yerine girmiyor")
+
             
             let resultlar = try managedContext.fetch(fetchRequest)
             
@@ -2437,6 +2588,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
             
         }catch{
           //  print("giremedik abi2")
+            print("Predicate başarısız")
         }
 
     }
@@ -2480,7 +2632,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate {
                 character.setValue(playerCharacter.sut, forKey: "shooting")
                 character.setValue(playerCharacter.pas, forKey: "passing")
 
-                character.setValue("50", forKey: "playerno")
+                character.setValue(playerCharacter.playerNo, forKey: "playerno")
 
             } else {
                 // Belirtilen ID ve index'e sahip öğe bulunamazsa buraya düşer
@@ -2994,6 +3146,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             
             
             cell.characterNameLabel.text = characters[indexPath.row].name
+            cell.characterNumberLabel.text = characters[indexPath.row].playerNo
             
             let image = UIImage(data: characters[indexPath.row].image)
             
@@ -3019,7 +3172,16 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.size.width/3.3, height: itemHeigth)
+        
+        if screenRatio > 0.5{
+            return CGSize(width: view.frame.size.width/3.85, height: itemHeigth*0.85)
+
+        }else{
+            return CGSize(width: view.frame.size.width/3.3, height: itemHeigth)
+
+        }
+        
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -3110,11 +3272,17 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             print(playerViews.count)
             
             
-            
-            
-            
-                let playerView = playerViews[selectedPlayerIndex]
                 
+            if characterIndex == chosenTacticSize{
+                 characterIndex = 0
+             }
+            
+            else{
+                
+            }
+                
+            //    let playerView = playerViews[selectedPlayerIndex]
+                let playerView = playerViews[characterIndex]
                 var playerName = "Name"
                 var playerNo = "99"
                 var playerImageData = Data()
@@ -3128,26 +3296,35 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
                 }
                 
                 if let labelView = playerView.subviews.first(where: { $0 is UILabel && $0.tag == 1 }) as? UILabel {
-                       // UILabel özelliklerini değiştir
+                    // UILabel özelliklerini değiştir
                     labelView.text = "\(characters[indexPath.row].name)"
                     playerName = characters[indexPath.row].name
-                       // Diğer özellikleri değiştir...
-                   }
+                    // Diğer özellikleri değiştir...
+                }
                 
                 if let labelView = playerView.subviews.first(where: { $0 is UILabel && $0.tag == 2 }) as? UILabel {
-                       // UILabel özelliklerini değiştir
-                    labelView.text = "55"
+                    // UILabel özelliklerini değiştir
+                    labelView.text = characters[indexPath.row].playerNo
                     //No Değiştir
                     playerNo = "55"
-
-                       // Diğer özellikleri değiştir...
-                   }
+                    
+                    // Diğer özellikleri değiştir...
+                }
                 
                 
                 print("selected \(selectedPlayerIndex)")
                 
                 
+                
+                /* if characterIndex == chosenTacticSize{
+                 characterIndex = 0
+                 }else{*/
                 predicateAndUploadCharacter(uuidString: uuidString, index: characterIndex, playerCharacter: characters[indexPath.row])
+                
+            
+        
+            characterIndex += 1
+                
                 
             
             

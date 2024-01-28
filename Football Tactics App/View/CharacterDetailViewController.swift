@@ -15,11 +15,11 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
     
     var tacticUUIDString: String? = nil
     var characterIndex: Int? = nil
+    
 
     var player: Player? = nil
         
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Person")
+
     
     
     
@@ -640,12 +640,47 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
     }
     
     
+    
+    let playerNoTextfield: UITextField = {
+       let textfield = UITextField()
+        textfield.backgroundColor = .white
+        textfield.layer.borderWidth = 2
+        textfield.layer.cornerRadius = 17.5
+        textfield.text = "99"
+        textfield.keyboardType = .numberPad
+        textfield.textAlignment = .center
+        textfield.layer.borderColor = UIColor.black.cgColor
+        textfield.translatesAutoresizingMaskIntoConstraints = false
+        return textfield
+    }()
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        switch textField {
+        case playerNoTextfield:
+            // Yeni metin oluştur
+            guard let oldText = textField.text,
+                  let range = Range(range, in: oldText) else {
+                return true
+            }
+
+            let newText = oldText.replacingCharacters(in: range, with: string)
+
+            // Sadece sayıları kabul et
+            let nonDigitCharacterSet = CharacterSet.decimalDigits.inverted
+            return newText.rangeOfCharacter(from: nonDigitCharacterSet) == nil && newText.count <= 2
+        default:
+            return true
+        }
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
       //  navigationController?.navigationBar.backgroundColor = .red
         navigationController?.navigationBar.isHidden = false
   
         characterNameTextField.delegate = self
+        playerNoTextfield.delegate = self
 
         view.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
         
@@ -749,6 +784,7 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
             
             guard let player = player else{return}
             characterNameTextField.text = player.name
+            playerNoTextfield.text = playerNo
             characterImageView.image = UIImage(data: player.image)
             characterImageCard.image = UIImage(data: player.image)
           //  print(player)
@@ -787,7 +823,9 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
                 
                 guard let imageData = characterImageView.image?.pngData() else {return}
                 
-                player = Player(name: nameText, image: imageData, hizlanma: Int16(customSliderHizlanma.value), sut: Int16(customSliderSut.value), pas: Int16(customSliderPas.value), dribbling: Int16(customSliderDrib.value), defending: Int16(customSliderDef.value), physical: Int16(customSliderPhy.value), playerNo: "34")
+                guard let playerNo = playerNoTextfield.text else{return}
+                
+                player = Player(name: nameText, image: imageData, hizlanma: Int16(customSliderHizlanma.value), sut: Int16(customSliderSut.value), pas: Int16(customSliderPas.value), dribbling: Int16(customSliderDrib.value), defending: Int16(customSliderDef.value), physical: Int16(customSliderPhy.value), playerNo: playerNo)
                 
                 guard let player = player else{return}
                 
@@ -800,7 +838,19 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
                 characterToUpdate.setValue(player.dribbling, forKey: "dribbling")
                 characterToUpdate.setValue(player.defending, forKey: "defending")
                 characterToUpdate.setValue(player.physical, forKey: "physical")
-                characterToUpdate.setValue(player.playerNo, forKey: "playerno")
+                
+                if playerNoTextfield.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
+                    // Boş veya sadece boşluk karakterleri içeriyor
+                    characterToUpdate.setValue("99", forKey: "playerno")
+                } else {
+                    // Boş değil, işlemlerinizi buraya ekleyebilirsiniz
+                    
+                    characterToUpdate.setValue(player.playerNo, forKey: "playerno")
+                }
+
+                
+                
+                
 
                 
                 
@@ -873,6 +923,15 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         characterImageView.heightAnchor.constraint(equalToConstant: view.frame.width / 2.4).isActive = true
         characterImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         characterImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        view.addSubview(playerNoTextfield)
+
+        playerNoTextfield.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        playerNoTextfield.widthAnchor.constraint(equalToConstant: 35).isActive = true
+        playerNoTextfield.bottomAnchor.constraint(equalTo: characterImageView.bottomAnchor,constant: -20).isActive = true
+        playerNoTextfield.trailingAnchor.constraint(equalTo: characterImageView.trailingAnchor, constant: 0).isActive = true
+        
+        
         
         view.addSubview(characterNameTextField)
         

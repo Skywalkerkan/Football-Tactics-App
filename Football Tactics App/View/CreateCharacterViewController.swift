@@ -8,7 +8,7 @@
 import UIKit
 import CoreData
 
-class CreateCharacterViewController: UIViewController {
+class CreateCharacterViewController: UIViewController, UITextFieldDelegate {
 
     
     
@@ -55,6 +55,8 @@ class CreateCharacterViewController: UIViewController {
         
         addCharacter()
         
+        navigationController?.popViewController(animated: true)
+        
 
 
     }
@@ -77,7 +79,17 @@ class CreateCharacterViewController: UIViewController {
         newPlayer.dribbling = Int16((Int(customSliderDrib.value)))
         newPlayer.defending = Int16((Int(customSliderDef.value)))
         newPlayer.physical = Int16((Int(customSliderPhy.value)))
-        newPlayer.no = "53"
+        newPlayer.creationDate = Date()
+        
+        if playerNoTextfield.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
+            // Boş veya sadece boşluk karakterleri içeriyor
+            print("Boş veya sadece boşluk karakterleri içeriyor")
+            newPlayer.no = "99"
+        } else {
+            // Boş değil, işlemlerinizi buraya ekleyebilirsiniz
+            print("Boş değil")
+            newPlayer.no = playerNoTextfield.text
+        }
 
         print(newPlayer)
         
@@ -681,12 +693,48 @@ class CreateCharacterViewController: UIViewController {
         
     }
     
+    
+    
+    let playerNoTextfield: UITextField = {
+       let textfield = UITextField()
+        textfield.backgroundColor = .white
+        textfield.layer.borderWidth = 2
+        textfield.layer.cornerRadius = 17.5
+        textfield.text = "99"
+        textfield.keyboardType = .numberPad
+        textfield.textAlignment = .center
+        textfield.layer.borderColor = UIColor.black.cgColor
+        textfield.translatesAutoresizingMaskIntoConstraints = false
+        return textfield
+    }()
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        switch textField {
+        case playerNoTextfield:
+            // Yeni metin oluştur
+            guard let oldText = textField.text,
+                  let range = Range(range, in: oldText) else {
+                return true
+            }
+
+            let newText = oldText.replacingCharacters(in: range, with: string)
+
+            // Sadece sayıları kabul et
+            let nonDigitCharacterSet = CharacterSet.decimalDigits.inverted
+            return newText.rangeOfCharacter(from: nonDigitCharacterSet) == nil && newText.count <= 2
+        default:
+            return true
+        }
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
 
         
+        playerNoTextfield.delegate = self
         
         characterImageView.layer.cornerRadius = view.frame.width/6
 
@@ -712,10 +760,24 @@ class CreateCharacterViewController: UIViewController {
         view.addSubview(characterImageView)
         
         
+        
+        
+        
+        
+        
         characterImageView.widthAnchor.constraint(equalToConstant: view.frame.width / 2.4).isActive = true
         characterImageView.heightAnchor.constraint(equalToConstant: view.frame.width / 2.4).isActive = true
         characterImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         characterImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        view.addSubview(playerNoTextfield)
+
+        playerNoTextfield.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        playerNoTextfield.widthAnchor.constraint(equalToConstant: 35).isActive = true
+        playerNoTextfield.bottomAnchor.constraint(equalTo: characterImageView.bottomAnchor,constant: -20).isActive = true
+        playerNoTextfield.trailingAnchor.constraint(equalTo: characterImageView.trailingAnchor, constant: 0).isActive = true
+        
+        
         
         view.addSubview(characterNameTextField)
         

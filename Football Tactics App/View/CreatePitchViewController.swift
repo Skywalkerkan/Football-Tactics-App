@@ -201,12 +201,20 @@ class CreatePitchViewController: UIViewController {
             VC.ChosenTacticFormation = tacticFormation
             VC.uuidString = uuidString
             
+            
+            
+            
+        
+            
             addTactic(uuid: id, tacticSize: tacticSize, tacticFormation: tacticFormation)
             
             
             
            //   navigationController?.popViewController(animated: true)
-            navigationController?.pushViewController(VC, animated: true)
+      //      navigationController?.pushViewController(VC, animated: true)
+            
+            navigationController?.popViewController(animated: true)
+            
         }
         
         

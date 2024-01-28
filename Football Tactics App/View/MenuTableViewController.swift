@@ -10,7 +10,20 @@ import UIKit
 class MenuTableViewController: UITableViewController {
 
     
-    var items = ["Delete All Tactics","Languages","Info"]
+    var languagesBasildiMi = false
+    
+    let langugaesTableView: UITableView = {
+       let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.isHidden = true
+        tableView.backgroundColor = .clear
+        //tableView.backgroundColor = .red
+        return tableView
+    }()
+    
+    
+    var items = ["Delete All Tactics","Info","Languages"]
+    var languages = ["English","Turkish","French"]
     
     
     override func viewDidLoad() {
@@ -18,7 +31,20 @@ class MenuTableViewController: UITableViewController {
         view.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        langugaesTableView.register(LanguagesTableViewCell.self, forCellReuseIdentifier: "cell2")
+        langugaesTableView.delegate = self
+        langugaesTableView.dataSource = self
 
+        tableView.bounces = false
+        
+        view.addSubview(langugaesTableView)
+        
+        langugaesTableView.heightAnchor.constraint(equalToConstant: 250).isActive = true
+        langugaesTableView.widthAnchor.constraint(equalToConstant: 250).isActive = true
+        langugaesTableView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 150).isActive = true
+        langugaesTableView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+       // langugaesTableView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        
         
     }
 
@@ -26,30 +52,145 @@ class MenuTableViewController: UITableViewController {
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 1
+        
+        switch tableView{
+            
+
+        case langugaesTableView:
+            return 1
+
+            
+        default:
+            return 1
+
+        }
+        
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return items.count
+        switch tableView{
+            
+        case tableView:
+            return items.count
+
+        case langugaesTableView:
+            return languages.count
+
+            
+        default:
+            return 2
+
+        }
+
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-
-        // Configure the cell...
-        cell.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
-        cell.textLabel?.text = items[indexPath.row]
-        cell.textLabel?.textAlignment = .center
         
-        return cell
-    }
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if items[indexPath.row] == "Languages"{
-            navigationController?.pushViewController(CreateCharacterViewController(), animated: true)
+        
+        switch tableView{
+            
+    
+            
+
+        case langugaesTableView:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell2", for: indexPath) as? LanguagesTableViewCell else{return UITableViewCell()}
+
+            // Configure the cell...
+            cell.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
+            cell.countryName.text = languages[indexPath.row]
+            
+            
+            
+            
+            return cell
+
+            
+        default:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+
+            // Configure the cell...
+            cell.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
+            cell.textLabel?.text = items[indexPath.row]
+            cell.textLabel?.textAlignment = .center
+            
+            return cell
 
         }
+
+        
+       
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch tableView{
+            
+        case langugaesTableView:
+            
+            return 50
+            
+        
+            
+        default:
+            return 50
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch tableView{
+            
+    
+            
+
+        case langugaesTableView:
+            
+            switch languages[indexPath.row]{
+                
+            case "English":
+                print("English")
+                dismiss(animated: true)
+                langugaesTableView.deselectRow(at: indexPath, animated: true)
+            case "Turkish":
+                print("Turkish")
+                dismiss(animated: true)
+                langugaesTableView.deselectRow(at: indexPath, animated: true)
+
+
+            case "French":
+                print("French")
+                dismiss(animated: true)
+                langugaesTableView.deselectRow(at: indexPath, animated: true)
+
+
+                
+            default:
+                print("default")
+            }
+
+            
+        default:
+            
+            if items[indexPath.row] == "Languages"{
+                
+                tableView.deselectRow(at: indexPath, animated: true)
+                
+                if languagesBasildiMi == false{
+                    langugaesTableView.isHidden = false
+                    languagesBasildiMi = true
+                }else{
+                    langugaesTableView.isHidden = true
+                    languagesBasildiMi = false
+                }
+                
+                
+               // navigationController?.pushViewController(CreateCharacterViewController(), animated: true)
+
+            }
+
+        }
+        
+        
     }
     
 

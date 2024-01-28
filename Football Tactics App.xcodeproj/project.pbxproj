@@ -21,6 +21,7 @@
 		DE692DDD2B5D723300F43EA8 /* SideMenu in Frameworks */ = {isa = PBXBuildFile; productRef = DE692DDC2B5D723300F43EA8 /* SideMenu */; };
 		DE997BD62B46CB56007C0654 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE997BD52B46CB56007C0654 /* Player.swift */; };
 		DE997BD92B46CF92007C0654 /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE997BD82B46CF92007C0654 /* Alerts.swift */; };
+		DE9EBEF62B666BA8006943FD /* LanguagesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EBEF52B666BA8006943FD /* LanguagesTableViewCell.swift */; };
 		DEA09B8B2B3D6E040070A374 /* SliderExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA09B8A2B3D6E040070A374 /* SliderExtension.swift */; };
 		DEA551532B5E670C00CC9BFB /* MenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA551522B5E670C00CC9BFB /* MenuTableViewController.swift */; };
 		DEA676232B3C5B100060FC83 /* CharacterDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA676222B3C5B100060FC83 /* CharacterDetailViewController.swift */; };
@@ -44,6 +45,7 @@
 		DE49A4C52B554F3200E63E20 /* Tactic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tactic.swift; sourceTree = "<group>"; };
 		DE997BD52B46CB56007C0654 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		DE997BD82B46CF92007C0654 /* Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
+		DE9EBEF52B666BA8006943FD /* LanguagesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguagesTableViewCell.swift; sourceTree = "<group>"; };
 		DEA09B8A2B3D6E040070A374 /* SliderExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderExtension.swift; sourceTree = "<group>"; };
 		DEA551522B5E670C00CC9BFB /* MenuTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableViewController.swift; sourceTree = "<group>"; };
 		DEA676222B3C5B100060FC83 /* CharacterDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterDetailViewController.swift; sourceTree = "<group>"; };
@@ -106,6 +108,16 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		DE9EBEF42B666B7F006943FD /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				DEB565CC2B6294A300F6131E /* CharacterCollectionViewCell.swift */,
+				DE24CDE22B46D4D600AA5114 /* PitchCollectionViewCell.swift */,
+				DE9EBEF52B666BA8006943FD /* LanguagesTableViewCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		DEA676242B3C5B1C0060FC83 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -118,13 +130,12 @@
 		DEA676252B3C5B200060FC83 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				DE9EBEF42B666B7F006943FD /* Cells */,
 				DE39AEBD2B3B5FF6002DCD77 /* MainViewController.swift */,
 				DEA676222B3C5B100060FC83 /* CharacterDetailViewController.swift */,
-				DE24CDE22B46D4D600AA5114 /* PitchCollectionViewCell.swift */,
 				DE24CDE42B46F59800AA5114 /* CreatePitchViewController.swift */,
 				DEA551522B5E670C00CC9BFB /* MenuTableViewController.swift */,
 				DE2D9CBE2B616FCA00EEE599 /* CreateCharacterViewController.swift */,
-				DEB565CC2B6294A300F6131E /* CharacterCollectionViewCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -207,6 +218,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DEB565CD2B6294A300F6131E /* CharacterCollectionViewCell.swift in Sources */,
+				DE9EBEF62B666BA8006943FD /* LanguagesTableViewCell.swift in Sources */,
 				DE2D9CBF2B616FCA00EEE599 /* CreateCharacterViewController.swift in Sources */,
 				DEA09B8B2B3D6E040070A374 /* SliderExtension.swift in Sources */,
 				DE24CDE32B46D4D600AA5114 /* PitchCollectionViewCell.swift in Sources */,
