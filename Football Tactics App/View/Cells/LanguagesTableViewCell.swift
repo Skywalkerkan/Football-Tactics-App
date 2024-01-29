@@ -12,7 +12,7 @@ class LanguagesTableViewCell: UITableViewCell {
     
     let countryImage: UIImageView = {
        let imageView = UIImageView()
-        imageView.image = UIImage(named: "forma")
+        imageView.image = UIImage(named: "alman")
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView

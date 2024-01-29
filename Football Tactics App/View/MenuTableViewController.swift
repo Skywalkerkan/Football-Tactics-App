@@ -25,9 +25,31 @@ class MenuTableViewController: UITableViewController {
     var items = ["Delete All Tactics","Info","Languages"]
     var languages = ["English","Turkish","French"]
     
+    struct Languages{
+        
+        let country: String
+        let image: UIImage
+        
+        
+    }
+    
+    var languagesArray: [Languages] = [Languages(country: "English", image: UIImage(named: "ingiliz")!),
+                                       Languages(country: "Turkish", image: UIImage(named: "turk")!),
+                                       Languages(country: "French", image: UIImage(named: "frans")!),
+                                       Languages(country: "Deutch", image: UIImage(named: "alman")!)
+    ]
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        
+        
+        
+        
+        
         view.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -71,15 +93,13 @@ class MenuTableViewController: UITableViewController {
         // #warning Incomplete implementation, return the number of rows
         switch tableView{
             
-        case tableView:
-            return items.count
 
         case langugaesTableView:
-            return languages.count
+            return languagesArray.count
 
             
         default:
-            return 2
+            return items.count
 
         }
 
@@ -99,7 +119,8 @@ class MenuTableViewController: UITableViewController {
 
             // Configure the cell...
             cell.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
-            cell.countryName.text = languages[indexPath.row]
+            cell.countryName.text = languagesArray[indexPath.row].country
+            cell.countryImage.image = languagesArray[indexPath.row].image
             
             
             
