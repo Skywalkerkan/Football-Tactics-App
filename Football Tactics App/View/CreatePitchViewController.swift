@@ -22,6 +22,9 @@ class CreatePitchViewController: UIViewController {
     
     var selectedIndexPath: IndexPath?
 
+    var localizedString = "en"
+
+    
     
     var playerSize: [Int] = [5,6,7,8,9,10,11]
     var pitchTactic: [String] = ["4-4-2", "4-3-3", "4-3-2-1","3-4-3","3-5-2","5-4-1" ]
@@ -47,9 +50,9 @@ class CreatePitchViewController: UIViewController {
         return tacticView
     }()
     
-    private let tacticTextField: UITextField = {
+    private lazy var tacticTextField: UITextField = {
        let text = UITextField()
-        text.placeholder = "Tactic Name"
+        text.placeholder = "Tactic Name".localizedString(str: localizedString)
         text.textAlignment = .center
         text.layer.borderColor = UIColor.black.cgColor
         text.layer.borderWidth = 2
@@ -164,7 +167,7 @@ class CreatePitchViewController: UIViewController {
         button.layer.cornerRadius = 5
         button.backgroundColor = UIColor(red: 172/255, green: 215/255, blue: 236/255, alpha: 1)
         button.setTitleColor(.black, for: .normal)
-        button.setTitle("Save Tactic", for: .normal)
+        button.setTitle(" Save Tactic ".localizedString(str: localizedString), for: .normal)
         button.layer.borderColor = UIColor.black.cgColor
         button.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: .semibold)
         button.addTarget(self, action: #selector(saveButtonClicked), for: .touchUpInside)
@@ -187,8 +190,8 @@ class CreatePitchViewController: UIViewController {
             
             
         }else if tacticTextField.text!.count > 20{
-            let alertController = UIAlertController(title: "Alert", message: "Tactic Name Can Not Exceed 20 Letters", preferredStyle: .alert)
-            let action = UIAlertAction(title: "Ok", style: .cancel)
+            let alertController = UIAlertController(title: "Alert", message: "Tactic Name Can Not Exceed 20 Letters".localizedString(str: localizedString), preferredStyle: .alert)
+            let action = UIAlertAction(title: "Ok".localizedString(str: localizedString), style: .cancel)
             
             alertController.addAction(action)
             
@@ -255,8 +258,8 @@ class CreatePitchViewController: UIViewController {
     
     lazy var oyuncuSayiButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Team Size", for: .normal)
-        button.titleLabel?.font = UIFont(name: "HoeflerText-Black", size: 25)
+        button.setTitle("Team Size".localizedString(str: localizedString), for: .normal)
+        button.titleLabel?.font = UIFont(name: "HoeflerText-Black", size: 21)
 
         
         
@@ -308,8 +311,8 @@ class CreatePitchViewController: UIViewController {
     
     lazy var taktikDizilisButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Formation", for: .normal)
-        button.titleLabel?.font = UIFont(name: "HoeflerText-Black", size: 25)
+        button.setTitle("Formation".localizedString(str: localizedString), for: .normal)
+        button.titleLabel?.font = UIFont(name: "HoeflerText-Black", size: 21)
         button.setTitleColor(.black, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 5
@@ -354,7 +357,7 @@ class CreatePitchViewController: UIViewController {
         let stackView = UIStackView()
         stackView.distribution = .fillEqually
         stackView.axis = .horizontal
-        stackView.spacing = 35
+        stackView.spacing = 15
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -374,8 +377,11 @@ class CreatePitchViewController: UIViewController {
    
     var backButtonHides = false
     
-    override func viewWillAppear(_ animated: Bool) {
 
+    override func viewWillAppear(_ animated: Bool) {
+        
+
+        
         print(view.frame.size.width/view.frame.size.height )
         
             
@@ -403,9 +409,43 @@ class CreatePitchViewController: UIViewController {
         
     }
     
+    
+    
+    func languageChanged() {
+        // Dil değiştiğinde yapılacak işlemleri burada gerçekleştir
+        //updateTextsForCurrentLanguage()
+        print("Değişti")
+        view.setNeedsLayout()
+        
+
+        guard let languageString = UserDefaults.standard.string(forKey: "language") else{return}
+        
+        
+        
+        
+ 
+        
+        
+     /*   tacticTextField.placeholder = "Tactic Name".localizedString(str: languageString)
+        oyuncuSayiButton.setTitle("Team Size".localizedString(str: languageString), for: .normal)
+        saveButton.setTitle(" Save Tactic ".localizedString(str: languageString), for: .normal)
+        labelSayiView.text = "Team Size".localizedString(str: languageString)
+        labelTaktikView.text = "Tactic Formation".localizedString(str: languageString)*/
+        
+
+        
+
+    }
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        chosenPitchImage = UIImage(named: "2")
 
+        localizedString = UserDefaults.standard.string(forKey: "language")!
+        
         /*  UIColor(red: 186/255, green: 193/255, blue: 184/255, alpha: 1)
         UIColor(red: 88/255, green: 164/255, blue: 176/255, alpha: 1)
          UIColor(red: 181/255, green: 210/255, blue: 203/255, alpha: 1)
@@ -447,8 +487,8 @@ class CreatePitchViewController: UIViewController {
         view.addSubview(saveButton)
         saveButton.topAnchor.constraint(equalTo: tacticsView.bottomAnchor, constant: 15).isActive = true
         saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        saveButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        saveButton.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        saveButton.heightAnchor.constraint(equalToConstant: 65).isActive = true
+       // saveButton.widthAnchor.constraint(equalToConstant: 165).isActive = true
         
      
         
@@ -472,7 +512,8 @@ class CreatePitchViewController: UIViewController {
         
         collectionViewSetUp()
 
-        
+        languageChanged()
+
 
     }
     
@@ -497,6 +538,7 @@ class CreatePitchViewController: UIViewController {
         
     }
     
+    let labelSayiView = UILabel()
     
     func oyuncuSayiTableViewSetup(){
         
@@ -512,9 +554,9 @@ class CreatePitchViewController: UIViewController {
         
         
         
-        let labelSayiView = UILabel()
+    
         labelSayiView.translatesAutoresizingMaskIntoConstraints = false
-        labelSayiView.text = "Oyuncu Sayısı"
+        labelSayiView.text = "Team Size".localizedString(str: localizedString)
         labelSayiView.textAlignment = .center
         labelSayiView.backgroundColor = .lightGray
         
@@ -546,6 +588,8 @@ class CreatePitchViewController: UIViewController {
     }
     
     
+    let labelTaktikView = UILabel()
+
     
     func taktikDizilisTableViewSetup(){
         
@@ -559,11 +603,10 @@ class CreatePitchViewController: UIViewController {
         //OyuncuSayiTableView
         taktikDizilisView.addSubview(dizilisTableView)
         dizilisTableView.backgroundColor = .clear
-        let labelTaktikView = UILabel()
         labelTaktikView.backgroundColor = .lightGray
         labelTaktikView.textAlignment = .center
         labelTaktikView.translatesAutoresizingMaskIntoConstraints = false
-        labelTaktikView.text = "Taktik Diziliş"
+        labelTaktikView.text = "Tactic Formation".localized()
         
         
         dizilisTableView.delegate = self
@@ -727,7 +770,10 @@ extension CreatePitchViewController: UICollectionViewDelegate, UICollectionViewD
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.item == layout.currentPage{
-            
+            layout.currentPage = indexPath.item
+            layout.previousOffset = layout.updateOffset(collectionView)
+            setupCell()
+            self.chosenPitchImage = pitchImages[indexPath.row]
         }else{
             collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
             layout.currentPage = indexPath.item

@@ -10,6 +10,8 @@ import UIKit
 class MenuTableViewController: UITableViewController {
 
     
+    var localizedString = "en"
+
     var languagesBasildiMi = false
     
     let langugaesTableView: UITableView = {
@@ -22,7 +24,7 @@ class MenuTableViewController: UITableViewController {
     }()
     
     
-    var items = ["Delete All Tactics","Info","Languages"]
+    var items = [String]()
     var languages = ["English","Turkish","French"]
     
     struct Languages{
@@ -33,20 +35,35 @@ class MenuTableViewController: UITableViewController {
         
     }
     
-    var languagesArray: [Languages] = [Languages(country: "English", image: UIImage(named: "ingiliz")!),
-                                       Languages(country: "Turkish", image: UIImage(named: "turk")!),
-                                       Languages(country: "French", image: UIImage(named: "frans")!),
-                                       Languages(country: "Deutch", image: UIImage(named: "alman")!)
-    ]
-    
+    var languagesArray: [Languages] = []
+   
+    override func viewWillAppear(_ animated: Bool) {
+        localizedString = UserDefaults.standard.string(forKey: "language")!
+
+        languagesArray =  [Languages(country: "English".localizedString(str: localizedString), image:                         UIImage(named: "ingiliz")!),
+                           Languages(country: "Turkish".localizedString(str: localizedString), image: UIImage(named: "turk")!),
+                           Languages(country: "French".localizedString(str: localizedString), image: UIImage(named: "frans")!),
+                           Languages(country: "German".localizedString(str: localizedString), image: UIImage(named: "alman")!)
+                          ]
+        
+       items = ["Delete All Tactics","Info".localizedString(str: localizedString),"Languages".localizedString(str: localizedString)]
+        
+        
+        
+        DispatchQueue.main.async {
+            self.langugaesTableView.reloadData()
+            self.tableView.reloadData()
+
+        }
+
+    }
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         
-        
-        
+       
         
         
         
@@ -166,22 +183,66 @@ class MenuTableViewController: UITableViewController {
 
         case langugaesTableView:
             
-            switch languages[indexPath.row]{
+            switch languagesArray[indexPath.row].country.localizedString(str: localizedString){
                 
-            case "English":
+            case "English".localizedString(str: localizedString):
                 print("English")
                 dismiss(animated: true)
                 langugaesTableView.deselectRow(at: indexPath, animated: true)
-            case "Turkish":
+                let languageChangedNotification = Notification.Name("LanguageChangedNotification")
+                let newLanguage = "en"
+                
+                UserDefaults.standard.setValue("en", forKey: "language")
+
+                
+                UserDefaults.standard.set([newLanguage], forKey: "AppleLanguages")
+                UserDefaults.standard.synchronize()
+                NotificationCenter.default.post(name: languageChangedNotification, object: nil)
+            case "Turkish".localizedString(str: localizedString):
                 print("Turkish")
                 dismiss(animated: true)
                 langugaesTableView.deselectRow(at: indexPath, animated: true)
+                let languageChangedNotification = Notification.Name("LanguageChangedNotification")
+                let newLanguage = "tr"
+                
+                UserDefaults.standard.setValue("tr", forKey: "language")
+                
+                UserDefaults.standard.set([newLanguage], forKey: "AppleLanguages")
+                UserDefaults.standard.synchronize()
+                NotificationCenter.default.post(name: languageChangedNotification, object: nil)
+
+                  
 
 
-            case "French":
+            case "French".localizedString(str: localizedString):
                 print("French")
                 dismiss(animated: true)
                 langugaesTableView.deselectRow(at: indexPath, animated: true)
+                
+                let languageChangedNotification = Notification.Name("LanguageChangedNotification")
+                let newLanguage = "fr"
+                
+                UserDefaults.standard.setValue("fr", forKey: "language")
+                
+                UserDefaults.standard.set([newLanguage], forKey: "AppleLanguages")
+                UserDefaults.standard.synchronize()
+                NotificationCenter.default.post(name: languageChangedNotification, object: nil)
+                
+                
+                
+            case "German".localizedString(str: localizedString):
+                print("German")
+                dismiss(animated: true)
+                langugaesTableView.deselectRow(at: indexPath, animated: true)
+                
+                let languageChangedNotification = Notification.Name("LanguageChangedNotification")
+                let newLanguage = "de"
+                
+                UserDefaults.standard.setValue("de", forKey: "language")
+                
+                UserDefaults.standard.set([newLanguage], forKey: "AppleLanguages")
+                UserDefaults.standard.synchronize()
+                NotificationCenter.default.post(name: languageChangedNotification, object: nil)
 
 
                 
@@ -192,7 +253,7 @@ class MenuTableViewController: UITableViewController {
             
         default:
             
-            if items[indexPath.row] == "Languages"{
+            if indexPath.row == 2{
                 
                 tableView.deselectRow(at: indexPath, animated: true)
                 

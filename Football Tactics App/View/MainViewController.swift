@@ -19,9 +19,14 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
             // Burada CollectionViewCell'den gelen olayı işleyebilirsiniz.
         if let indexPath = collectionViewTactics.indexPath(for: cell) {
             let deletedTactic = allTactics[indexPath.row]
+            
+            print("Delete \(deletedTactic.name)")
+            
             print("Delete button clicked in cell at index \(indexPath.row)")
             print("Deleted Tactic ID: \(deletedTactic.id)")
             
+            resetCellStates()
+
             
             guard let uuid = deletedTactic.id else{return}
             deleteSelectedPlayerPositions(id: uuid)
@@ -163,10 +168,17 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         CharacterDetailVC.characterIndex = characterIndex
         CharacterDetailVC.tacticUUIDString = uuidString
         
+        selectedCharacterCardIndex = characterIndex
+        selectedCharacterUUIDString = uuidString
+        
         
         navigationController?.pushViewController(CharacterDetailVC, animated: true)
         
     }
+    
+    var selectedCharacterCardIndex = 0
+    var selectedCharacterUUIDString = ""
+
     
     //Burası karakter kart ekranı 57 - 197
     private let characterImage: UIImageView = {
@@ -177,6 +189,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         imageView.layer.borderColor = UIColor.black.cgColor
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.isUserInteractionEnabled = true
+        imageView.clipsToBounds = true
         return imageView
     }()
     
@@ -292,17 +305,17 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
     
     @objc private func closeClicked(){
         
-       // self.customAlertView.transform = .identity
+       // self.customCardView.transform = .identity
 
-        customAlertView.isHidden = true
+        customCardView.isHidden = true
     }
     
-    private let customAlertView: UIView = {
+    private let customCardView: UIView = {
         let alertView = UIView()
-        alertView.layer.cornerRadius = 30
-        alertView.layer.borderWidth = 1
-        alertView.layer.borderColor = UIColor.green.cgColor
-        alertView.backgroundColor = .lightGray
+      //  alertView.layer.cornerRadius = 30
+     //   alertView.layer.borderWidth = 1
+      //  alertView.layer.borderColor = UIColor.green.cgColor
+       // alertView.backgroundColor = .lightGray
         alertView.isHidden = true
         alertView.translatesAutoresizingMaskIntoConstraints = false
         return alertView
@@ -311,13 +324,59 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
     //Buraya kadar
     
     private let backgroundImageView: UIImageView = {
-        let image = UIImage(named: "pitch")
+        let image = UIImage(named: "4")
         let imageView = UIImageView(image: image)
         imageView.contentMode = .scaleToFill
         imageView.isHidden = false
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
+    
+    
+    lazy var noDataLabel: UILabel = {
+       let label = UILabel()
+        label.text = "There is no tactic saved".localizedString(str: localizedString)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.isHidden = true
+        label.font = UIFont.boldSystemFont(ofSize: 20)
+        return label
+    }()
+    
+    lazy var goToAddTacticButton: UIButton = {
+        let button = UIButton(type: .system)
+        //button.setTitle("Add Tactic", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isHidden = true
+       // button.titleLabel?.font = UIFont.systemFont(ofSize: 22, weight: .black)
+        //button.setImage(UIImage(systemName: "doc.fill.badge.plus"), for: .normal)
+        button.setBackgroundImage(UIImage(systemName: "doc.fill.badge.plus")?.withRenderingMode(.alwaysOriginal).withTintColor(.black), for: .normal)
+        button.addTarget(self, action: #selector(addButtonClick), for: .touchUpInside)
+        return button
+    }()
+    
+    
+    lazy var noPlayerLabel: UILabel = {
+       let label = UILabel()
+        label.text = "There is no player saved".localizedString(str: localizedString)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.isHidden = true
+        label.font = UIFont.boldSystemFont(ofSize: 20)
+        return label
+    }()
+    
+    lazy var goToAddCreateCharacterButton: UIButton = {
+        let button = UIButton(type: .system)
+        //button.setTitle("Add Tactic", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isHidden = true
+       // button.titleLabel?.font = UIFont.systemFont(ofSize: 22, weight: .black)
+        //button.setImage(UIImage(systemName: "doc.fill.badge.plus"), for: .normal)
+        button.setBackgroundImage(UIImage(systemName: "person.fill.badge.plus")?.withRenderingMode(.alwaysOriginal).withTintColor(.black), for: .normal)
+        button.addTarget(self, action: #selector(clickedCharacterAdd), for: .touchUpInside)
+        return button
+    }()
+
+    
     
     private let tacticsView: UIView = {
         let tacticView = UIView()
@@ -370,29 +429,52 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         }
     }
     
+    func resetCellStates() {
+          // collectionView'da bulunan tüm hücreleri sıfırla
+        if let selectedIndexPath = selectedIndexPath {
+               for i in 0..<collectionViewTactics.numberOfItems(inSection: selectedIndexPath.section) {
+                   if let cell = collectionViewTactics.cellForItem(at: IndexPath(item: i, section: selectedIndexPath.section)) as? PitchCollectionViewCell {
+                       // Seçilen hücre değilse deleteTacticButton.isHidden'i true yap
+                       cell.deleteTacticButton.isHidden = true
+                       
+                       cell.contentView.layer.borderWidth = (i == selectedIndexPath.item) ? 1.5 : 2
+                       cell.contentView.layer.borderColor = (i == selectedIndexPath.item) ? UIColor.black.cgColor : UIColor.gray.cgColor
+                       cell.transform = .identity
+                   }
+               }
+           }
+      }
+
+  
     
 
     override func viewWillAppear(_ animated: Bool) {
         print("ViewwillappearBaşladı")
-     //   super.viewWillAppear(animated)
+        //   super.viewWillAppear(animated)
         
-      /*  let indexPath = IndexPath(item: 1, section: 0)
-        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        /*  let indexPath = IndexPath(item: 1, section: 0)
+         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+         
+         layout.currentPage = indexPath.item
+         layout.previousOffset = layout.updateOffset(collectionView)
+         
+         if let cell = collectionView.cellForItem(at: indexPath){
+         transformCell(cell)
+         }*/
         
-        layout.currentPage = indexPath.item
-        layout.previousOffset = layout.updateOffset(collectionView)
-        
-        if let cell = collectionView.cellForItem(at: indexPath){
-            transformCell(cell)
-        }*/
-        
-     //   print("aaa")
+        //   print("aaa")
+        resetCellStates()
         
         
         
         
-       // uniqueuuids()
+        fetchCharacter(tacticUUID: selectedCharacterUUIDString, characterIndex: selectedCharacterCardIndex)
         
+        
+        // uniqueuuids()
+        
+        
+        print("selected \(selectedCharacterCardIndex), \(selectedCharacterUUIDString)")
         
         
         fetchAllCharacters()
@@ -400,7 +482,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         DispatchQueue.main.async {
             self.collectionViewPlayers.reloadData()
         }
-
+        
         DispatchQueue.main.async {
             self.collectionViewTactics.reloadData()
         }
@@ -412,18 +494,18 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         }
         
         print(playerViews.count)
-
-
+        
+        
         // Dizi içindeki tüm view'leri temizle
         playerViews.removeAll()
         
         
         print(playerViews.count)
         
-       // uniqueuuids()
+        // uniqueuuids()
         print("İlk uuid String")
         uniqueuuids()
-
+        
         createPlayers(tacticSize: chosenTacticSize)
         
         print("Değişiklik = \(degisiklikOlduMu)")
@@ -437,25 +519,61 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         
         
         
-       // savePlayerPositions()
+        // savePlayerPositions()
         
         
-       // savePlayerPositions()
+        // savePlayerPositions()
         print(playerViews.count)
-
-       // addSubviews()
-
+        
+        // addSubviews()
+        
         print(playerViews.count)
-
-      //  loadPlayerPositions()
+        
+        //  loadPlayerPositions()
         print("oluşturulacak uuid tactic\(uuidString)")
         predicateById(uuidString: uuidString)
         
-      
-
-      //  uniqueuuids()
-
+        
+        
+        //  uniqueuuids()
+        
         addSubviews()
+        
+        
+        print(playersImageBasildiMi)
+        print(footballPitchBasildiMi)
+
+        if playersImageBasildiMi && footballPitchBasildiMi{
+            if characters.count == 0{
+                noDataLabel.isHidden = true
+                goToAddTacticButton.isHidden = true
+                noPlayerLabel.isHidden = false
+                goToAddCreateCharacterButton.isHidden = false
+            }else{
+                noPlayerLabel.isHidden = true
+                goToAddCreateCharacterButton.isHidden = true
+            }
+        }
+        
+        else{
+            if allTactics.count == 0{
+                noDataLabel.isHidden = false
+                goToAddTacticButton.isHidden = false
+            }else{
+                noDataLabel.isHidden = true
+                goToAddTacticButton.isHidden = true
+            }
+        }
+       
+       
+                
+                
+                
+     
+       
+       
+        
+        
         
     }
     
@@ -533,7 +651,8 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
        // collectionView.centerYAnchor.constraint(equalTo: tacticsView.centerYAnchor).isActive = true
         //collectionView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4).isActive = true
         collectionViewTactics.topAnchor.constraint(equalTo: tacticsView.topAnchor).isActive = true
-        collectionViewTactics.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 25).isActive = true
+        collectionViewTactics.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 40).isActive = true
+       // collectionViewTactics.backgroundColor = .red
         
         
     }
@@ -571,8 +690,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
        // collectionView.centerYAnchor.constraint(equalTo: tacticsView.centerYAnchor).isActive = true
         //collectionView.heightAnchor.constraint(equalToConstant: view.frame.size.height/4).isActive = true
         collectionViewPlayers.topAnchor.constraint(equalTo: tacticsView.topAnchor).isActive = true
-        collectionViewPlayers.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 15).isActive = true
-        
+        collectionViewPlayers.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 40).isActive = true
         
     }
     
@@ -822,6 +940,17 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
                 playersImageBasildiMi = false
                 collectionViewTactics.isHidden = false
                 collectionViewPlayers.isHidden = true
+                
+                
+                if allTactics.count == 0{
+                    noDataLabel.isHidden = false
+                    goToAddTacticButton.isHidden = false
+                }
+                
+         
+                
+                noPlayerLabel.isHidden = true
+                goToAddCreateCharacterButton.isHidden = true
 
                 print("sol")
                 
@@ -860,6 +989,20 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
                 collectionViewTactics.isHidden = true
                 collectionViewPlayers.isHidden = false
                 print("sağ")
+                
+                
+                noDataLabel.isHidden = true
+                goToAddTacticButton.isHidden = true
+                
+           
+                
+                
+                if characters.count == 0{
+                    noPlayerLabel.isHidden = false
+                    goToAddCreateCharacterButton.isHidden = false
+                }
+                
+                
 
             }
         }
@@ -897,9 +1040,9 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
     @objc func clickedRepeatFormation(){
     
             
-        let alertController = UIAlertController(title: "Alert", message: "Are you sure that you want to delete all tactics ?", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Warning".localized(), message: "Are you sure that you want to delete all tactics ?".localizedString(str: localizedString), preferredStyle: .alert)
         
-        let yesAction = UIAlertAction(title: "Yes", style: .cancel){_ in
+        let yesAction = UIAlertAction(title: "Yes".localizedString(str: localizedString), style: .cancel){_ in
             
         /*    for playerView in self.playerViews {
                 playerView.removeFromSuperview()
@@ -940,7 +1083,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
             
         }
         
-        let noAction = UIAlertAction(title: "No", style: .destructive)
+        let noAction = UIAlertAction(title: "No".localizedString(str: localizedString), style: .destructive)
 
         
         alertController.addAction(noAction)
@@ -1029,8 +1172,70 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
     }
     
     
+    @objc func languageChanged() {
+        // Dil değiştiğinde yapılacak işlemleri burada gerçekleştir
+        //updateTextsForCurrentLanguage()
+        print("Değişti")
+        view.setNeedsLayout()
+        
+
+        localizedString = UserDefaults.standard.string(forKey: "language")!
+        noDataLabel.text = "There is no tactic saved".localizedString(str: localizedString)
+        navigationItem.leftBarButtonItem?.title = "Add Tactic".localizedString(str: localizedString)
+
+        
+        let language1 = UserDefaults.standard.string(forKey: "language")!
+
+        print("Language 1 \(language1)")
+
+    
+        
+
+    }
+    
+    
+    var localizedString = "en"
+
+
+    func addSubviewsNoData(){
+        view.addSubview(noDataLabel)
+        view.addSubview(goToAddTacticButton)
+        noDataLabel.centerXAnchor.constraint(equalTo: tacticsView.centerXAnchor).isActive = true
+        noDataLabel.topAnchor.constraint(equalTo: footballPitchImage.bottomAnchor, constant: 25).isActive = true
+        
+        goToAddTacticButton.topAnchor.constraint(equalTo: noDataLabel.bottomAnchor, constant: 5).isActive = true
+        goToAddTacticButton.centerXAnchor.constraint(equalTo: tacticsView.centerXAnchor).isActive = true
+        goToAddTacticButton.heightAnchor.constraint(equalToConstant: 55).isActive = true
+        goToAddTacticButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        
+
+        
+        view.addSubview(noPlayerLabel)
+        view.addSubview(goToAddCreateCharacterButton)
+        noPlayerLabel.centerXAnchor.constraint(equalTo: tacticsView.centerXAnchor).isActive = true
+        noPlayerLabel.topAnchor.constraint(equalTo: footballPitchImage.bottomAnchor, constant: 25).isActive = true
+        
+        goToAddCreateCharacterButton.topAnchor.constraint(equalTo: noPlayerLabel.bottomAnchor, constant: 5).isActive = true
+        goToAddCreateCharacterButton.centerXAnchor.constraint(equalTo: tacticsView.centerXAnchor).isActive = true
+        goToAddCreateCharacterButton.heightAnchor.constraint(equalToConstant: 55).isActive = true
+        goToAddCreateCharacterButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(languageChanged), name: Notification.Name("LanguageChangedNotification"), object: nil)
+
+        
+        if let stringLanguage = UserDefaults.standard.string(forKey: "language"){
+            localizedString = stringLanguage
+        }else{
+            localizedString = "en"
+            UserDefaults.standard.setValue("en", forKey: "language")
+        }
+   
+        
       /*  firstView.isHidden = false
         
         view.addSubview(firstView)
@@ -1106,7 +1311,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         
        // navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewTactic))
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Add Tactic", style: .done, target: self, action: #selector(addButtonClick))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Add Tactic".localizedString(str: localizedString), style: .done, target: self, action: #selector(addButtonClick))
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .done, target: self, action: #selector(settingsButtonClicked))
         
@@ -1287,7 +1492,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         
         
       
-        
+        addSubviewsNoData()
         
         
     }
@@ -2012,7 +2217,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
             }) { _ in
                 // Animasyon tamamlandığında yapılacak işlemler
                 //self.isAnimating = false
-                self.customAlertView.isHidden = false
+                self.customCardView.isHidden = false
             }
             
         }
@@ -2181,7 +2386,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         //    deleteAllPlayerPositions()
 
         guard let imageData = UIImage(named: "forma")?.pngData() else{return}
-        let characterName = "Name"
+        let characterName = "Name".localized()
         
         
         //İndexleriyle ve idleriyle x ve y konumlarıyla beraber kaydetme
@@ -2198,7 +2403,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
                 playerPosition.setValue(index, forKey: "index")
                 playerPosition.setValue(position.x, forKey: "x")
                 playerPosition.setValue(position.y, forKey: "y")
-                playerPosition.setValue(characterName, forKey: "name")
+                playerPosition.setValue("", forKey: "name")
                 playerPosition.setValue(imageData, forKey: "image")
                 playerPosition.setValue("99", forKey: "playerno")
 
@@ -2540,7 +2745,14 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
                     }()
                     
                    // characterLabel.text = "Oyuncu Adı"
-                    characterLabel.text = characterName
+                    
+                    if characterName == ""{
+                        characterLabel.text = "Player"
+                    }else{
+                        characterLabel.text = characterName
+
+                    }
+                    
                     characterImage.image = UIImage(data: imageData)
                     characterNumber.text = playerNo
                     let playerView = playerViews[index]
@@ -2892,20 +3104,20 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         print(index)
         
         UIView.animate(withDuration: 0.25, animations: {
-              self.customAlertView.isHidden = false
-              self.customAlertView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+              self.customCardView.isHidden = false
+              self.customCardView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
           }) { _ in
               // Küçük ölçekleme animasyonu tamamlandığında
           
               // Daha sonra büyük ölçekleme animasyonu ile orijinal boyuta dönmek
               UIView.animate(withDuration: 0.25, animations: {
-                  self.customAlertView.transform = .identity
+                  self.customCardView.transform = .identity
               }) { _ in
                   // Animasyon tamamlandığında yapılacak işlemler (opsiyonel)
               }
           }
         
-        customAlertView.isHidden = false
+        customCardView.isHidden = false
         
         // UUID'yi bastır
         print("Tıklanan Görüntü ID'si: \(imageID)")
@@ -2930,7 +3142,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         let frameHeight = view.frame.height
         let frameWidth = view.frame.width
         
-        view.addSubview(customAlertView)
+        view.addSubview(customCardView)
         
         
       /*  backgroundImageView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
@@ -2939,47 +3151,64 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         backgroundImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true*/
 
         
-        customAlertView.heightAnchor.constraint(equalToConstant: 360).isActive = true
+        customCardView.heightAnchor.constraint(equalToConstant: 380).isActive = true
         
-        customAlertView.widthAnchor.constraint(equalToConstant: 300).isActive = true
+        customCardView.widthAnchor.constraint(equalToConstant: 300).isActive = true
 
-        customAlertView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        customAlertView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -view.frame.height/10).isActive = true
+        customCardView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        customCardView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -view.frame.height/10).isActive = true
 
+        
+        let cardBackImageView = UIImageView(image: UIImage(named: "cardView"))
+        cardBackImageView.translatesAutoresizingMaskIntoConstraints = false
+        cardBackImageView.contentMode = .scaleToFill
+        cardBackImageView.clipsToBounds = true
+        customCardView.clipsToBounds = true
+        
+        
+        customCardView.addSubview(cardBackImageView)
+        
+        cardBackImageView.topAnchor.constraint(equalTo: customCardView.topAnchor).isActive = true
+        cardBackImageView.bottomAnchor.constraint(equalTo: customCardView.bottomAnchor).isActive = true
+        cardBackImageView.leadingAnchor.constraint(equalTo: customCardView.leadingAnchor).isActive = true
+        cardBackImageView.trailingAnchor.constraint(equalTo: customCardView.trailingAnchor).isActive = true
+        
+        
+        
         
         // closeCharacterButton
-        customAlertView.addSubview(closeCharacterButton)
+        customCardView.addSubview(closeCharacterButton)
         
-        closeCharacterButton.trailingAnchor.constraint(equalTo: customAlertView.trailingAnchor, constant: -5).isActive = true
-        closeCharacterButton.topAnchor.constraint(equalTo: customAlertView.topAnchor, constant: 5).isActive = true
+        closeCharacterButton.trailingAnchor.constraint(equalTo: customCardView.trailingAnchor, constant: -15).isActive = true
+        closeCharacterButton.topAnchor.constraint(equalTo: customCardView.topAnchor, constant: 15).isActive = true
         closeCharacterButton.widthAnchor.constraint(equalToConstant: 35).isActive = true
         closeCharacterButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
 
         // character details
-        customAlertView.addSubview(detailButton)
+        customCardView.addSubview(detailButton)
         
-        detailButton.leadingAnchor.constraint(equalTo: customAlertView.leadingAnchor, constant: 15).isActive = true
-        detailButton.topAnchor.constraint(equalTo: customAlertView.topAnchor, constant: 15).isActive = true
+        detailButton.leadingAnchor.constraint(equalTo: customCardView.leadingAnchor, constant: 20).isActive = true
+        detailButton.topAnchor.constraint(equalTo: customCardView.topAnchor, constant: 15).isActive = true
         detailButton.heightAnchor.constraint(equalToConstant: 35).isActive = true
         
         // Character Button Image
         
-        customAlertView.addSubview(characterImage)
+        customCardView.addSubview(characterImage)
         
-        characterImage.topAnchor.constraint(equalTo: customAlertView.topAnchor, constant: 15).isActive = true
+        characterImage.topAnchor.constraint(equalTo: customCardView.topAnchor, constant: 15).isActive = true
         characterImage.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         characterImage.widthAnchor.constraint(equalToConstant: view.frame.width/3.4).isActive = true
         characterImage.heightAnchor.constraint(equalToConstant: view.frame.width/3.2).isActive = true
 
         
-        customAlertView.addSubview(characterName)
+        customCardView.addSubview(characterName)
         
         characterName.topAnchor.constraint(equalTo: characterImage.bottomAnchor, constant: 10).isActive = true
         characterName.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        characterName.leadingAnchor.constraint(equalTo: customAlertView.leadingAnchor, constant: 10).isActive = true
-        characterName.trailingAnchor.constraint(equalTo: customAlertView.trailingAnchor, constant: -10).isActive = true
+        characterName.leadingAnchor.constraint(equalTo: customCardView.leadingAnchor, constant: 10).isActive = true
+        characterName.trailingAnchor.constraint(equalTo: customCardView.trailingAnchor, constant: -10).isActive = true
         
-        customAlertView.addSubview(cizgiYatay)
+        customCardView.addSubview(cizgiYatay)
         
         cizgiYatay.topAnchor.constraint(equalTo: characterName.bottomAnchor, constant: 5).isActive = true
         cizgiYatay.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -2987,14 +3216,14 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         cizgiYatay.widthAnchor.constraint(equalToConstant: view.frame.width / 2).isActive = true
 
         
-        customAlertView.addSubview(cizgiDikey)
+        customCardView.addSubview(cizgiDikey)
         
         cizgiDikey.topAnchor.constraint(equalTo: cizgiYatay.bottomAnchor, constant: 10).isActive = true
-        cizgiDikey.bottomAnchor.constraint(equalTo: customAlertView.bottomAnchor, constant: -25).isActive = true
+        cizgiDikey.bottomAnchor.constraint(equalTo: customCardView.bottomAnchor, constant: -25).isActive = true
         cizgiDikey.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         cizgiDikey.widthAnchor.constraint(equalToConstant: 1).isActive = true
         
-        customAlertView.addSubview(leftStackView)
+        customCardView.addSubview(leftStackView)
         
         leftStackView.addArrangedSubview(hizlanmaLabel)
         leftStackView.addArrangedSubview(sutLabel)
@@ -3003,12 +3232,12 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         
         leftStackView.topAnchor.constraint(equalTo: cizgiYatay.bottomAnchor, constant: 0).isActive = true
         leftStackView.bottomAnchor.constraint(equalTo: cizgiDikey.bottomAnchor, constant: 0).isActive = true
-        leftStackView.leadingAnchor.constraint(equalTo: customAlertView.leadingAnchor, constant: 10).isActive = true
+        leftStackView.leadingAnchor.constraint(equalTo: customCardView.leadingAnchor, constant: 10).isActive = true
         leftStackView.trailingAnchor.constraint(equalTo: cizgiDikey.leadingAnchor, constant: -10).isActive = true
 
         
          
-        customAlertView.addSubview(rightStackView)
+        customCardView.addSubview(rightStackView)
         
         rightStackView.addArrangedSubview(dripplingLabel)
         rightStackView.addArrangedSubview(defLabel)
@@ -3016,7 +3245,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         
         rightStackView.topAnchor.constraint(equalTo: cizgiYatay.bottomAnchor, constant:  0).isActive = true
         rightStackView.leadingAnchor.constraint(equalTo: cizgiDikey.trailingAnchor, constant: 10).isActive = true
-        rightStackView.trailingAnchor.constraint(equalTo: customAlertView.trailingAnchor, constant: -10).isActive = true
+        rightStackView.trailingAnchor.constraint(equalTo: customCardView.trailingAnchor, constant: -10).isActive = true
         rightStackView.bottomAnchor.constraint(equalTo: leftStackView.bottomAnchor).isActive = true
      
 
@@ -3083,13 +3312,14 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         switch collectionView{
             
         case collectionViewTactics:
-            if allTactics.count > 10{
+            /*if allTactics.count > 10{
                 return 10
 
             }else{
                 return allTactics.count
 
-            }
+            }*/
+            return allTactics.count
             
         case collectionViewPlayers:
             
@@ -3158,7 +3388,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             cell.contentView.clipsToBounds = true
             cell.clipsToBounds = true
             cell.contentView.layer.borderWidth = 2
-            cell.contentView.layer.borderColor = UIColor.gray.cgColor
+            cell.contentView.layer.borderColor = UIColor.black.cgColor
 
        
             return cell
@@ -3174,10 +3404,10 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         if screenRatio > 0.5{
-            return CGSize(width: view.frame.size.width/3.85, height: itemHeigth*0.85)
+            return CGSize(width: view.frame.size.width/3.75, height: 110)
 
         }else{
-            return CGSize(width: view.frame.size.width/3.3, height: itemHeigth)
+            return CGSize(width: view.frame.size.width/3.4, height: 125)
 
         }
         

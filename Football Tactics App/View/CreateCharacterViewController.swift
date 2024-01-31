@@ -13,6 +13,7 @@ class CreateCharacterViewController: UIViewController, UITextFieldDelegate {
     
     
     var player: Player? = nil
+    var localizedString = "en"
 
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -40,7 +41,7 @@ class CreateCharacterViewController: UIViewController, UITextFieldDelegate {
         button.layer.cornerRadius = 5
         button.backgroundColor = UIColor(red: 172/255, green: 215/255, blue: 236/255, alpha: 1)
         button.setTitleColor(.black, for: .normal)
-        button.setTitle("Add Player", for: .normal)
+        button.setTitle("Add Player".localizedString(str: localizedString), for: .normal)
         button.titleLabel?.font = UIFont(name: "HoeflerText-Black", size: 22)
         button.layer.borderColor = UIColor.black.cgColor
         //button.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: .semibold)
@@ -463,21 +464,21 @@ class CreateCharacterViewController: UIViewController, UITextFieldDelegate {
         return imageView
     }()
     
-    private let characterNameTextField: UITextField = {
+    private lazy var characterNameTextField: UITextField = {
         let textField = UITextField()
         textField.layer.cornerRadius = 5
         textField.layer.borderColor = UIColor.black.cgColor
        // textField.layer.borderWidth = 1
-        textField.placeholder = "  Character Name"
+        textField.placeholder = "  Character Name".localizedString(str: localizedString)
         textField.textAlignment = .center
-        textField.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+        textField.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
     
-    private let hizlanmaLabel: UILabel = {
+    private lazy var hizlanmaLabel: UILabel = {
         let label = UILabel()
-        label.text = "Pace (PAC)"
+        label.text = "Pace (PAC)".localizedString(str: localizedString)
        // label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         label.font = UIFont(name: "HoeflerText-Black", size: 18)
         label.numberOfLines = 0
@@ -498,12 +499,12 @@ class CreateCharacterViewController: UIViewController, UITextFieldDelegate {
 
     }()
     
-    private let sutLabel: UILabel = {
+    private lazy var sutLabel: UILabel = {
         let label = UILabel()
 //        label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         label.font = UIFont(name: "HoeflerText-Black", size: 18)
 
-        label.text = "Shooting (SHO)"
+        label.text = "Shooting (SHT)".localizedString(str: localizedString)
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -521,12 +522,12 @@ class CreateCharacterViewController: UIViewController, UITextFieldDelegate {
         return label
 
     }()
-    private let pasLabel: UILabel = {
+    private lazy var pasLabel: UILabel = {
         let label = UILabel()
       //  label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         label.font = UIFont(name: "HoeflerText-Black", size: 18)
 
-        label.text = "Passing (PAS)"
+        label.text = "Passing (PAS)".localizedString(str: localizedString)
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -544,9 +545,9 @@ class CreateCharacterViewController: UIViewController, UITextFieldDelegate {
         return label
 
     }()
-    private let dripLabel: UILabel = {
+    private lazy var dripLabel: UILabel = {
         let label = UILabel()
-        label.text = "Dribbling (DRI)"
+        label.text = "Dribbling (DRI)".localizedString(str: localizedString)
         label.numberOfLines = 0
    //     label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         label.font = UIFont(name: "HoeflerText-Black", size: 18)
@@ -568,9 +569,9 @@ class CreateCharacterViewController: UIViewController, UITextFieldDelegate {
 
     }()
     
-    private let defLabel: UILabel = {
+    private lazy var defLabel: UILabel = {
         let label = UILabel()
-        label.text = "Defending (DEF)"
+        label.text = "Defending (DEF)".localizedString(str: localizedString)
         label.numberOfLines = 0
       //  label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         label.font = UIFont(name: "HoeflerText-Black", size: 18)
@@ -591,9 +592,9 @@ class CreateCharacterViewController: UIViewController, UITextFieldDelegate {
         return label
 
     }()
-    private let phyLabel: UILabel = {
+    private lazy var phyLabel: UILabel = {
         let label = UILabel()
-        label.text = "Physical (PHY)"
+        label.text = "Physical (PHY)".localizedString(str: localizedString)
         label.numberOfLines = 0
       //  label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
         label.font = UIFont(name: "HoeflerText-Black", size: 18)
@@ -642,7 +643,7 @@ class CreateCharacterViewController: UIViewController, UITextFieldDelegate {
     lazy var characterCardButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Preview Card", for: .normal)
+        button.setTitle("Preview Card".localizedString(str: localizedString), for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = UIFont(name: "HoeflerText-Black", size: 16)
      //   button.setTitleColor(UIColor(red: 215/255, green: 255/255, blue: 241/255, alpha: 1), for: .normal)
@@ -654,7 +655,7 @@ class CreateCharacterViewController: UIViewController, UITextFieldDelegate {
         
         
         if let characterName = characterNameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), characterName.isEmpty {
-            let alert = Alerts.shared.alertFunction(title: "Eksik Girdi", message: "Karakter ismi boş olamaz")
+            let alert = Alerts.shared.alertFunction(title: "Missing Input".localizedString(str: localizedString), message: "Character name cannot be empty".localizedString(str: localizedString))
             present(alert, animated: true, completion: nil)
         } else{
             characterNameCard.text = characterNameTextField.text
@@ -697,13 +698,15 @@ class CreateCharacterViewController: UIViewController, UITextFieldDelegate {
     
     let playerNoTextfield: UITextField = {
        let textfield = UITextField()
-        textfield.backgroundColor = .white
+        textfield.backgroundColor = .lightGray
         textfield.layer.borderWidth = 2
         textfield.layer.cornerRadius = 17.5
         textfield.text = "99"
+        textfield.textColor = .black
         textfield.keyboardType = .numberPad
         textfield.textAlignment = .center
         textfield.layer.borderColor = UIColor.black.cgColor
+        textfield.font = UIFont.boldSystemFont(ofSize: 16)
         textfield.translatesAutoresizingMaskIntoConstraints = false
         return textfield
     }()
@@ -730,6 +733,9 @@ class CreateCharacterViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        localizedString = UserDefaults.standard.string(forKey: "language")!
+
         
         view.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
 
@@ -781,7 +787,7 @@ class CreateCharacterViewController: UIViewController, UITextFieldDelegate {
         
         view.addSubview(characterNameTextField)
         
-        characterNameTextField.topAnchor.constraint(equalTo: characterImageView.bottomAnchor,constant: 10).isActive = true
+        characterNameTextField.topAnchor.constraint(equalTo: characterImageView.bottomAnchor,constant: 3).isActive = true
         characterNameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
         characterNameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         characterNameTextField.heightAnchor.constraint(equalToConstant: 35).isActive = true
@@ -924,7 +930,7 @@ class CreateCharacterViewController: UIViewController, UITextFieldDelegate {
         view.addSubview(saveButton)
         
         
-        saveButton.topAnchor.constraint(equalTo: customSliderPhy.bottomAnchor, constant: 15).isActive = true
+        saveButton.topAnchor.constraint(equalTo: customSliderPhy.bottomAnchor, constant: 10).isActive = true
         saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         saveButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
         saveButton.widthAnchor.constraint(equalToConstant: 150).isActive = true

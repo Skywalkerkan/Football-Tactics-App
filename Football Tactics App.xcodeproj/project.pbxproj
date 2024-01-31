@@ -23,6 +23,8 @@
 		DE997BD92B46CF92007C0654 /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE997BD82B46CF92007C0654 /* Alerts.swift */; };
 		DE9EBEF62B666BA8006943FD /* LanguagesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9EBEF52B666BA8006943FD /* LanguagesTableViewCell.swift */; };
 		DEA09B8B2B3D6E040070A374 /* SliderExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA09B8A2B3D6E040070A374 /* SliderExtension.swift */; };
+		DEA141AC2B67B6C900931D4A /* Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA141AB2B67B6C900931D4A /* Localized.swift */; };
+		DEA141B32B67B93500931D4A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEA141B52B67B93500931D4A /* Localizable.strings */; };
 		DEA551532B5E670C00CC9BFB /* MenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA551522B5E670C00CC9BFB /* MenuTableViewController.swift */; };
 		DEA676232B3C5B100060FC83 /* CharacterDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA676222B3C5B100060FC83 /* CharacterDetailViewController.swift */; };
 		DEAC5E142B4463B000EEA1CA /* CustomLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAC5E132B4463B000EEA1CA /* CustomLayout.swift */; };
@@ -45,8 +47,19 @@
 		DE49A4C52B554F3200E63E20 /* Tactic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tactic.swift; sourceTree = "<group>"; };
 		DE997BD52B46CB56007C0654 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		DE997BD82B46CF92007C0654 /* Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
+		DE9A37AC2B68FE430009A2E5 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Main.strings; sourceTree = "<group>"; };
+		DE9A37AD2B68FE430009A2E5 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		DE9A37AE2B68FE430009A2E5 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		DE9A37AF2B6915440009A2E5 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
+		DE9A37B02B6915440009A2E5 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		DE9A37B12B6915440009A2E5 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DE9EBEF52B666BA8006943FD /* LanguagesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguagesTableViewCell.swift; sourceTree = "<group>"; };
 		DEA09B8A2B3D6E040070A374 /* SliderExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderExtension.swift; sourceTree = "<group>"; };
+		DEA141AB2B67B6C900931D4A /* Localized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localized.swift; sourceTree = "<group>"; };
+		DEA141AD2B67B8BD00931D4A /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Main.strings; sourceTree = "<group>"; };
+		DEA141AE2B67B8BE00931D4A /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		DEA141B42B67B93500931D4A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		DEA141B62B67B97000931D4A /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DEA551522B5E670C00CC9BFB /* MenuTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableViewController.swift; sourceTree = "<group>"; };
 		DEA676222B3C5B100060FC83 /* CharacterDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterDetailViewController.swift; sourceTree = "<group>"; };
 		DEAC5E132B4463B000EEA1CA /* CustomLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLayout.swift; sourceTree = "<group>"; };
@@ -84,6 +97,7 @@
 		DE39AEB82B3B5FF6002DCD77 /* Football Tactics App */ = {
 			isa = PBXGroup;
 			children = (
+				DEA141AF2B67B8E000931D4A /* StringLocalized */,
 				DE997BD72B46CF83007C0654 /* Extensions */,
 				DEA676252B3C5B200060FC83 /* View */,
 				DEA676242B3C5B1C0060FC83 /* Model */,
@@ -104,6 +118,7 @@
 				DEA09B8A2B3D6E040070A374 /* SliderExtension.swift */,
 				DEAC5E132B4463B000EEA1CA /* CustomLayout.swift */,
 				DE997BD82B46CF92007C0654 /* Alerts.swift */,
+				DEA141AB2B67B6C900931D4A /* Localized.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -116,6 +131,14 @@
 				DE9EBEF52B666BA8006943FD /* LanguagesTableViewCell.swift */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		DEA141AF2B67B8E000931D4A /* StringLocalized */ = {
+			isa = PBXGroup;
+			children = (
+				DEA141B52B67B93500931D4A /* Localizable.strings */,
+			);
+			path = StringLocalized;
 			sourceTree = "<group>";
 		};
 		DEA676242B3C5B1C0060FC83 /* Model */ = {
@@ -185,6 +208,9 @@
 			knownRegions = (
 				en,
 				Base,
+				tr,
+				fr,
+				de,
 			);
 			mainGroup = DE39AEAD2B3B5FF6002DCD77;
 			packageReferences = (
@@ -205,6 +231,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DE39AEC92B3B5FF9002DCD77 /* LaunchScreen.storyboard in Resources */,
+				DEA141B32B67B93500931D4A /* Localizable.strings in Resources */,
 				DE39AEC62B3B5FF9002DCD77 /* Assets.xcassets in Resources */,
 				DE39AEC12B3B5FF6002DCD77 /* Main.storyboard in Resources */,
 			);
@@ -221,6 +248,7 @@
 				DE9EBEF62B666BA8006943FD /* LanguagesTableViewCell.swift in Sources */,
 				DE2D9CBF2B616FCA00EEE599 /* CreateCharacterViewController.swift in Sources */,
 				DEA09B8B2B3D6E040070A374 /* SliderExtension.swift in Sources */,
+				DEA141AC2B67B6C900931D4A /* Localized.swift in Sources */,
 				DE24CDE32B46D4D600AA5114 /* PitchCollectionViewCell.swift in Sources */,
 				DEA551532B5E670C00CC9BFB /* MenuTableViewController.swift in Sources */,
 				DEAC5E142B4463B000EEA1CA /* CustomLayout.swift in Sources */,
@@ -243,6 +271,9 @@
 			isa = PBXVariantGroup;
 			children = (
 				DE39AEC02B3B5FF6002DCD77 /* Base */,
+				DEA141AD2B67B8BD00931D4A /* tr */,
+				DE9A37AC2B68FE430009A2E5 /* fr */,
+				DE9A37AF2B6915440009A2E5 /* de */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -251,8 +282,22 @@
 			isa = PBXVariantGroup;
 			children = (
 				DE39AEC82B3B5FF9002DCD77 /* Base */,
+				DEA141AE2B67B8BE00931D4A /* tr */,
+				DE9A37AD2B68FE430009A2E5 /* fr */,
+				DE9A37B02B6915440009A2E5 /* de */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		DEA141B52B67B93500931D4A /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DEA141B42B67B93500931D4A /* en */,
+				DEA141B62B67B97000931D4A /* tr */,
+				DE9A37AE2B68FE430009A2E5 /* fr */,
+				DE9A37B12B6915440009A2E5 /* de */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -263,6 +308,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -326,6 +372,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

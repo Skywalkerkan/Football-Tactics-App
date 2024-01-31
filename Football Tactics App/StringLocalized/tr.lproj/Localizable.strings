@@ -6,5 +6,52 @@
   
 */
 
+//Create Pitch VC
+"Tactic Name" = "Taktik Adı";
+"Formation" = "Diziliş";
+"Team Size" = "Oyuncu Sayısı";
+" Save Tactic " = " Taktiği Kaydet ";
+"Tactic Formation" = "Taktik Diziliş";
+"Tactic Name Can Not Exceed 20 Letters" = "Taktik 20 harfi geçemez";
+
+//Main VC
+
+"Add Tactic" = "Taktik Ekle";
+"Name" = "Oyuncu Adı";
+"Are you sure that you want to delete all tactics ?" = "Bütün taktikleri silmek istediğinize emin misiniz ?";
+"Warning" = "Uyarı";
+"Yes" = "Evet";
+"No" = "Hayır";
+"Player Name" = "Oyuncu Adı";
+
+
+
+//Side Menu
+"Info" = "Info";
+"Languages" = "Diller";
+"Turkish" = "Türkçe";
+"English" = "İngilizce";
+"French" = "Fransızca";
+"German" = "Almanca";
+
+//Character Detail
+"Pace (PAC)" = "Hızlanma (PAC)";
+"Shooting (SHT)" = "Şut Atma (SHO)";
+"Passing (PAS)" = "Pas Atma (PAS)";
+"Dribbling (DRI)" = "Top Sürme (DRI)";
+"Defending (DEF)" = "Defans (DEF)";
+"Physical (PHY)" = "Fizik (PHY)";
+" Save Player " = " Oyuncuyu Kaydet ";
+"  Character Name" = "  Karakter Adı";
+"Preview Card" = "Kartı Göster";
+"Character name cannot be empty" = "Karakter Adı Boş olamaz";
+"Missing Input" = "Eksik Girdi";
+"You entered imcomplete info" = "Eksik bilgi girdiniz";
+"Error" = "Hata";
+
+
+
+
+
 
 

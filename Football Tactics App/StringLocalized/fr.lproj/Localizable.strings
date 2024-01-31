@@ -8,3 +8,42 @@
 
 
 
+"Tactic Name" = "Nom de la Tactique";
+"Formation" = "Formation";
+"Team Size" = "Taille";
+" Save Tactic " = " Enregistrer la Tactique ";
+"Tactic Formation" = "Formation de la Tactique";
+"Tactic Name Can Not Exceed 20 Letters" = "Le nom de la tactique ne peut pas dépasser 20 lettres";
+
+//Main VC
+
+"Add Tactic" = "Ajouter tactique";
+"Name" = "Nom";
+"Are you sure that you want to delete all tactics ?" = "Êtes-vous sûr de vouloir supprimer toutes les tactiques ?";
+"Warning" = "Avertissement";
+"Yes" = "Oui";
+"No" = "Non";
+"Player Name" = "Nom du Joueur";
+
+//Side Menu
+"Info" = "Info";
+"Languages" = "Langues";
+"Turkish" = "Turc";
+"English" = "Anglais";
+"French" = "Français";
+"German" = "Allemand";
+
+//Character Detail
+"Pace (PAC)" = "Vitesse (PAC)";
+"Shooting (SHT)" = "Tir (SHT)";
+"Passing (PAS)" = "Passe (PAS)";
+"Dribbling (DRI)" = "Dribble (DRI)";
+"Defending (DEF)" = "Défense (DEF)";
+"Physical (PHY)" = "Physique (PHY)";
+" Save Player " = " Enregistrer le Joueur ";
+"  Character Name" = "  Nom du Personnage";
+"Preview Card" = "Afficher carte";
+"Character name cannot be empty" = "Le nom du personnage ne peut pas être vide";
+"Missing Input" = "Entrée Manquante";
+"You entered imcomplete info" = "Vous avez saisi des informations incomplètes";
+"Error" = "Erreur";

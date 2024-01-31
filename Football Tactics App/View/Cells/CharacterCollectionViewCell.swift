@@ -120,7 +120,7 @@ class CharacterCollectionViewCell: UICollectionViewCell {
             characterImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             characterImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             characterImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            characterImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -contentView.frame.size.height / 6)
+            characterImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -contentView.frame.size.height / 5)
         ])
         
         

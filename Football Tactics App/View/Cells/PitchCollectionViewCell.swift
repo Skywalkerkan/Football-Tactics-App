@@ -35,7 +35,7 @@ class PitchCollectionViewCell: UICollectionViewCell {
         label.text = ""
         label.textAlignment = .center
         label.textColor = .black
-        label.font = UIFont.systemFont(ofSize: 20, weight: .black)
+        label.font = UIFont.systemFont(ofSize: 16, weight: .black)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
         }()
@@ -46,7 +46,7 @@ class PitchCollectionViewCell: UICollectionViewCell {
         label.textAlignment = .center
         label.textColor = .black
         label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 16, weight: .black)
+        label.font = UIFont.systemFont(ofSize: 18, weight: .black)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
         }()

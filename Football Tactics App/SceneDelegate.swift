@@ -46,7 +46,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                
                guard let windowScene = scene as? UIWindowScene else { return }
                window = UIWindow(windowScene: windowScene)
+               
+            //   UserDefaults.standard.setValue("en", forKey: "language")
 
+               
                uniqueuuids()
             //   print(kayitliMi)
 
@@ -60,8 +63,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                    rootViewController = UINavigationController(rootViewController: mainViewController)
                } else {
                    // Eğer unique UUIDs listesi boşsa, CreatePitchViewController'ı başlat
-                   let createPitchViewController = storyboard.instantiateViewController(withIdentifier: "CreatePitchViewController") as! CreatePitchViewController
-                   rootViewController = UINavigationController(rootViewController: createPitchViewController)
+                   
+                   let mainViewController = storyboard.instantiateViewController(withIdentifier: "MainViewController") as! MainViewController
+                   rootViewController = UINavigationController(rootViewController: mainViewController)
+                   
+                 /*  let createPitchViewController = storyboard.instantiateViewController(withIdentifier: "CreatePitchViewController") as! CreatePitchViewController
+                   rootViewController = UINavigationController(rootViewController: createPitchViewController)*/
                }
 
                window?.rootViewController = rootViewController
