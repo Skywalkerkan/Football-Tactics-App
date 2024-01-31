@@ -11,59 +11,12 @@ import CoreData
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    var kayitliMi = false
-    
-    func uniqueuuids() {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            return
-        }
-        let managedContext = appDelegate.persistentContainer.viewContext
-
-        // NSFetchRequest oluştur
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "FootballTactics")
-
-        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        
-        do {
-            // Fetch işlemi gerçekleştir
-            let results = try managedContext.fetch(fetchRequest)
-
-            // Farklı UUID'leri bulmak için bir dizi oluştur
-     
-            if results.count > 0{
-                self.kayitliMi = true
-            }
-
-        } catch {
-            print("Hata: \(error.localizedDescription)")
-        }
-    }
     
 
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        uniqueuuids()
-      //  print(kayitliMi)
-        
-        // Unique UUIDs listesinin count değerini kontrol et
-        if kayitliMi {
-            // Eğer unique UUIDs listesi boş değilse, MainViewController'ı başlat
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let mainViewController = storyboard.instantiateViewController(withIdentifier: "MainViewController") as! MainViewController
-            let navigationController = UINavigationController(rootViewController: mainViewController)
-            window?.rootViewController = navigationController
-        } else {
-            // Eğer unique UUIDs listesi boşsa, CreatePitchViewController'ı başlat
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let createPitchViewController = storyboard.instantiateViewController(withIdentifier: "CreatePitchViewController") as! CreatePitchViewController
-            let navigationController = UINavigationController(rootViewController: createPitchViewController)
-            window?.rootViewController = navigationController
-        }
-
-        window?.makeKeyAndVisible()
+     
         
         return true
     }

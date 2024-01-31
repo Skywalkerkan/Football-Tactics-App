@@ -131,6 +131,20 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
     var allTactics: [FootballTactics] = []
     var chosenTactic: Tactic?
     
+    
+    
+    let selectedCharacterView: UIView = {
+       let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .blue
+        view.layer.cornerRadius = 40
+        view.layer.borderColor = UIColor.black.cgColor
+        view.layer.borderWidth = 2
+        view.isHidden = true
+        return view
+    }()
+    
+    
     let firstView: UIView = {
         let view = UIView()
         view.backgroundColor = .gray
@@ -425,6 +439,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         if type == .insert {
             print("Ekleme yapıldı: \(anObject)")
             degisiklikOlduMu = true
+            characterIndex = 0
 
         }
     }
@@ -462,7 +477,11 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
          transformCell(cell)
          }*/
         
+        
         //   print("aaa")
+        
+        characterIndex = 0
+
         resetCellStates()
         
         
@@ -539,6 +558,8 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         
         addSubviews()
         
+        view.addSubview(selectedCharacterView)
+        
         
         print(playersImageBasildiMi)
         print(footballPitchBasildiMi)
@@ -570,7 +591,8 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
                 
                 
      
-       
+        print(characterIndex)
+
        
         
         
@@ -945,6 +967,17 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
                 if allTactics.count == 0{
                     noDataLabel.isHidden = false
                     goToAddTacticButton.isHidden = false
+                    
+                    
+                    
+                }
+                
+                for player in playerViews{
+                    
+                    player.layer.cornerRadius = 0
+                    player.layer.borderColor = UIColor.clear.cgColor
+                    player.layer.borderWidth = 0
+                    
                 }
                 
          
@@ -989,6 +1022,19 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
                 collectionViewTactics.isHidden = true
                 collectionViewPlayers.isHidden = false
                 print("sağ")
+            
+                
+                
+                if characters.count != 0 && allTactics.count != 0{
+                    
+                    playerViews[characterIndex].layer.cornerRadius = 15
+                    playerViews[characterIndex].layer.borderWidth = 3
+                    playerViews[characterIndex].layer.borderColor = UIColor.white.cgColor
+                }
+                
+             
+                
+              
                 
                 
                 noDataLabel.isHidden = true
@@ -2200,6 +2246,19 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         
         characterIndex = index
         selectedPlayerIndex = characterIndex
+        
+        
+        for player in playerViews{
+            player.layer.cornerRadius = 0
+            player.layer.borderWidth = 0
+            player.layer.borderColor = UIColor.clear.cgColor
+        }
+        
+        
+            playerViews[characterIndex].layer.cornerRadius = 15
+            playerViews[characterIndex].layer.borderWidth = 3
+            playerViews[characterIndex].layer.borderColor = UIColor.white.cgColor
+        
         
         let playerViewcik = playerViews[index]
         
@@ -3431,7 +3490,8 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             
             chosenTacticSize = Int(allTactics[indexPath.row].size)
             ChosenTacticFormation = allTactics[indexPath.row].formation!
-
+            
+            characterIndex = 0
             
             createPlayers(tacticSize: chosenTacticSize)
             
@@ -3516,6 +3576,32 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
                 var playerName = "Name"
                 var playerNo = "99"
                 var playerImageData = Data()
+            
+            
+                //SelectedCharacer
+            
+            for player in playerViews{
+                player.layer.cornerRadius = 0
+                player.layer.borderWidth = 0
+                player.layer.borderColor = UIColor.clear.cgColor
+            }
+            
+            print(characterIndex)
+            
+            if playerViews.count == characterIndex+1{
+                playerViews[0].layer.cornerRadius = 15
+                playerViews[0].layer.borderWidth = 3
+                playerViews[0].layer.borderColor = UIColor.white.cgColor
+            }else{
+                playerViews[characterIndex+1].layer.cornerRadius = 15
+                playerViews[characterIndex+1].layer.borderWidth = 3
+                playerViews[characterIndex+1].layer.borderColor = UIColor.white.cgColor
+            }
+            
+            
+               
+                            
+            
                 // ImageView alt görünümüne eriş
                 if let imageView = playerView.subviews.first(where: { $0 is UIImageView }) as? UIImageView {
                     // ImageView özelliklerini değiştir

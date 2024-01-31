@@ -380,9 +380,10 @@ class CreatePitchViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         
-
+    
         
-        print(view.frame.size.width/view.frame.size.height )
+    
+        
         
             
         print(backButtonHides)
@@ -438,13 +439,21 @@ class CreatePitchViewController: UIViewController {
     }
     
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+       
+        
         
         chosenPitchImage = UIImage(named: "2")
 
         localizedString = UserDefaults.standard.string(forKey: "language")!
+        
+        let backButton = UIBarButtonItem()
+        backButton.title = "Back".localizedString(str: localizedString)
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
+        
         
         /*  UIColor(red: 186/255, green: 193/255, blue: 184/255, alpha: 1)
         UIColor(red: 88/255, green: 164/255, blue: 176/255, alpha: 1)

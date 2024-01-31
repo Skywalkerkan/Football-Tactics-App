@@ -647,6 +647,10 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
       //  navigationController?.navigationBar.backgroundColor = .red
         
         localizedString = UserDefaults.standard.string(forKey: "language")!
+        
+        let backButton = UIBarButtonItem()
+        backButton.title = "Back".localizedString(str: localizedString)
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
 
         
         navigationController?.navigationBar.isHidden = false

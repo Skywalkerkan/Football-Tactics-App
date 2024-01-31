@@ -736,6 +736,9 @@ class CreateCharacterViewController: UIViewController, UITextFieldDelegate {
         
         localizedString = UserDefaults.standard.string(forKey: "language")!
 
+        let backButton = UIBarButtonItem()
+        backButton.title = "Back".localizedString(str: localizedString)
+        self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton
         
         view.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
 

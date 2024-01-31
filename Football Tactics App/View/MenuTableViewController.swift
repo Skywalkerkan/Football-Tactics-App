@@ -12,6 +12,16 @@ class MenuTableViewController: UITableViewController {
     
     var localizedString = "en"
 
+    let erkanLabel: UILabel = {
+       let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Made with care by E.C."
+        label.font = UIFont(name: "Baskerville Bold Italic", size: 16)
+        label.isHidden = true
+        return label
+    }()
+    
+    
     var languagesBasildiMi = false
     
     let langugaesTableView: UITableView = {
@@ -46,7 +56,7 @@ class MenuTableViewController: UITableViewController {
                            Languages(country: "German".localizedString(str: localizedString), image: UIImage(named: "alman")!)
                           ]
         
-       items = ["Delete All Tactics","Info".localizedString(str: localizedString),"Languages".localizedString(str: localizedString)]
+        items = ["Info".localizedString(str: localizedString),"Languages".localizedString(str: localizedString)]
         
         
         
@@ -62,9 +72,7 @@ class MenuTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-       
-        
+
         
         
         view.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
@@ -80,9 +88,17 @@ class MenuTableViewController: UITableViewController {
         
         langugaesTableView.heightAnchor.constraint(equalToConstant: 250).isActive = true
         langugaesTableView.widthAnchor.constraint(equalToConstant: 250).isActive = true
-        langugaesTableView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 150).isActive = true
+        langugaesTableView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 100).isActive = true
         langugaesTableView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
        // langugaesTableView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        
+        print(view.frame.size.height)
+        
+        
+       
+        view.addSubview(erkanLabel)
+        erkanLabel.bottomAnchor.constraint(equalTo: langugaesTableView.bottomAnchor, constant: 150).isActive = true
+        erkanLabel.centerXAnchor.constraint(equalTo: langugaesTableView.centerXAnchor).isActive = true
         
         
     }
@@ -253,7 +269,7 @@ class MenuTableViewController: UITableViewController {
             
         default:
             
-            if indexPath.row == 2{
+            if indexPath.row == 1{
                 
                 tableView.deselectRow(at: indexPath, animated: true)
                 
@@ -268,6 +284,11 @@ class MenuTableViewController: UITableViewController {
                 
                // navigationController?.pushViewController(CreateCharacterViewController(), animated: true)
 
+            }else{
+                erkanLabel.isHidden = false
+                tableView.deselectRow(at: indexPath, animated: true)
+
+                
             }
 
         }
