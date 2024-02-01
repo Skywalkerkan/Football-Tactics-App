@@ -14,6 +14,8 @@
 " Save Tactic " = " Enregistrer la Tactique ";
 "Tactic Formation" = "Formation de la Tactique";
 "Tactic Name Can Not Exceed 20 Letters" = "Le nom de la tactique ne peut pas dépasser 20 lettres";
+"Tactic name can not be empty." = "Le nom de la tactique ne peut pas être vide.";
+
 
 //Main VC
 

@@ -596,6 +596,19 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
        
         
         
+       /* if allTactics.count == 0{
+            
+            
+            for playerView in playerViews {
+                playerView.removeFromSuperview()
+            }
+            
+            print(playerViews.count)
+            
+            
+            playerViews.removeAll()
+        }*/
+        
         
     }
     
@@ -1268,9 +1281,14 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         
     }
     
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        overrideUserInterfaceStyle = .light
+
         NotificationCenter.default.addObserver(self, selector: #selector(languageChanged), name: Notification.Name("LanguageChangedNotification"), object: nil)
 
         
@@ -1582,19 +1600,19 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
                 }
                 else if i > 0 && i < 5{
                     if i == 1{
-                        eklenenX = Int(view.frame.size.width / 10)
+                        eklenenX = Int(view.frame.size.width / 9)
                     }
                     numberY = Int(view.frame.size.height/2)
                     playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
-                    eklenenX += 80
+                    eklenenX += Int(view.frame.size.width)/5
                 }
                 else if i >= 5 && i < 9{
                     if i == 5{
-                        eklenenX = Int(view.frame.size.width / 10)
+                        eklenenX = Int(view.frame.size.width / 9)
                     }
                     numberY = Int(view.frame.size.height/3)
                     playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
-                    eklenenX += 80
+                    eklenenX += Int(view.frame.size.width)/5
                 }
                 else{
                     if i == 9{
@@ -1635,11 +1653,12 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
                 }
                 else if i > 0 && i < 5{
                     if i == 1{
-                        eklenenX = Int(view.frame.size.width / 10)
+                        eklenenX = Int(view.frame.size.width / 9)
                     }
                     numberY = Int(view.frame.size.height/2)
                     playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
-                    eklenenX += 80
+                    eklenenX += Int(view.frame.size.width)/5
+                
                 }
                 else if i >= 5 && i < 8{
                     if i == 5{
@@ -1697,11 +1716,12 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
                 }
                 else if i > 0 && i < 5{
                     if i == 1{
-                        eklenenX = Int(view.frame.size.width / 10)
+                        eklenenX = Int(view.frame.size.width / 9)
                     }
                     numberY = Int(view.frame.size.height/2)
                     playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
-                    eklenenX += 80
+                    eklenenX += Int(view.frame.size.width)/5
+                
                 }
                 else if i >= 5 && i < 8{
                     if i == 5{
@@ -1709,8 +1729,11 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
                     }
                     numberY = Int(view.frame.size.height/2.5)
                     playerView = UIView(frame: CGRect(x: eklenenX, y: numberY, width: 65, height: 65))
-                    eklenenX += 85
+                    eklenenX += Int(view.frame.size.width)/5
                 }
+                
+                
+                
                 else if i >= 8 && i < 10{
                     if i == 8{
                         eklenenX = Int(view.frame.width/2 - 90)
@@ -3462,13 +3485,29 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        if screenRatio > 0.5{
-            return CGSize(width: view.frame.size.width/3.75, height: 110)
+        print(screenRatio)
+        
+        switch collectionView{
+            
+        case collectionViewTactics:
+            if screenRatio > 0.5{
+                return CGSize(width: view.frame.size.width/3.75, height: 120)
 
-        }else{
-            return CGSize(width: view.frame.size.width/3.4, height: 125)
+            }else{
+                return CGSize(width: view.frame.size.width/3.5, height: 135)
 
+            }
+            
+        case collectionViewPlayers:
+            
+            return CGSize(width: view.frame.size.width/3.5, height: view.frame.size.width / 3)
+
+            
+        default:
+            return CGSize()
         }
+        
+     
         
         
     }

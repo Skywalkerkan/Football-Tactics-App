@@ -13,6 +13,8 @@
 " Save Tactic " = " Taktiği Kaydet ";
 "Tactic Formation" = "Taktik Diziliş";
 "Tactic Name Can Not Exceed 20 Letters" = "Taktik 20 harfi geçemez";
+"Tactic name can not be empty." = "Taktik adı boş bırakılamaz.";
+"Alert" = "Uyarı";
 
 //Main VC
 

@@ -121,8 +121,8 @@ class PitchCollectionViewCell: UICollectionViewCell {
             deleteTacticButton.topAnchor.constraint(equalTo: pitchImageView.topAnchor, constant: 4),
             //deleteTacticButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
             deleteTacticButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4),
-            deleteTacticButton.heightAnchor.constraint(equalToConstant: 20),
-            deleteTacticButton.widthAnchor.constraint(equalToConstant: 20)
+            deleteTacticButton.heightAnchor.constraint(equalToConstant: 18),
+            deleteTacticButton.widthAnchor.constraint(equalToConstant: 18)
 
         ])
         

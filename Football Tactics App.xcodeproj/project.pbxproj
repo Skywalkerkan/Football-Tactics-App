@@ -29,6 +29,7 @@
 		DEA676232B3C5B100060FC83 /* CharacterDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA676222B3C5B100060FC83 /* CharacterDetailViewController.swift */; };
 		DEAC5E142B4463B000EEA1CA /* CustomLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEAC5E132B4463B000EEA1CA /* CustomLayout.swift */; };
 		DEB565CD2B6294A300F6131E /* CharacterCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB565CC2B6294A300F6131E /* CharacterCollectionViewCell.swift */; };
+		DEE6E3692B6BD8AC006E04E3 /* SplashScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE6E3682B6BD8AC006E04E3 /* SplashScreenViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +65,7 @@
 		DEA676222B3C5B100060FC83 /* CharacterDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterDetailViewController.swift; sourceTree = "<group>"; };
 		DEAC5E132B4463B000EEA1CA /* CustomLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLayout.swift; sourceTree = "<group>"; };
 		DEB565CC2B6294A300F6131E /* CharacterCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterCollectionViewCell.swift; sourceTree = "<group>"; };
+		DEE6E3682B6BD8AC006E04E3 /* SplashScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 		DE39AEB82B3B5FF6002DCD77 /* Football Tactics App */ = {
 			isa = PBXGroup;
 			children = (
+				DEE6E36A2B6BD8B5006E04E3 /* SplashScreen */,
 				DEA141AF2B67B8E000931D4A /* StringLocalized */,
 				DE997BD72B46CF83007C0654 /* Extensions */,
 				DEA676252B3C5B200060FC83 /* View */,
@@ -161,6 +164,14 @@
 				DE2D9CBE2B616FCA00EEE599 /* CreateCharacterViewController.swift */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		DEE6E36A2B6BD8B5006E04E3 /* SplashScreen */ = {
+			isa = PBXGroup;
+			children = (
+				DEE6E3682B6BD8AC006E04E3 /* SplashScreenViewController.swift */,
+			);
+			path = SplashScreen;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -246,6 +257,7 @@
 			files = (
 				DEB565CD2B6294A300F6131E /* CharacterCollectionViewCell.swift in Sources */,
 				DE9EBEF62B666BA8006943FD /* LanguagesTableViewCell.swift in Sources */,
+				DEE6E3692B6BD8AC006E04E3 /* SplashScreenViewController.swift in Sources */,
 				DE2D9CBF2B616FCA00EEE599 /* CreateCharacterViewController.swift in Sources */,
 				DEA09B8B2B3D6E040070A374 /* SliderExtension.swift in Sources */,
 				DEA141AC2B67B6C900931D4A /* Localized.swift in Sources */,
@@ -445,12 +457,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.erkancosar.Football-Tactics-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -475,12 +487,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.erkancosar.Football-Tactics-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

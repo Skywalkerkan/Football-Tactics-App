@@ -645,7 +645,8 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
       //  navigationController?.navigationBar.backgroundColor = .red
-        
+        overrideUserInterfaceStyle = .light
+
         localizedString = UserDefaults.standard.string(forKey: "language")!
         
         let backButton = UIBarButtonItem()
@@ -902,8 +903,8 @@ class CharacterDetailViewController: UIViewController, UITextFieldDelegate {
         
         view.addSubview(playerNoTextfield)
 
-        playerNoTextfield.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        playerNoTextfield.widthAnchor.constraint(equalToConstant: 35).isActive = true
+        playerNoTextfield.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        playerNoTextfield.widthAnchor.constraint(equalToConstant: 45).isActive = true
         playerNoTextfield.bottomAnchor.constraint(equalTo: characterImageView.bottomAnchor,constant: -20).isActive = true
         playerNoTextfield.trailingAnchor.constraint(equalTo: characterImageView.trailingAnchor, constant: 0).isActive = true
         

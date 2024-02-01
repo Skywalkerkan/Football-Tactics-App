@@ -11,7 +11,7 @@ import UIKit
 
 
 
-class CreatePitchViewController: UIViewController {
+class CreatePitchViewController: UIViewController, UITextFieldDelegate {
     
     let screenWidth =  UIScreen.main.bounds.size.width
     let screenHeigth =  UIScreen.main.bounds.size.height
@@ -39,6 +39,62 @@ class CreatePitchViewController: UIViewController {
     
     
     var pitchImages: [UIImage] = []
+    
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+           // Klavyeyi kapat
+           textField.resignFirstResponder()
+           return true
+       }
+
+       func textFieldDidEndEditing(_ textField: UITextField) {
+           // Başka bir yere tıklandığında klavyeyi kapat
+           textField.resignFirstResponder()
+
+               //   view.endEditing(true)
+              
+       }
+    
+    
+    lazy var deleteTeamSize: UIButton = {
+        
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "xmark"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .black
+        button.isHidden = false
+        button.addTarget(self, action: #selector(deleteClickedTeamSize), for: .touchUpInside)
+        return button
+        
+    }()
+    
+    @objc func deleteClickedTeamSize(){
+        
+        sayiButtonClicked()
+        
+        
+    }
+    
+    
+    lazy var deleteFormation: UIButton = {
+        
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "xmark"), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = .black
+        button.isHidden = false
+        button.addTarget(self, action: #selector(deleteClickedFormation), for: .touchUpInside)
+        return button
+        
+    }()
+    
+    @objc func deleteClickedFormation(){
+        
+        taktikDizilisClicked()
+        
+        
+    }
+    
     
     private let tacticsView: UIView = {
         let tacticView = UIView()
@@ -152,9 +208,14 @@ class CreatePitchViewController: UIViewController {
     
     
     let collectionView: UICollectionView = {
-        let view = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 30.0
+        layout.minimumInteritemSpacing = 30.0
+        layout.scrollDirection = .horizontal
+        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .red
+ 
       //  view.isHidden = true
         return view
     }()
@@ -181,7 +242,7 @@ class CreatePitchViewController: UIViewController {
       
         
         if tacticTextField.text == ""{
-            let alertController = UIAlertController(title: "Alert", message: "Tactic Name Can Not Be Empty ", preferredStyle: .alert)
+            let alertController = UIAlertController(title: "Alert".localizedString(str: localizedString), message: "Tactic name can not be empty.".localizedString(str: localizedString), preferredStyle: .alert)
             let action = UIAlertAction(title: "Ok", style: .cancel)
             
             alertController.addAction(action)
@@ -439,16 +500,70 @@ class CreatePitchViewController: UIViewController {
     }
     
     
+    func hideKeyboardWhenTappedAround() {
+           let tapGesture = UITapGestureRecognizer(target: self,
+                            action: #selector(hideKeyboard))
+           view.addGestureRecognizer(tapGesture)
+        
+        tapGesture.cancelsTouchesInView = false
+
+       }
+
+    @objc func hideKeyboard() {
+        
+        
+    
+        view.endEditing(true)
+        
+        
+    }
+    
+    @objc func hideTableViews() {
+        
+        
+        
+        if oyuncuSayiView.isHidden == false{
+            sayiButtonClicked()
+
+        }else if taktikDizilisView.isHidden == false{
+            taktikDizilisClicked()
+        }
+    
+        
+       // taktikDizilisClicked()
+        
+        
+    }
+   
+    
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         
-       
+        
+        
+        
+        hideKeyboardWhenTappedAround()
+        
+        let gestureRecognizer = UITapGestureRecognizer(target: self,
+                         action: #selector(hideTableViews))
+        
+        blackView.addGestureRecognizer(gestureRecognizer)
+        
+        
+   
+        overrideUserInterfaceStyle = .light
+
+        tacticTextField.delegate = self
         
         
         chosenPitchImage = UIImage(named: "2")
 
         localizedString = UserDefaults.standard.string(forKey: "language")!
+        
+        tacticTextField.placeholder = "Tactic Name".localizedString(str: localizedString)
         
         let backButton = UIBarButtonItem()
         backButton.title = "Back".localizedString(str: localizedString)
@@ -571,6 +686,9 @@ class CreatePitchViewController: UIViewController {
         
         oyuncuSayiView.addSubview(labelSayiView)
         
+        oyuncuSayiView.addSubview(deleteTeamSize)
+        
+        
         oyuncuSayiView.addSubview(oyuncuSayisiTableView)
         oyuncuSayiView.backgroundColor = .clear
         
@@ -579,11 +697,20 @@ class CreatePitchViewController: UIViewController {
         oyuncuSayisiTableView.delegate = self
         oyuncuSayisiTableView.dataSource = self
         oyuncuSayisiTableView.register(UITableViewCell.self, forCellReuseIdentifier: "oyuncuSayiCell")
+        oyuncuSayiView.backgroundColor = UIColor(red: 220/255, green: 255/255, blue: 253/255, alpha: 1)
+        
+        //DeleteMark
+        deleteTeamSize.topAnchor.constraint(equalTo: oyuncuSayiView.topAnchor).isActive = true
+        deleteTeamSize.trailingAnchor.constraint(equalTo: oyuncuSayiView.trailingAnchor).isActive = true
+        deleteTeamSize.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        deleteTeamSize.widthAnchor.constraint(equalToConstant: 35).isActive = true
         
         labelSayiView.leadingAnchor.constraint(equalTo: oyuncuSayiView.leadingAnchor, constant: 0).isActive = true
         labelSayiView.trailingAnchor.constraint(equalTo: oyuncuSayiView.trailingAnchor, constant: 0).isActive = true
-        labelSayiView.topAnchor.constraint(equalTo: oyuncuSayiView.topAnchor, constant: 0).isActive = true
+        labelSayiView.topAnchor.constraint(equalTo: deleteTeamSize.topAnchor, constant: 0).isActive = true
         labelSayiView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+    
 
         
         oyuncuSayisiTableView.topAnchor.constraint(equalTo: labelSayiView.bottomAnchor, constant: 0).isActive = true
@@ -615,7 +742,7 @@ class CreatePitchViewController: UIViewController {
         labelTaktikView.backgroundColor = .lightGray
         labelTaktikView.textAlignment = .center
         labelTaktikView.translatesAutoresizingMaskIntoConstraints = false
-        labelTaktikView.text = "Tactic Formation".localized()
+        labelTaktikView.text = "Tactic Formation".localizedString(str: localizedString)
         
         
         dizilisTableView.delegate = self
@@ -624,6 +751,15 @@ class CreatePitchViewController: UIViewController {
         
         
         taktikDizilisView.addSubview(labelTaktikView)
+        taktikDizilisView.addSubview(deleteFormation)
+        
+        
+        deleteFormation.topAnchor.constraint(equalTo: taktikDizilisView.topAnchor, constant: -3).isActive = true
+        deleteFormation.trailingAnchor.constraint(equalTo: taktikDizilisView.trailingAnchor, constant: 3).isActive = true
+        deleteFormation.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        deleteFormation.widthAnchor.constraint(equalToConstant: 35).isActive = true
+        
+        
         labelTaktikView.leadingAnchor.constraint(equalTo: taktikDizilisView.leadingAnchor, constant: 0).isActive = true
         labelTaktikView.trailingAnchor.constraint(equalTo: taktikDizilisView.trailingAnchor, constant: 0).isActive = true
         labelTaktikView.topAnchor.constraint(equalTo: taktikDizilisView.topAnchor, constant: 0).isActive = true
@@ -708,11 +844,11 @@ class CreatePitchViewController: UIViewController {
         collectionView.delegate = self
         tacticsView.addSubview(collectionView)
         
-        collectionView.collectionViewLayout = layout
+       /* collectionView.collectionViewLayout = layout
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 30.0
         layout.minimumInteritemSpacing = 30.0
-        layout.itemSize.width = itemWidth
+        layout.itemSize.width = itemWidth*/
         collectionView.clipsToBounds = true
         collectionView.leadingAnchor.constraint(equalTo: tacticsView.leadingAnchor, constant: 0).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: tacticsView.trailingAnchor, constant: 0).isActive = true
