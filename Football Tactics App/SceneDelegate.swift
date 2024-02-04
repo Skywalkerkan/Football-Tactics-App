@@ -59,12 +59,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                // Unique UUIDs listesinin count değerini kontrol et
                if kayitliMi {
                    // Eğer unique UUIDs listesi boş değilse, MainViewController'ı başlat
-                   let mainViewController = storyboard.instantiateViewController(withIdentifier: "MainViewController") as! MainViewController
+                   let mainViewController = storyboard.instantiateViewController(withIdentifier: "SplashViewController") as! SplashScreenViewController
                    rootViewController = UINavigationController(rootViewController: mainViewController)
                } else {
                    // Eğer unique UUIDs listesi boşsa, CreatePitchViewController'ı başlat
                    
-                   let mainViewController = storyboard.instantiateViewController(withIdentifier: "MainViewController") as! MainViewController
+                   let mainViewController = storyboard.instantiateViewController(withIdentifier: "SplashViewController") as! SplashScreenViewController
                    rootViewController = UINavigationController(rootViewController: mainViewController)
                    
                  /*  let createPitchViewController = storyboard.instantiateViewController(withIdentifier: "CreatePitchViewController") as! CreatePitchViewController

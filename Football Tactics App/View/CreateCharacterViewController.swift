@@ -21,7 +21,7 @@ class CreateCharacterViewController: UIViewController, UITextFieldDelegate {
     
     func alertController(){
         
-        let alertController = UIAlertController(title: "Error", message: "You entered imcomplete info", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Error".localizedString(str: localizedString), message: "You entered imcomplete info".localizedString(str: localizedString), preferredStyle: .alert)
         let action = UIAlertAction(title: "Ok", style: .cancel)
         alertController.addAction(action)
         

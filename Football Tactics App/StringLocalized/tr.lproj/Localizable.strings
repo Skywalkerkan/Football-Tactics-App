@@ -25,6 +25,8 @@
 "Yes" = "Evet";
 "No" = "Hayır";
 "Player Name" = "Oyuncu Adı";
+"There is no tactic saved." = "Kaydedilmiş bir taktik yok.";
+"There is no player saved." = "Kaydedilmiş bir oyuncu yok.";
 
 
 

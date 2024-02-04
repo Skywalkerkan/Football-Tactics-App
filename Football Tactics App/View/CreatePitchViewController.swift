@@ -449,7 +449,8 @@ class CreatePitchViewController: UIViewController, UITextFieldDelegate {
             
         print(backButtonHides)
         
-        if let kaydedilmisBoolValue = UserDefaults.standard.value(forKey: "boolAnahtar") as? Bool {
+        //Geri gitmeyi engelliyor
+       /* if let kaydedilmisBoolValue = UserDefaults.standard.value(forKey: "boolAnahtar") as? Bool {
             print("Kaydedilmiş Boolean Değer: \(kaydedilmisBoolValue)")
             
             
@@ -462,7 +463,7 @@ class CreatePitchViewController: UIViewController, UITextFieldDelegate {
             }
             
             
-        }
+        }*/
         
         
       

@@ -338,7 +338,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
     //Buraya kadar
     
     private let backgroundImageView: UIImageView = {
-        let image = UIImage(named: "4")
+        let image = UIImage(named: "8")
         let imageView = UIImageView(image: image)
         imageView.contentMode = .scaleToFill
         imageView.isHidden = false
@@ -349,7 +349,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
     
     lazy var noDataLabel: UILabel = {
        let label = UILabel()
-        label.text = "There is no tactic saved".localizedString(str: localizedString)
+        label.text = "There is no tactic saved.".localizedString(str: localizedString)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.isHidden = true
         label.font = UIFont.boldSystemFont(ofSize: 20)
@@ -371,7 +371,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
     
     lazy var noPlayerLabel: UILabel = {
        let label = UILabel()
-        label.text = "There is no player saved".localizedString(str: localizedString)
+        label.text = "There is no player saved.".localizedString(str: localizedString)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.isHidden = true
         label.font = UIFont.boldSystemFont(ofSize: 20)
@@ -579,6 +579,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         else{
             if allTactics.count == 0{
                 noDataLabel.isHidden = false
+                backgroundImageView.image = UIImage(named: "8")
                 goToAddTacticButton.isHidden = false
             }else{
                 noDataLabel.isHidden = true
@@ -596,7 +597,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
        
         
         
-       /* if allTactics.count == 0{
+        if allTactics.count == 0{
             
             
             for playerView in playerViews {
@@ -607,7 +608,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
             
             
             playerViews.removeAll()
-        }*/
+        }
         
         
     }
@@ -1156,6 +1157,8 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
     let iconeImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 5
+        imageView.layer.borderWidth = 2
+        imageView.layer.borderColor = UIColor.black.cgColor
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         let image = UIImage(named: "icone")
@@ -1239,7 +1242,8 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         
 
         localizedString = UserDefaults.standard.string(forKey: "language")!
-        noDataLabel.text = "There is no tactic saved".localizedString(str: localizedString)
+        noDataLabel.text = "There is no tactic saved.".localizedString(str: localizedString)
+        noPlayerLabel.text = "There is no player saved.".localizedString(str: localizedString)
         navigationItem.leftBarButtonItem?.title = "Add Tactic".localizedString(str: localizedString)
 
         
@@ -1295,8 +1299,12 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         if let stringLanguage = UserDefaults.standard.string(forKey: "language"){
             localizedString = stringLanguage
         }else{
-            localizedString = "en"
-            UserDefaults.standard.setValue("en", forKey: "language")
+            
+            guard let systemLanguage = Locale.current.language.languageCode?.identifier else{return}
+            print("system language \(systemLanguage)")
+            
+            localizedString = systemLanguage
+            UserDefaults.standard.setValue("\(systemLanguage)", forKey: "language")
         }
    
         
@@ -1550,8 +1558,8 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         
         view.addSubview(iconeImageView)
         iconeImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: statusBarHeight).isActive = true
-        iconeImageView.heightAnchor.constraint(equalToConstant: barHeight+10).isActive = true
-        iconeImageView.widthAnchor.constraint(equalToConstant: barHeight+10).isActive = true
+        iconeImageView.heightAnchor.constraint(equalToConstant: barHeight+15).isActive = true
+        iconeImageView.widthAnchor.constraint(equalToConstant: barHeight+15).isActive = true
         iconeImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         
@@ -2958,7 +2966,7 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
         // NSFetchRequest oluştur
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "FootballTactics")
 
-        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: true)
+        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
         
         do {
@@ -2984,8 +2992,8 @@ class MainViewController: UIViewController, YourCollectionViewCellDelegate, NSFe
                   //  print(footballTactics.id)
                 }
             }
-            allTactics.reverse()
-            uniqueUUIDs.reverse()
+           // allTactics.reverse()
+           // uniqueUUIDs.reverse()
             
             if allTactics.count > 0{
                 
@@ -3491,7 +3499,7 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             
         case collectionViewTactics:
             if screenRatio > 0.5{
-                return CGSize(width: view.frame.size.width/3.75, height: 120)
+                return CGSize(width: view.frame.size.width/3.8, height: 115)
 
             }else{
                 return CGSize(width: view.frame.size.width/3.5, height: 135)
@@ -3500,7 +3508,15 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             
         case collectionViewPlayers:
             
-            return CGSize(width: view.frame.size.width/3.5, height: view.frame.size.width / 3)
+            
+            if screenRatio > 0.5{
+                return CGSize(width: view.frame.size.width/3.5, height: 130)
+
+            }else{
+                return CGSize(width: view.frame.size.width/3.5, height: 150)
+
+            }
+            
 
             
         default:
@@ -3611,36 +3627,45 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
             }
                 
             //    let playerView = playerViews[selectedPlayerIndex]
+            
+            
+            
+            // Tahanın bugi burada halledildi
+            if allTactics.count == 0{
+                
+            }else{
+                
                 let playerView = playerViews[characterIndex]
                 var playerName = "Name"
                 var playerNo = "99"
                 var playerImageData = Data()
-            
-            
+                
+                
+                
                 //SelectedCharacer
-            
-            for player in playerViews{
-                player.layer.cornerRadius = 0
-                player.layer.borderWidth = 0
-                player.layer.borderColor = UIColor.clear.cgColor
-            }
-            
-            print(characterIndex)
-            
-            if playerViews.count == characterIndex+1{
-                playerViews[0].layer.cornerRadius = 15
-                playerViews[0].layer.borderWidth = 3
-                playerViews[0].layer.borderColor = UIColor.white.cgColor
-            }else{
-                playerViews[characterIndex+1].layer.cornerRadius = 15
-                playerViews[characterIndex+1].layer.borderWidth = 3
-                playerViews[characterIndex+1].layer.borderColor = UIColor.white.cgColor
-            }
-            
-            
-               
-                            
-            
+                
+                for player in playerViews{
+                    player.layer.cornerRadius = 0
+                    player.layer.borderWidth = 0
+                    player.layer.borderColor = UIColor.clear.cgColor
+                }
+                
+                print(characterIndex)
+                
+                if playerViews.count == characterIndex+1{
+                    playerViews[0].layer.cornerRadius = 15
+                    playerViews[0].layer.borderWidth = 3
+                    playerViews[0].layer.borderColor = UIColor.white.cgColor
+                }else{
+                    playerViews[characterIndex+1].layer.cornerRadius = 15
+                    playerViews[characterIndex+1].layer.borderWidth = 3
+                    playerViews[characterIndex+1].layer.borderColor = UIColor.white.cgColor
+                }
+                
+                
+                
+                
+                
                 // ImageView alt görünümüne eriş
                 if let imageView = playerView.subviews.first(where: { $0 is UIImageView }) as? UIImageView {
                     // ImageView özelliklerini değiştir
@@ -3676,12 +3701,12 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
                  }else{*/
                 predicateAndUploadCharacter(uuidString: uuidString, index: characterIndex, playerCharacter: characters[indexPath.row])
                 
-            
-        
-            characterIndex += 1
                 
                 
-            
+                characterIndex += 1
+                
+                
+            }
             
             
             

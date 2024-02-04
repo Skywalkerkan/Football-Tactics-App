@@ -26,6 +26,9 @@
 "Yes" = "Oui";
 "No" = "Non";
 "Player Name" = "Nom du Joueur";
+"There is no tactic saved." = "Aucune tactique n’est enregistrée.";
+"There is no player saved." = "Aucun joueur n'est enregistré.";
+
 
 //Side Menu
 "Info" = "Info";

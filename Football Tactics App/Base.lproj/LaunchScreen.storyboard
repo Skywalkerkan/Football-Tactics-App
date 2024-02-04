@@ -5,6 +5,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -16,19 +17,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icone" translatesAutoresizingMaskIntoConstraints="NO" id="tDO-dk-oCw">
-                                <rect key="frame" x="121.66666666666669" y="301" width="150" height="150"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="150" id="Tmp-9T-Ig3"/>
-                                    <constraint firstAttribute="width" constant="150" id="Tpa-rU-zP3"/>
-                                </constraints>
-                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="djk-xQ-3GH">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <color key="backgroundColor" systemColor="secondarySystemFillColor"/>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" red="0.15686274509803921" green="0.30196078431372547" blue="0.28627450980392155" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="tDO-dk-oCw" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="-50" id="5Mq-dt-qZR"/>
-                            <constraint firstItem="tDO-dk-oCw" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="b4r-SQ-smH"/>
+                            <constraint firstItem="djk-xQ-3GH" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="KZb-0Z-OTq"/>
+                            <constraint firstItem="djk-xQ-3GH" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="UDF-ZD-Ln5"/>
+                            <constraint firstItem="djk-xQ-3GH" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="dTt-3I-XRg"/>
+                            <constraint firstAttribute="bottom" secondItem="djk-xQ-3GH" secondAttribute="bottom" id="y7X-Rj-qw4"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -38,6 +38,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="icone" width="1024" height="1024"/>
+        <systemColor name="secondarySystemFillColor">
+            <color red="0.47058823529411764" green="0.47058823529411764" blue="0.50196078431372548" alpha="0.16" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
     </resources>
 </document>
